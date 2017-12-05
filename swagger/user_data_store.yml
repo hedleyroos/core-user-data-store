@@ -63,12 +63,14 @@ parameters:
     name: admin_note_id
     required: true
     type: integer
-  country_id:
-    description: A unique integer value identifying the country.
+  country_code:
+    description: A unique two-character value identifying the country.
     in: path
-    name: country_id
+    name: country_code
     required: true
-    type: integer
+    type: string
+    minLength: 2
+    maxLength: 2
   site_id:
     description: A unique integer value identifying the site.
     in: path
@@ -83,8 +85,199 @@ parameters:
     type: string
     format: uuid
 
+definitions:
+  admin_note:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      creator_id:
+        type: string
+        format: uuid
+      note:
+        type: string
+      created_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+      updated_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+    required:
+      - user_id
+      - creator_id
+      - note
+      - created_at
+      - updated_at
+
+  admin_note_update:
+    type: object
+    properties:
+      note:
+        type: string
+    minItems: 1
+
+  country:
+    type: object
+    properties:
+      code:
+        type: string
+        minLength: 2
+        maxLength: 2
+      name:
+        type: string
+        maxLength: 256
+      created_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+      updated_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+    required:
+      - code
+      - name
+      - created_at
+      - updated_at
+
+  country_update:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 256
+    minItems: 1
+
+  site_data_schema:
+    type: object
+    properties:
+      site_id:
+        type: integer
+      schema:
+        type: object
+      created_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+      updated_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+    required:
+      - site_id
+      - schema
+      - created_at
+      - updated_at
+
+  site_data_schema_update:
+    type: object
+    properties:
+      schema:
+        type: object
+    minItems: 1
+
+  user_data:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      email_verified:
+        type: boolean
+      msisdn_verified:
+        type: boolean
+      msisdn:
+        type: string
+        maxLength: 15
+      gender:
+        type: string
+      birth_date:
+        type: string
+        format: date
+      avatar:
+        type: string
+        format: uri
+      country_code:
+        type: string
+        maxLength: 2
+      created_at:
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        readOnly: true
+    required:
+      - user_id
+      - created_at
+      - updated_at
+
+  user_data_update:
+    type: object
+    properties:
+      email_verified:
+        type: boolean
+      msisdn_verified:
+        type: boolean
+      msisdn:
+        type: string
+        maxLength: 15
+      gender:
+        type: string
+      birth_date:
+        type: string
+        format: date
+      avatar:
+        type: string
+        format: uri
+      country_code:
+        type: string
+        maxLength: 2
+    minItems: 1
+
+  user_site_data:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      data_processing_consent_provided:
+        type: boolean
+      data:
+        type: object
+      created_at:
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        readOnly: true
+    required:
+      - user_id
+      - site_id
+      - data_processing_consent_provided
+      - data
+      - created_at
+      - updated_at
+
+  user_site_data_update:
+    type: object
+    properties:
+      data_processing_consent_provided:
+        type: boolean
+      data:
+        type: object
+    minItems: 1
+
 paths:
-  /adminnote/:
+  /adminnotes/:
     get:
       operationId: adminnote_list
       parameters:
@@ -100,6 +293,12 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/admin_note'
+        403:
+          description: 'Forbidden'
       tags:
         - user_data
     post:
@@ -110,34 +309,39 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              creator_id:
-                type: string
-                format: uuid
-              note:
-                type: string
-              user_id:
-                type: string
-                format: uuid
-            required:
-              - note
-              - user_id
-              - creator_id
-            type: object
+            $ref: '#/definitions/admin_note'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/admin_note'
+        403:
+          description: 'Forbidden'
       tags:
         - user_data
 
-  /adminnote/{admin_note_id}/:
+  /adminnotes/{user_id}/{creator_id}/{created_at}/:
     parameters:
-      - $ref: '#/parameters/admin_note_id'
+      - $ref: '#/parameters/user_id'
+      - description: The creator_id
+        name: creator_id
+        in: path
+        required: true
+        type: string
+        format: uuid
+      - description: The created_at value
+        name: created_at
+        in: path
+        required: true
+        type: string
+        format: 'date-time'
     delete:
       operationId: adminnote_delete
       responses:
         '204':
-          description: ''
+          description: 'Deleted'
+        403:
+          description: 'Forbidden'
       tags:
         - user_data
     get:
@@ -145,29 +349,10 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - user_data
-    patch:
-      consumes:
-        - application/json
-      operationId: adminnote_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              creator_id:
-                type: string
-                format: uuid
-              note:
-                type: string
-              user_id:
-                type: string
-                format: uuid
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/admin_note'
+        403:
+          description: 'Forbidden'
       tags:
         - user_data
     put:
@@ -178,27 +363,18 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              creator_id:
-                type: string
-                format: uuid
-              note:
-                type: string
-              user_id:
-                type: string
-                format: uuid
-            required:
-              - note
-              - user_id
-              - creator_id
-            type: object
+            $ref: '#/definitions/admin_note_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/admin_note'
+        403:
+          description: 'Forbidden'
       tags:
         - user_data
 
-  /country/:
+  /countries/:
     get:
       operationId: country_list
       parameters:
@@ -207,6 +383,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/country'
       tags:
         - user_data
     post:
@@ -217,26 +397,18 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              code:
-                description: ''
-                type: string
-              name:
-                description: ''
-                type: string
-            required:
-              - code
-              - name
-            type: object
+            $ref: '#/definitions/country'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/country'
       tags:
         - user_data
 
-  /country/{country_id}/:
+  /countries/{country_code}/:
     parameters:
-      - $ref: '#/parameters/country_id'
+      - $ref: '#/parameters/country_code'
     delete:
       operationId: country_delete
       responses:
@@ -249,25 +421,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - user_data
-    patch:
-      consumes:
-        - application/json
-      operationId: country_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              code:
-                type: string
-              name:
-                type: string
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/country'
       tags:
         - user_data
     put:
@@ -278,24 +433,16 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              code:
-                description: ''
-                type: string
-              name:
-                description: ''
-                type: string
-            required:
-              - code
-              - name
-            type: object
+            $ref: '#/definitions/country_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/country'
       tags:
         - user_data
 
-  /sitedataschema/:
+  /sitedataschemas/:
     get:
       operationId: sitedataschema_list
       parameters:
@@ -304,10 +451,30 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/site_data_schema'
+      tags:
+        - user_data
+    post:
+      consumes:
+        - application/json
+      operationId: sitedataschema_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: '#/definitions/site_data_schema'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/site_data_schema'
       tags:
         - user_data
 
-  /sitedataschema/{site_id}/:
+  /sitedataschemas/{site_id}/:
     parameters:
       - $ref: '#/parameters/site_id'
     delete:
@@ -322,24 +489,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - user_data
-    patch:
-      consumes:
-        - application/json
-      operationId: sitedataschema_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              schema:
-                description: ''
-                type: string
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/site_data_schema'
       tags:
         - user_data
     put:
@@ -350,14 +501,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              schema:
-                description: ''
-                type: string
-            type: object
+            $ref: '#/definitions/site_data_schema_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/site_data_schema'
       tags:
         - user_data
 
@@ -370,6 +519,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_data'
       tags:
         - user_data
     post:
@@ -380,32 +533,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              avatar:
-                description: ''
-                type: string
-              birth_date:
-                description: ''
-                type: string
-              country:
-                description: ''
-                type: string
-              email_verified:
-                description: ''
-                type: boolean
-              gender:
-                description: ''
-                type: string
-              msisdn:
-                description: ''
-                type: string
-              msisdn_verified:
-                description: ''
-                type: boolean
-            type: object
+            $ref: '#/definitions/user_data'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/user_data'
       tags:
         - user_data
 
@@ -424,42 +557,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - user_data
-    patch:
-      consumes:
-        - application/json
-      operationId: userdata_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              avatar:
-                description: ''
-                type: string
-              birth_date:
-                description: ''
-                type: string
-              country:
-                description: ''
-                type: string
-              email_verified:
-                description: ''
-                type: boolean
-              gender:
-                description: ''
-                type: string
-              msisdn:
-                description: ''
-                type: string
-              msisdn_verified:
-                description: ''
-                type: boolean
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/user_data'
       tags:
         - user_data
     put:
@@ -470,32 +569,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              avatar:
-                description: ''
-                type: string
-              birth_date:
-                description: ''
-                type: string
-              country:
-                description: ''
-                type: string
-              email_verified:
-                description: ''
-                type: boolean
-              gender:
-                description: ''
-                type: string
-              msisdn:
-                description: ''
-                type: string
-              msisdn_verified:
-                description: ''
-                type: boolean
-            type: object
+            $ref: '#/definitions/user_data_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/user_data'
       tags:
         - user_data
 
@@ -510,6 +589,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_data'
       tags:
         - user_data
     post:
@@ -520,28 +603,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              data:
-                description: ''
-                type: string
-              data_processing_consent_provided:
-                description: ''
-                type: boolean
-              site_id:
-                description: ''
-                type: string
-                format: uuid
-              user_id:
-                description: ''
-                type: string
-                format: uuid
-            required:
-              - user_id
-              - site_id
-            type: object
+            $ref: '#/definitions/user_site_data'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/user_site_data'
       tags:
         - user_data
 
@@ -561,27 +628,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - user_data
-    patch:
-      consumes:
-        - application/json
-      operationId: usersitedata_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              data:
-                description: ''
-                type: string
-              data_processing_consent_provided:
-                description: ''
-                type: boolean
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/user_site_data'
       tags:
         - user_data
     put:
@@ -592,16 +640,11 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              data:
-                description: ''
-                type: string
-              data_processing_consent_provided:
-                description: ''
-                type: boolean
-            type: object
+            $ref: '#/definitions/user_site_data_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/user_site_data'
       tags:
         - user_data
