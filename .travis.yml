@@ -18,7 +18,7 @@ install:
 script: tox
 
 after_success:
-  - export REPO=dockerhubowner/core-access-control
+  - export REPO=dockerhubowner/core-user-data-store
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN ; fi`
   - docker build -t $REPO:$TAG .
 
