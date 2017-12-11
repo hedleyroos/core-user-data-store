@@ -288,6 +288,8 @@ paths:
           required: false
           type: string
           format: uuid
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -308,6 +310,10 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/admin_note'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -344,6 +350,8 @@ paths:
         - user_data
     get:
       operationId: adminnote_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -362,6 +370,10 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/admin_note_update'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -378,6 +390,8 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_limit'
         - $ref: '#/parameters/optional_offset'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -396,6 +410,10 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/country'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -416,6 +434,8 @@ paths:
         - user_data
     get:
       operationId: country_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -432,6 +452,10 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/country_update'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -446,6 +470,8 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -464,6 +490,10 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/site_data_schema'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -484,6 +514,8 @@ paths:
         - user_data
     get:
       operationId: sitedataschema_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -492,14 +524,16 @@ paths:
       tags:
         - user_data
     put:
-      consumes:
-        - application/json
       operationId: sitedataschema_update
       parameters:
         - in: body
           name: data
           schema:
             $ref: '#/definitions/site_data_schema_update'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -514,6 +548,8 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -524,14 +560,16 @@ paths:
       tags:
         - user_data
     post:
-      consumes:
-        - application/json
       operationId: userdata_create
       parameters:
         - in: body
           name: data
           schema:
             $ref: '#/definitions/user_data'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -552,6 +590,8 @@ paths:
         - user_data
     get:
       operationId: userdata_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -560,14 +600,16 @@ paths:
       tags:
         - user_data
     put:
-      consumes:
-        - application/json
       operationId: userdata_update
       parameters:
         - in: body
           name: data
           schema:
             $ref: '#/definitions/user_data_update'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -584,6 +626,8 @@ paths:
         - $ref: '#/parameters/optional_limit'
         - $ref: '#/parameters/optional_user_filter'
         - $ref: '#/parameters/optional_site_filter'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -594,14 +638,16 @@ paths:
       tags:
         - user_data
     post:
-      consumes:
-        - application/json
       operationId: usersitedata_create
       parameters:
         - in: body
           name: data
           schema:
             $ref: '#/definitions/user_site_data'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -623,6 +669,8 @@ paths:
         - user_data
     get:
       operationId: usersitedata_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -631,14 +679,16 @@ paths:
       tags:
         - user_data
     put:
-      consumes:
-        - application/json
       operationId: usersitedata_update
       parameters:
         - in: body
           name: data
           schema:
             $ref: '#/definitions/user_site_data_update'
+      consumes:
+        - application/json
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
