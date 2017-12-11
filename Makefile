@@ -62,5 +62,5 @@ prism:
 	curl -L https://github.com/stoplightio/prism/releases/download/v0.6.21/prism_linux_amd64 -o prism
 	chmod +x prism
 
-mock-access-control-api: prism
-	./prism run --mockDynamic --list -s swagger/access_control.yml -p 8010
+mock-user-data-store-api: prism
+	./prism run --mockDynamic --list -s swagger/user_data_store.yml -p 8010
