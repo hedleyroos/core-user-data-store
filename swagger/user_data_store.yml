@@ -634,7 +634,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/user_data'
+              $ref: '#/definitions/user_site_data'
       tags:
         - user_data
     post:
