@@ -115,7 +115,7 @@ definitions:
     properties:
       note:
         type: string
-    minItems: 1
+    minProperties: 1
 
   country:
     type: object
@@ -147,7 +147,7 @@ definitions:
       name:
         type: string
         maxLength: 256
-    minItems: 1
+    minProperties: 1
 
   site_data_schema:
     type: object
@@ -175,7 +175,7 @@ definitions:
     properties:
       schema:
         type: object
-    minItems: 1
+    minProperties: 1
 
   user_data:
     type: object
@@ -235,7 +235,7 @@ definitions:
       country_code:
         type: string
         maxLength: 2
-    minItems: 1
+    minProperties: 1
 
   user_site_data:
     type: object
@@ -272,7 +272,7 @@ definitions:
         type: boolean
       data:
         type: object
-    minItems: 1
+    minProperties: 1
 
 paths:
   /adminnotes/:
