@@ -66,4 +66,4 @@ mock-user-data-store-api: prism
 	./prism run --mockDynamic --list -s swagger/user_data_store.yml -p 8010
 
 validate-swagger: prism
-	./prism validate -s swagger/user_data_store.yml && echo "The Swagger spec contains no errors"
+	@./prism validate -s swagger/user_data_store.yml && echo "The Swagger spec contains no errors"
