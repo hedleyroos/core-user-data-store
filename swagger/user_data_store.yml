@@ -177,66 +177,6 @@ definitions:
         type: object
     minProperties: 1
 
-  user_data:
-    type: object
-    properties:
-      user_id:
-        type: string
-        format: uuid
-      email_verified:
-        type: boolean
-      msisdn_verified:
-        type: boolean
-      msisdn:
-        type: string
-        maxLength: 15
-      gender:
-        type: string
-      birth_date:
-        type: string
-        format: date
-      avatar:
-        type: string
-        format: uri
-      country_code:
-        type: string
-        maxLength: 2
-      created_at:
-        type: string
-        format: date-time
-        readOnly: true
-      updated_at:
-        type: string
-        format: date-time
-        readOnly: true
-    required:
-      - user_id
-      - created_at
-      - updated_at
-
-  user_data_update:
-    type: object
-    properties:
-      email_verified:
-        type: boolean
-      msisdn_verified:
-        type: boolean
-      msisdn:
-        type: string
-        maxLength: 15
-      gender:
-        type: string
-      birth_date:
-        type: string
-        format: date
-      avatar:
-        type: string
-        format: uri
-      country_code:
-        type: string
-        maxLength: 2
-    minProperties: 1
-
   user_site_data:
     type: object
     properties:
@@ -310,8 +250,6 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/admin_note'
-      consumes:
-        - application/json
       produces:
         - application/json
       responses:
@@ -370,8 +308,6 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/admin_note_update'
-      consumes:
-        - application/json
       produces:
         - application/json
       responses:
@@ -410,8 +346,6 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/country'
-      consumes:
-        - application/json
       produces:
         - application/json
       responses:
@@ -452,8 +386,6 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/country_update'
-      consumes:
-        - application/json
       produces:
         - application/json
       responses:
@@ -490,8 +422,6 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/site_data_schema'
-      consumes:
-        - application/json
       produces:
         - application/json
       responses:
@@ -539,82 +469,6 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/site_data_schema'
-      tags:
-        - user_data
-
-  /userdata/:
-    get:
-      operationId: userdata_list
-      parameters:
-        - $ref: '#/parameters/optional_offset'
-        - $ref: '#/parameters/optional_limit'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/user_data'
-      tags:
-        - user_data
-    post:
-      operationId: userdata_create
-      parameters:
-        - in: body
-          name: data
-          schema:
-            $ref: '#/definitions/user_data'
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/user_data'
-      tags:
-        - user_data
-
-  /userdata/{user_id}/:
-    parameters:
-      - $ref: '#/parameters/user_id'
-    delete:
-      operationId: userdata_delete
-      responses:
-        '204':
-          description: ''
-      tags:
-        - user_data
-    get:
-      operationId: userdata_read
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/user_data'
-      tags:
-        - user_data
-    put:
-      operationId: userdata_update
-      parameters:
-        - in: body
-          name: data
-          schema:
-            $ref: '#/definitions/user_data_update'
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/user_data'
       tags:
         - user_data
 
