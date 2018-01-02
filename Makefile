@@ -78,8 +78,11 @@ swagger-codegen-cli-$(CODEGEN_VERSION).jar: wget https://oss.sonatype.org/conten
 # Generate the client code to interface with the User Data Store
 user-data-store-client: swagger-codegen-cli-$(CODEGEN_VERSION).jar
     echo "Generating the client for the User Data Store API..."
-    $(CODEGEN) -l python -i ../core-user-data-store/swagger/user_data_store.yml -o /tmp/$(USER_DATA_STORE_CLIENT_DIR)
+    $(CODEGEN) -l python -i swagger/user_data_store.yml -o /tmp/$(USER_DATA_STORE_CLIENT_DIR)
     cp -r /tmp/$(USER_DATA_STORE_CLIENT_DIR)/swagger_client* $(USER_DATA_STORE_CLIENT_DIR)
+
+user-data-store-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
+    $(CODEGEN) -i swagger/user_data_store.yml -l python-flask -o .
 
 $(FLAKE8): $(VENV)
 	$(PIP) install flake8
