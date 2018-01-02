@@ -2,6 +2,9 @@ VENV=./ve
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
 FLAKE8=$(VENV)/bin/flake8
+CODEGEN_VERSION=2.2.3
+CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
+USER_DATA_STORE_CLIENT_DIR=user_data_store
 
 # Colours.
 CLEAR=\033[0m
@@ -69,6 +72,14 @@ mock-user-data-store-api: prism
 
 validate-swagger: prism
 	@./prism validate -s swagger/user_data_store.yml && echo "The Swagger spec contains no errors"
+
+swagger-codegen-cli-$(CODEGEN_VERSION).jar: wget https://oss.sonatype.org/content/repositories/releases/io/swagger/swagger-codegen-cli/$(CODEGEN_VERSION)/swagger-codegen-cli-$(CODEGEN_VERSION).jar
+
+# Generate the client code to interface with the User Data Store
+user-data-store-client: swagger-codegen-cli-$(CODEGEN_VERSION).jar
+    echo "Generating the client for the User Data Store API..."
+    $(CODEGEN) -l python -i ../core-user-data-store/swagger/user_data_store.yml -o /tmp/$(USER_DATA_STORE_CLIENT_DIR)
+    cp -r /tmp/$(USER_DATA_STORE_CLIENT_DIR)/swagger_client* $(USER_DATA_STORE_CLIENT_DIR)
 
 $(FLAKE8): $(VENV)
 	$(PIP) install flake8
