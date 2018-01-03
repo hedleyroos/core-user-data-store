@@ -4,7 +4,7 @@ PIP=$(VENV)/bin/pip
 FLAKE8=$(VENV)/bin/flake8
 CODEGEN_VERSION=2.2.3
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
-USER_DATA_STORE_CLIENT_DIR=user_data_store
+USER_DATA_STORE_CLIENT_DIR=user_data_store_client
 
 # Colours.
 CLEAR=\033[0m
@@ -87,7 +87,7 @@ user-data-store-client: swagger-codegen-cli-$(CODEGEN_VERSION).jar
 	@echo "$(CYAN)Generating the client for the User Data Store API...$(CLEAR)"
 	$(CODEGEN) -l python -i swagger/user_data_store.yml -o /tmp/$(USER_DATA_STORE_CLIENT_DIR)
 	cp -r /tmp/$(USER_DATA_STORE_CLIENT_DIR)/swagger_client* $(USER_DATA_STORE_CLIENT_DIR)
-	rm -rf /tmp/
+	rm -rf /tmp/$(USER_DATA_STORE_CLIENT_DIR)
 
 # Generate the flask server code for the User Data Store
 user-data-store-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
