@@ -2,6 +2,9 @@ VENV=./ve
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
 FLAKE8=$(VENV)/bin/flake8
+CODEGEN_VERSION=2.2.3
+CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
+USER_DATA_STORE_CLIENT_DIR=user_data_store_client
 
 # Colours.
 CLEAR=\033[0m
@@ -17,6 +20,12 @@ help:
 	@echo "    $(CYAN)build-virtualenv$(CLEAR): Creates virtualenv directory, 've/', in project root."
 	@echo "    $(CYAN)clean-virtualenv$(CLEAR): Deletes 've/' directory in project root."
 	@echo "    $(CYAN)docs-build$(CLEAR): Build documents and place html output in docs root."
+	@echo "    $(CYAN)mock-user-data-store-api$(CLEAR): Starts Prism mock server for the User Data Store API."
+	@echo "    $(CYAN)validate-swagger$(CLEAR): Check Swagger spec for errors."
+	@echo "    $(CYAN)user-data-store-client$(CLEAR): Generate a client for the User Data Store API."
+	@echo "    $(CYAN)user-data-store-api$(CLEAN): Generate a Flask server for the User Data Store API."
+
+
 
 $(VENV):
 	@echo "$(CYAN)Initialise base ve...$(CLEAR)"
@@ -69,6 +78,21 @@ mock-user-data-store-api: prism
 
 validate-swagger: prism
 	@./prism validate -s swagger/user_data_store.yml && echo "The Swagger spec contains no errors"
+
+swagger-codegen-cli-$(CODEGEN_VERSION).jar:
+	wget https://oss.sonatype.org/content/repositories/releases/io/swagger/swagger-codegen-cli/$(CODEGEN_VERSION)/swagger-codegen-cli-$(CODEGEN_VERSION).jar
+
+# Generate the client code to interface with the User Data Store
+user-data-store-client: swagger-codegen-cli-$(CODEGEN_VERSION).jar
+	@echo "$(CYAN)Generating the client for the User Data Store API...$(CLEAR)"
+	$(CODEGEN) -l python -i swagger/user_data_store.yml -o /tmp/$(USER_DATA_STORE_CLIENT_DIR)
+	cp -r /tmp/$(USER_DATA_STORE_CLIENT_DIR)/swagger_client* $(USER_DATA_STORE_CLIENT_DIR)
+	rm -rf /tmp/$(USER_DATA_STORE_CLIENT_DIR)
+
+# Generate the flask server code for the User Data Store
+user-data-store-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
+	@echo "$(CYAN)Generating flask server for the User Data Store API...$(CLEAR)"
+	$(CODEGEN) -i swagger/user_data_store.yml -l python-flask -o .
 
 $(FLAKE8): $(VENV)
 	$(PIP) install flake8
