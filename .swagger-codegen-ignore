@@ -4,3 +4,4 @@ Dockerfile
 setup.py
 tox.ini
 .travis.yml
+requirements.txt
