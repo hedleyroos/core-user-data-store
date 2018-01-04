@@ -1,13 +1,12 @@
 FROM praekeltfoundation/python-base:3.6-stretch
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /app/
 
-COPY requirements.txt /usr/src/app/
+COPY requirements.txt /app/requirements/
 
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r /app/requirements/requirements.txt
 
-COPY . /usr/src/app
+COPY . /app/
 
 EXPOSE 8080
 
