@@ -99,3 +99,7 @@ $(FLAKE8): $(VENV)
 
 check: $(FLAKE8)
 	$(FLAKE8)
+
+create-tables:
+	@echo "$(CYAN)Creating tables$(CLEAR)"
+	$(PYTHON) models.py
