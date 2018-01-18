@@ -1,3 +1,4 @@
+import psycopg2
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
@@ -30,3 +31,8 @@ class AdminNote(db.Model):
     created_at = db.Column(db.DateTime, primary_key=True)
     note = db.Column(db.Text)
     updated_at = db.Column(db.DateTime)
+
+# Create tables when executed
+print("Creating tables...")
+db.create_all()
+db.session.commit()
