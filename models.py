@@ -15,7 +15,6 @@ class SiteDataSchema(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(
         db.DateTime, default=datetime.now, onupdate=datetime.now)
-    db.ForeignKeyConstraint(["site_id"], ["site.id"])
 
 class UserSiteData(db.Model):
     __tablename__ = "usersitedata"
@@ -27,7 +26,6 @@ class UserSiteData(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(
         db.DateTime, default=datetime.now, onupdate=datetime.now)
-    db.ForeignKeyConstraint(["user_id", "site_id"], ["user.id", "site.id"])
 
 
 class AdminNote(db.Model):
@@ -38,7 +36,6 @@ class AdminNote(db.Model):
     note = db.Column(db.Text)
     updated_at = db.Column(
         db.DateTime, default=datetime.now, onupdate=datetime.now)
-    db.ForeignKeyConstraint(["user_id", "creator_id"], ["user.id", "user.id"])
 
 # Create tables when executed
 print("Creating tables...")
