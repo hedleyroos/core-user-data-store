@@ -1,12 +1,13 @@
 from datetime import datetime
 
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 
 from settings import app
 
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 
 class SiteDataSchema(db.Model):
     __tablename__ = "sitedataschema"
