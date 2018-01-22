@@ -9,6 +9,7 @@ from settings import app
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+
 class SiteDataSchema(db.Model):
     __tablename__ = "sitedataschema"
     site_id = db.Column(db.Integer, primary_key=True)
@@ -16,6 +17,7 @@ class SiteDataSchema(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(
         db.DateTime, default=datetime.now, onupdate=datetime.now)
+
 
 class UserSiteData(db.Model):
     __tablename__ = "usersitedata"
