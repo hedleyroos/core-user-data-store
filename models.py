@@ -37,8 +37,3 @@ class AdminNote(db.Model):
     note = db.Column(db.Text)
     updated_at = db.Column(
         db.DateTime, default=datetime.now, onupdate=datetime.now)
-
-# Create tables when executed
-print("Creating tables...")
-db.create_all()
-db.session.commit()
