@@ -1,12 +1,13 @@
 from datetime import datetime
 
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 
 from settings import app
 
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 
 class SiteDataSchema(db.Model):
     __tablename__ = "sitedataschema"
@@ -36,8 +37,3 @@ class AdminNote(db.Model):
     note = db.Column(db.Text)
     updated_at = db.Column(
         db.DateTime, default=datetime.now, onupdate=datetime.now)
-
-# Create tables when executed
-print("Creating tables...")
-db.create_all()
-db.session.commit()

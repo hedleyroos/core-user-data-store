@@ -2,3 +2,4 @@ connexion == 1.1.9
 python_dateutil == 2.6.0
 setuptools >= 21.0.0
 psycopg2==2.7.3.2
+Flask-Migrate==2.1.1
