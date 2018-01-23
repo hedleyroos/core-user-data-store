@@ -102,6 +102,22 @@ definitions:
       - created_at
       - updated_at
 
+  admin_note_create:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      creator_id:
+        type: string
+        format: uuid
+      note:
+        type: string
+    required:
+      - user_id
+      - creator_id
+      - note
+
   admin_note_update:
     type: object
     properties:
@@ -129,6 +145,17 @@ definitions:
       - schema
       - created_at
       - updated_at
+
+  site_data_schema_create:
+    type: object
+    properties:
+      site_id:
+        type: integer
+      schema:
+        type: object
+    required:
+      - site_id
+      - schema
 
   site_data_schema_update:
     type: object
@@ -164,6 +191,24 @@ definitions:
       - data
       - created_at
       - updated_at
+
+  user_site_data_create:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      data_processing_consent_provided:
+        type: boolean
+      data:
+        type: object
+    required:
+      - user_id
+      - site_id
+      - data_processing_consent_provided
+      - data
 
   user_site_data_update:
     type: object
@@ -209,7 +254,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/admin_note'
+            $ref: '#/definitions/admin_note_create'
       produces:
         - application/json
       responses:
@@ -305,7 +350,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/site_data_schema'
+            $ref: '#/definitions/site_data_schema_create'
       produces:
         - application/json
       responses:
@@ -381,7 +426,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/user_site_data'
+            $ref: '#/definitions/user_site_data_create'
       consumes:
         - application/json
       produces:
