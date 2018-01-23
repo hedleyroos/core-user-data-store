@@ -2,10 +2,13 @@ import connexion
 import six
 
 from swagger_server.models.admin_note import AdminNote  # noqa: E501
+from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E501
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
 from swagger_server.models.site_data_schema import SiteDataSchema  # noqa: E501
+from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate  # noqa: E501
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate  # noqa: E501
 from swagger_server.models.user_site_data import UserSiteData  # noqa: E501
+from swagger_server.models.user_site_data_create import UserSiteDataCreate  # noqa: E501
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
 from swagger_server import util
 
@@ -21,7 +24,7 @@ def adminnote_create(data=None):  # noqa: E501
     :rtype: AdminNote
     """
     if connexion.request.is_json:
-        data = AdminNote.from_dict(connexion.request.get_json())  # noqa: E501
+        data = AdminNoteCreate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -129,7 +132,7 @@ def sitedataschema_create(data=None):  # noqa: E501
     :rtype: SiteDataSchema
     """
     if connexion.request.is_json:
-        data = SiteDataSchema.from_dict(connexion.request.get_json())  # noqa: E501
+        data = SiteDataSchemaCreate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -202,7 +205,7 @@ def usersitedata_create(data=None):  # noqa: E501
     :rtype: UserSiteData
     """
     if connexion.request.is_json:
-        data = UserSiteData.from_dict(connexion.request.get_json())  # noqa: E501
+        data = UserSiteDataCreate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
