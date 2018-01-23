@@ -13,7 +13,7 @@ securityDefinitions:
 security:
   - APIKeyHeader: []
 
-host: 'localhost:8000'
+host: 'localhost:8080'
 
 info:
   description: ''
@@ -61,14 +61,6 @@ parameters:
     name: admin_note_id
     required: true
     type: integer
-  country_code:
-    description: A unique two-character value identifying the country.
-    in: path
-    name: country_code
-    required: true
-    type: string
-    minLength: 2
-    maxLength: 2
   site_id:
     description: A unique integer value identifying the site.
     in: path
@@ -115,38 +107,6 @@ definitions:
     properties:
       note:
         type: string
-    minProperties: 1
-
-  country:
-    type: object
-    properties:
-      code:
-        type: string
-        minLength: 2
-        maxLength: 2
-      name:
-        type: string
-        maxLength: 256
-      created_at:
-        type: string
-        format: 'date-time'
-        readOnly: true
-      updated_at:
-        type: string
-        format: 'date-time'
-        readOnly: true
-    required:
-      - code
-      - name
-      - created_at
-      - updated_at
-
-  country_update:
-    type: object
-    properties:
-      name:
-        type: string
-        maxLength: 256
     minProperties: 1
 
   site_data_schema:
@@ -317,82 +277,6 @@ paths:
             $ref: '#/definitions/admin_note'
         403:
           description: 'Forbidden'
-      tags:
-        - user_data
-
-  /countries/:
-    get:
-      operationId: country_list
-      parameters:
-        - $ref: '#/parameters/optional_limit'
-        - $ref: '#/parameters/optional_offset'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: ''
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/country'
-      tags:
-        - user_data
-    post:
-      consumes:
-        - application/json
-      operationId: country_create
-      parameters:
-        - in: body
-          name: data
-          schema:
-            $ref: '#/definitions/country'
-      produces:
-        - application/json
-      responses:
-        '201':
-          description: ''
-          schema:
-            $ref: '#/definitions/country'
-      tags:
-        - user_data
-
-  /countries/{country_code}/:
-    parameters:
-      - $ref: '#/parameters/country_code'
-    delete:
-      operationId: country_delete
-      responses:
-        '204':
-          description: ''
-      tags:
-        - user_data
-    get:
-      operationId: country_read
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/country'
-      tags:
-        - user_data
-    put:
-      consumes:
-        - application/json
-      operationId: country_update
-      parameters:
-        - in: body
-          name: data
-          schema:
-            $ref: '#/definitions/country_update'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: ''
-          schema:
-            $ref: '#/definitions/country'
       tags:
         - user_data
 
