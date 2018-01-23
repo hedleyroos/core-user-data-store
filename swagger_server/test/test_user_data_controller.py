@@ -2,6 +2,9 @@
 
 from __future__ import absolute_import
 
+from datetime import datetime
+
+from swagger_server.controllers import user_data_controller
 from swagger_server.models.admin_note import AdminNote
 from swagger_server.models.admin_note_update import AdminNoteUpdate
 from swagger_server.models.country import Country
@@ -10,6 +13,7 @@ from swagger_server.models.site_data_schema import SiteDataSchema
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate
 from swagger_server.models.user_site_data import UserSiteData
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate
+from swagger_server.util import serialize_date
 from . import BaseTestCase
 from six import BytesIO
 from flask import json
@@ -22,20 +26,28 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for adminnote_create
 
-        
+
         """
-        data = AdminNote()
-        response = self.client.open('/api/v1/adminnotes/',
-                                    method='POST',
-                                    data=json.dumps(data),
-                                    content_type='application/json')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        data = AdminNote(
+            created_at=datetime.utcnow(),
+            creator_id="1", note="This is text",
+            updated_at=datetime.utcnow(),
+            user_id="1"
+        )
+
+        user_data_controller.adminnote_create(data)
+
+        # response = self.client.open('/api/v1/adminnotes/',
+        #                             method='POST',
+        #                             data=json.dumps(data),
+        #                             content_type='application/json')
+        # self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
     def test_adminnote_delete(self):
         """
         Test case for adminnote_delete
 
-        
+
         """
         response = self.client.open('/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(user_id='user_id_example', creator_id='creator_id_example', created_at='2013-10-20T19:20:30+01:00'),
                                     method='DELETE')
@@ -45,7 +57,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for adminnote_list
 
-        
+
         """
         query_string = [('offset', 1),
                         ('limit', 100),
@@ -60,7 +72,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for adminnote_read
 
-        
+
         """
         response = self.client.open('/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(user_id='user_id_example', creator_id='creator_id_example', created_at='2013-10-20T19:20:30+01:00'),
                                     method='GET')
@@ -70,7 +82,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for adminnote_update
 
-        
+
         """
         data = AdminNoteUpdate()
         response = self.client.open('/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(user_id='user_id_example', creator_id='creator_id_example', created_at='2013-10-20T19:20:30+01:00'),
@@ -83,7 +95,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for country_create
 
-        
+
         """
         data = Country()
         response = self.client.open('/api/v1/countries/',
@@ -96,7 +108,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for country_delete
 
-        
+
         """
         response = self.client.open('/api/v1/countries/{country_code}/'.format(country_code='country_code_example'),
                                     method='DELETE')
@@ -106,7 +118,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for country_list
 
-        
+
         """
         query_string = [('limit', 100),
                         ('offset', 1)]
@@ -119,7 +131,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for country_read
 
-        
+
         """
         response = self.client.open('/api/v1/countries/{country_code}/'.format(country_code='country_code_example'),
                                     method='GET')
@@ -129,7 +141,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for country_update
 
-        
+
         """
         data = CountryUpdate()
         response = self.client.open('/api/v1/countries/{country_code}/'.format(country_code='country_code_example'),
@@ -142,7 +154,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for sitedataschema_create
 
-        
+
         """
         data = SiteDataSchema()
         response = self.client.open('/api/v1/sitedataschemas/',
@@ -155,7 +167,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for sitedataschema_delete
 
-        
+
         """
         response = self.client.open('/api/v1/sitedataschemas/{site_id}/'.format(site_id=56),
                                     method='DELETE')
@@ -165,7 +177,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for sitedataschema_list
 
-        
+
         """
         query_string = [('offset', 1),
                         ('limit', 100)]
@@ -178,7 +190,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for sitedataschema_read
 
-        
+
         """
         response = self.client.open('/api/v1/sitedataschemas/{site_id}/'.format(site_id=56),
                                     method='GET')
@@ -188,7 +200,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for sitedataschema_update
 
-        
+
         """
         data = SiteDataSchemaUpdate()
         response = self.client.open('/api/v1/sitedataschemas/{site_id}/'.format(site_id=56),
@@ -201,7 +213,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for usersitedata_create
 
-        
+
         """
         data = UserSiteData()
         response = self.client.open('/api/v1/usersitedata/',
@@ -214,7 +226,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for usersitedata_delete
 
-        
+
         """
         response = self.client.open('/api/v1/usersitedata/{user_id}/{site_id}/'.format(user_id='user_id_example', site_id=56),
                                     method='DELETE')
@@ -224,7 +236,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for usersitedata_list
 
-        
+
         """
         query_string = [('offset', 1),
                         ('limit', 100),
@@ -239,7 +251,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for usersitedata_read
 
-        
+
         """
         response = self.client.open('/api/v1/usersitedata/{user_id}/{site_id}/'.format(user_id='user_id_example', site_id=56),
                                     method='GET')
@@ -249,7 +261,7 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for usersitedata_update
 
-        
+
         """
         data = UserSiteDataUpdate()
         response = self.client.open('/api/v1/usersitedata/{user_id}/{site_id}/'.format(user_id='user_id_example', site_id=56),
