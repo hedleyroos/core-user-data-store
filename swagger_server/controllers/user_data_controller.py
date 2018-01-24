@@ -14,9 +14,9 @@ from swagger_server.models.user_site_data_create import UserSiteDataCreate  # no
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
 from swagger_server import util
 
-from models import AdminNote as SQLA_AdminNote
+from user_data_store.models import AdminNote as SQLA_AdminNote
 
-from site_config import app
+from user_data_store.site_config import app
 
 db = SQLAlchemy(app)
 

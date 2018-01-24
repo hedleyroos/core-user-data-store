@@ -14,8 +14,10 @@ def main():
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('swagger.yaml', arguments={'title': 'User Data API'})
     app.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URI",
-                                                                "postgresql+psycopg2://postgres@127.0.0.1:5432/user_data_store")
+    app.app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+        "DB_URI",
+        "postgresql+psycopg2://user_data_store:password@127.0.0.1:5432/user_data_store"
+    )
     DB.init_app(app.app)
     app.run(port=8080)
 
