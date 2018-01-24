@@ -1,5 +1,7 @@
 import connexion
 import six
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 from swagger_server.models.admin_note import AdminNote  # noqa: E501
 from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E501
@@ -12,20 +14,28 @@ from swagger_server.models.user_site_data_create import UserSiteDataCreate  # no
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
 from swagger_server import util
 
+from user_data_store.models import AdminNote as SQLA_AdminNote
 
-def adminnote_create(data=None):  # noqa: E501
+from user_data_store.site_config import app
+
+db = SQLAlchemy(app)
+
+
+def adminnote_create(data=None):
     """adminnote_create
-
-     # noqa: E501
-
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: AdminNote
     """
     if connexion.request.is_json:
-        data = AdminNoteCreate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        data = connexion.request.get_json()
+
+    note = SQLA_AdminNote
+    db.session.add(note(**data))
+    db.session.commit()
+
+    return note
 
 
 def adminnote_delete(user_id, creator_id, created_at):  # noqa: E501
@@ -42,11 +52,6 @@ def adminnote_delete(user_id, creator_id, created_at):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        creator_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    created_at = util.deserialize_datetime(created_at)
     return 'do some magic!'
 
 
@@ -66,10 +71,6 @@ def adminnote_list(offset=None, limit=None, user_id=None, creator_id=None):  # n
 
     :rtype: List[AdminNote]
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        creator_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -87,11 +88,6 @@ def adminnote_read(user_id, creator_id, created_at):  # noqa: E501
 
     :rtype: AdminNote
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        creator_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    created_at = util.deserialize_datetime(created_at)
     return 'do some magic!'
 
 
@@ -106,18 +102,11 @@ def adminnote_update(user_id, creator_id, created_at, data=None):  # noqa: E501
     :type creator_id: dict | bytes
     :param created_at: The created_at value
     :type created_at: str
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: AdminNote
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        creator_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    created_at = util.deserialize_datetime(created_at)
-    if connexion.request.is_json:
-        data = AdminNoteUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -126,7 +115,7 @@ def sitedataschema_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: SiteDataSchema
@@ -184,7 +173,7 @@ def sitedataschema_update(site_id, data=None):  # noqa: E501
 
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: SiteDataSchema
@@ -199,7 +188,7 @@ def usersitedata_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: UserSiteData
@@ -221,8 +210,6 @@ def usersitedata_delete(user_id, site_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -242,8 +229,6 @@ def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # n
 
     :rtype: List[UserSiteData]
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -259,8 +244,6 @@ def usersitedata_read(user_id, site_id):  # noqa: E501
 
     :rtype: UserSiteData
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -273,13 +256,9 @@ def usersitedata_update(user_id, site_id, data=None):  # noqa: E501
     :type user_id: dict | bytes
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: UserSiteData
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        data = UserSiteDataUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'

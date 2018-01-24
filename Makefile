@@ -2,9 +2,12 @@ VENV=./ve
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
 FLAKE8=$(VENV)/bin/flake8
+FLASK=$(VENV)/bin/flask
 CODEGEN_VERSION=2.3.1
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
 USER_DATA_STORE_CLIENT_DIR=user_data_store_client
+DB_NAME=user_data_store
+DB_USER=user_data_store
 
 # Colours.
 CLEAR=\033[0m
@@ -100,6 +103,13 @@ $(FLAKE8): $(VENV)
 check: $(FLAKE8)
 	$(FLAKE8)
 
-create-tables:
-	@echo "$(CYAN)Creating tables$(CLEAR)"
-	$(PYTHON) models.py
+database:
+	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
+
+makemigrations: $(VENV)
+	@echo "$(CYAN)Creating migrating...$(CLEAR)"
+	FLASK_APP=user_data_store/models.py $(FLASK) db migrate -d user_data_store/migrations
+
+migrate: $(VENV)
+	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
+	FLASK_APP=user_data_store/models.py $(FLASK) db upgrade -d user_data_store/migrations
