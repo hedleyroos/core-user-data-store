@@ -4,7 +4,7 @@ info:
   description: ""
   version: ""
   title: "User Data API"
-host: "localhost:8000"
+host: "localhost:8080"
 basePath: "/api/v1"
 schemes:
 - "https"
@@ -71,7 +71,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/admin_note"
+          $ref: "#/definitions/admin_note_create"
       responses:
         201:
           description: ""
@@ -183,122 +183,6 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /countries/:
-    get:
-      tags:
-      - "user_data"
-      operationId: "country_list"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "limit"
-        in: "query"
-        description: "An optional query parameter to limit the number of results returned."
-        required: false
-        type: "integer"
-        default: 20
-        maximum: 100
-        minimum: 1
-      - name: "offset"
-        in: "query"
-        description: "An optional query parameter specifying the offset in the result\
-          \ set to start from."
-        required: false
-        type: "integer"
-        default: 0
-        minimum: 0
-      responses:
-        200:
-          description: ""
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/country"
-      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-    post:
-      tags:
-      - "user_data"
-      operationId: "country_create"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "data"
-        required: false
-        schema:
-          $ref: "#/definitions/country"
-      responses:
-        201:
-          description: ""
-          schema:
-            $ref: "#/definitions/country"
-      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /countries/{country_code}/:
-    get:
-      tags:
-      - "user_data"
-      operationId: "country_read"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "country_code"
-        in: "path"
-        description: "A unique two-character value identifying the country."
-        required: true
-        type: "string"
-        maxLength: 2
-        minLength: 2
-      responses:
-        200:
-          description: ""
-          schema:
-            $ref: "#/definitions/country"
-      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-    put:
-      tags:
-      - "user_data"
-      operationId: "country_update"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "country_code"
-        in: "path"
-        description: "A unique two-character value identifying the country."
-        required: true
-        type: "string"
-        maxLength: 2
-        minLength: 2
-      - in: "body"
-        name: "data"
-        required: false
-        schema:
-          $ref: "#/definitions/country_update"
-      responses:
-        200:
-          description: ""
-          schema:
-            $ref: "#/definitions/country"
-      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-    delete:
-      tags:
-      - "user_data"
-      operationId: "country_delete"
-      parameters:
-      - name: "country_code"
-        in: "path"
-        description: "A unique two-character value identifying the country."
-        required: true
-        type: "string"
-        maxLength: 2
-        minLength: 2
-      responses:
-        204:
-          description: ""
-      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
   /sitedataschemas/:
     get:
       tags:
@@ -344,7 +228,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/site_data_schema"
+          $ref: "#/definitions/site_data_schema_create"
       responses:
         201:
           description: ""
@@ -465,7 +349,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/user_site_data"
+          $ref: "#/definitions/user_site_data_create"
       responses:
         201:
           description: ""
@@ -585,45 +469,26 @@ definitions:
       user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       creator_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       created_at: "2000-01-23T04:56:07.000+00:00"
+  admin_note_create:
+    type: "object"
+    required:
+    - "creator_id"
+    - "note"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      creator_id:
+        type: "string"
+        format: "uuid"
+      note:
+        type: "string"
   admin_note_update:
     type: "object"
     properties:
       note:
         type: "string"
-  country:
-    type: "object"
-    required:
-    - "code"
-    - "created_at"
-    - "name"
-    - "updated_at"
-    properties:
-      code:
-        type: "string"
-        minLength: 2
-        maxLength: 2
-      name:
-        type: "string"
-        maxLength: 256
-      created_at:
-        type: "string"
-        format: "date-time"
-        readOnly: true
-      updated_at:
-        type: "string"
-        format: "date-time"
-        readOnly: true
-    example:
-      code: "code"
-      updated_at: "2000-01-23T04:56:07.000+00:00"
-      name: "name"
-      created_at: "2000-01-23T04:56:07.000+00:00"
-  country_update:
-    type: "object"
-    properties:
-      name:
-        type: "string"
-        maxLength: 256
   site_data_schema:
     type: "object"
     required:
@@ -650,6 +515,17 @@ definitions:
       updated_at: "2000-01-23T04:56:07.000+00:00"
       site_id: 0
       created_at: "2000-01-23T04:56:07.000+00:00"
+  site_data_schema_create:
+    type: "object"
+    required:
+    - "schema"
+    - "site_id"
+    properties:
+      site_id:
+        type: "integer"
+      schema:
+        type: "object"
+        properties: {}
   site_data_schema_update:
     type: "object"
     properties:
@@ -691,6 +567,24 @@ definitions:
       data_processing_consent_provided: true
       site_id: 0
       created_at: "2000-01-23T04:56:07.000+00:00"
+  user_site_data_create:
+    type: "object"
+    required:
+    - "data"
+    - "data_processing_consent_provided"
+    - "site_id"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      data_processing_consent_provided:
+        type: "boolean"
+      data:
+        type: "object"
+        properties: {}
   user_site_data_update:
     type: "object"
     properties:
@@ -737,14 +631,6 @@ parameters:
     description: "A unique integer value identifying the admin note."
     required: true
     type: "integer"
-  country_code:
-    name: "country_code"
-    in: "path"
-    description: "A unique two-character value identifying the country."
-    required: true
-    type: "string"
-    maxLength: 2
-    minLength: 2
   site_id:
     name: "site_id"
     in: "path"
