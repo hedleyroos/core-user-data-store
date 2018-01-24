@@ -13,6 +13,7 @@ from swagger_server.models.user_site_data import UserSiteData  # noqa: E501
 from swagger_server.models.user_site_data_create import UserSiteDataCreate  # noqa: E501
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
 from swagger_server import util
+from user_data_store import db_actions
 
 from user_data_store.models import AdminNote as SQLA_AdminNote
 
@@ -31,12 +32,13 @@ def adminnote_create(data=None):
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
-    note = SQLA_AdminNote
-    db.session.add(note(**data))
-    db.session.commit()
+    note = AdminNote(**db_actions.crud(
+        model="AdminNote",
+        action="create",
+        data=data,
+    ))
 
     return note
-
 
 def adminnote_delete(user_id, creator_id, created_at):  # noqa: E501
     """adminnote_delete

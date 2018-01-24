@@ -5,6 +5,8 @@ from __future__ import absolute_import
 import uuid
 from datetime import datetime
 
+import logging
+
 from swagger_server.controllers import user_data_controller
 from swagger_server.models.admin_note import AdminNote
 from swagger_server.models.admin_note_create import AdminNoteCreate
@@ -23,21 +25,28 @@ from flask import json
 class TestUserDataController(BaseTestCase):
     """ UserDataController integration test stubs """
 
+    logging.disable(logging.CRITICAL)
+
+    user_id = uuid.uuid1()
+    creator_id = uuid.uuid1()
+    created_at = None
+
     def test_adminnote_create(self):
         """
         Test case for adminnote_create
 
         """
         data = AdminNoteCreate(**{
-            "creator_id": uuid.uuid1().hex,
+            "creator_id": self.creator_id.hex,
             "note": "This is text",
-            "user_id": uuid.uuid1().hex,
+            "user_id": self.user_id.hex,
         })
-
         response = self.client.open('/api/v1/adminnotes/',
                                     method='POST',
                                     data=json.dumps(data),
                                     content_type='application/json')
+
+        import pdb; pdb.set_trace()
 
         self.assert200(response, "Response body is : " +
                        response.data.decode('utf-8'))
@@ -46,10 +55,14 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for adminnote_delete
 
-
         """
-        response = self.client.open('/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(user_id='user_id_example', creator_id='creator_id_example', created_at='2013-10-20T19:20:30+01:00'),
-                                    method='DELETE')
+        response = self.client.open(
+            '/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(
+                user_id=self.user_id.hex,
+                creator_id=self.creator_id.hex,
+                created_at=self.created_at
+            ), method='DELETE')
+
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
     def test_adminnote_list(self):
