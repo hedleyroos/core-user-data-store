@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 
+import uuid
 from datetime import datetime
 
 from swagger_server.controllers import user_data_controller
@@ -18,6 +19,7 @@ from six import BytesIO
 from flask import json
 
 
+
 class TestUserDataController(BaseTestCase):
     """ UserDataController integration test stubs """
 
@@ -25,18 +27,20 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for adminnote_create
 
-
         """
-        data = AdminNoteCreate(
-            creator_id="1", note="This is text",
-            user_id="1"
-        )
+        data = AdminNoteCreate(**{
+            "creator_id": uuid.uuid1().hex,
+            "note": "This is text",
+            "user_id": uuid.uuid1().hex,
+        })
 
         response = self.client.open('/api/v1/adminnotes/',
                                     method='POST',
                                     data=json.dumps(data),
                                     content_type='application/json')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
+        self.assert200(response, "Response body is : " +
+                       response.data.decode('utf-8'))
 
     def test_adminnote_delete(self):
         """

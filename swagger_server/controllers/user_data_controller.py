@@ -21,18 +21,15 @@ from site_config import app
 db = SQLAlchemy(app)
 
 
-def adminnote_create(data=None):  # noqa: E501
+def adminnote_create(data=None):
     """adminnote_create
-
-     # noqa: E501
-
     :param data:
     :type data: dict | bytes
 
     :rtype: AdminNote
     """
     if connexion.request.is_json:
-        data = connexion.request.get_json() # noqa: E501
+        data = connexion.request.get_json()
 
     note = SQLA_AdminNote
     db.session.add(note(**data))
