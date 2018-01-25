@@ -142,15 +142,43 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for adminnote_update
 
-
         """
-        data = AdminNoteUpdate()
-        response = self.client.open('/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(user_id='user_id_example', creator_id='creator_id_example', created_at='2013-10-20T19:20:30+01:00'),
-                                    method='PUT',
-                                    data=json.dumps(data),
-                                    content_type='application/json')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        data = {
+            "creator_id": "%s" % uuid.uuid1(),
+            "note": "This is text",
+            "user_id": "%s" % uuid.uuid1(),
+        }
+        model = db_actions.crud(
+            model="AdminNote",
+            api_model=AdminNote,
+            data=data,
+            action="create"
+        )
+        data = {
+            "note": "This is updated text",
+        }
 
+        data = AdminNoteUpdate(**data)
+
+        response = self.client.open(
+            '/api/v1/adminnotes/{admin_note_id}/'.format(
+                admin_note_id=model.id),
+            method='PUT',
+            data=json.dumps(data),
+            content_type='application/json')
+        response_data = json.loads(response.data)
+
+        updated_entry = db_actions.crud(
+            model="AdminNote",
+            api_model=AdminNote,
+            action="read",
+            query={"id": model.id}
+        )
+
+        self.assertEqual(response_data["user_id"], updated_entry.user_id)
+        self.assertEqual(
+            response_data["creator_id"], updated_entry.creator_id)
+        self.assertEqual(response_data["note"], updated_entry.note)
 
     def test_sitedataschema_create(self):
         """

@@ -126,7 +126,13 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
 
     :rtype: AdminNote
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="AdminNote",
+        api_model=AdminNote,
+        action="update",
+        data=data,
+        query={"id": admin_note_id},
+    )
 
 
 def sitedataschema_create(data=None):  # noqa: E501

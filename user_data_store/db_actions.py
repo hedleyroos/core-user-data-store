@@ -38,9 +38,9 @@ def read_entry(model, **kwargs):
     return instance
 
 
-def update_entry(model, **kwargs):
-    instance = model.query.get(**kwargs["query"])
-    for key, value in kwargs["data"]:
+def update_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
+    instance = model.query.filter_by(**kwargs["query"]).first_or_404()
+    for key, value in kwargs["data"].items():
         setattr(instance, key, value)
     db.session.commit()
     return instance
