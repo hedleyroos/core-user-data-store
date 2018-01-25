@@ -15,9 +15,11 @@ class AdminNote(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, user_id: str=None, creator_id: str=None, note: str=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
+    def __init__(self, id: int=None, user_id: str=None, creator_id: str=None, note: str=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
         """AdminNote - a model defined in Swagger
 
+        :param id: The id of this AdminNote.  # noqa: E501
+        :type id: int
         :param user_id: The user_id of this AdminNote.  # noqa: E501
         :type user_id: str
         :param creator_id: The creator_id of this AdminNote.  # noqa: E501
@@ -30,6 +32,7 @@ class AdminNote(Model):
         :type updated_at: datetime
         """
         self.swagger_types = {
+            'id': int,
             'user_id': str,
             'creator_id': str,
             'note': str,
@@ -38,6 +41,7 @@ class AdminNote(Model):
         }
 
         self.attribute_map = {
+            'id': 'id',
             'user_id': 'user_id',
             'creator_id': 'creator_id',
             'note': 'note',
@@ -45,6 +49,7 @@ class AdminNote(Model):
             'updated_at': 'updated_at'
         }
 
+        self._id = id
         self._user_id = user_id
         self._creator_id = creator_id
         self._note = note
@@ -61,6 +66,29 @@ class AdminNote(Model):
         :rtype: AdminNote
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def id(self) -> int:
+        """Gets the id of this AdminNote.
+
+
+        :return: The id of this AdminNote.
+        :rtype: int
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id: int):
+        """Sets the id of this AdminNote.
+
+
+        :param id: The id of this AdminNote.
+        :type id: int
+        """
+        if id is None:
+            raise ValueError("Invalid value for `id`, must not be `None`")  # noqa: E501
+
+        self._id = id
 
     @property
     def user_id(self) -> str:

@@ -73,11 +73,6 @@ def deserialize_date(string):
         return string
 
 
-def serialize_date(date):
-    if isinstance(date, datetime.datetime):
-        return date.isoformat()
-
-
 def deserialize_datetime(string):
     """Deserializes string to datetime.
 
