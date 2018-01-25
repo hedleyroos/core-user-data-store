@@ -4,8 +4,12 @@ from __future__ import absolute_import
 
 import random
 import uuid
+from datetime import datetime
+
 import werkzeug
 
+from swagger_server.models import SiteDataSchemaCreate
+from swagger_server.models import UserSiteDataCreate
 from swagger_server.models.admin_note import AdminNote
 from swagger_server.models.admin_note_update import AdminNoteUpdate
 from swagger_server.models.site_data_schema import SiteDataSchema
@@ -30,6 +34,17 @@ class TestUserDataController(BaseTestCase):
             model="AdminNote",
             api_model=AdminNote,
             data=self.adminnote_data,
+            action="create"
+        )
+
+        self.sitedataschema_data = {
+            "site_id": random.randint(2, 2000000),
+            "schema": {"test": "data"}
+        }
+        self.sitedataschema_model = db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            data=self.sitedataschema_data,
             action="create"
         )
 
@@ -109,10 +124,8 @@ class TestUserDataController(BaseTestCase):
                 action="create"
             ))
         query_string = [
-            (
-                'admin_note_ids',
-                ",".join(map(str, [adminnote.id for adminnote in objects]))
-            )
+            ("limit", 2),
+            ("admin_note_ids", ",".join(map(str, [adminnote.id for adminnote in objects])))
         ]
         response = self.client.open(
             '/api/v1/adminnotes/',
@@ -120,7 +133,7 @@ class TestUserDataController(BaseTestCase):
             query_string=query_string)
         response_data = json.loads(response.data)
 
-        self.assertEqual(len(response_data), len(objects))
+        self.assertEqual(len(response_data), 2)
 
     def test_adminnote_read(self):
         """
@@ -184,11 +197,11 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for sitedataschema_create
 
-
         """
-        data = SiteDataSchema(**{
-            "site_id": 1,
-            "schema": object.__dict__
+        data = SiteDataSchemaCreate(**{
+            # TODO: not what I did here
+            "site_id": random.randint(2, 2000000),
+            "schema": {"test": "data"}
         })
         response = self.client.open(
             "/api/v1/sitedataschemas/",
@@ -197,6 +210,7 @@ class TestUserDataController(BaseTestCase):
             content_type="application/json")
 
         response_data = json.loads(response.data)
+
         self.assertEqual(response_data["site_id"], data.site_id)
         self.assertEqual(response_data["schema"], data.schema)
 
@@ -204,11 +218,35 @@ class TestUserDataController(BaseTestCase):
         """
         Test case for sitedataschema_delete
 
-
         """
-        response = self.client.open('/api/v1/sitedataschemas/{site_id}/'.format(site_id=56),
-                                    method='DELETE')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        data = {
+            "site_id": random.randint(2, 2000000),
+            "schema": {"test": "data"}
+        }
+        model = db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            data=data,
+            action="create"
+        )
+
+        response = self.client.open(
+            '/api/v1/sitedataschemas/{site_id}/'.format(
+                site_id=model.site_id
+            ), method='DELETE')
+
+        try:
+            db_actions.crud(
+                model="SiteDataSchema",
+                api_model=SiteDataSchema,
+                action="read",
+                query={
+                    "site_id": model.site_id
+                }
+            )
+            raise Exception
+        except werkzeug.exceptions.NotFound:
+            pass
 
     def test_sitedataschema_list(self):
         """
@@ -216,22 +254,32 @@ class TestUserDataController(BaseTestCase):
 
 
         """
-        query_string = [('offset', 1),
-                        ('limit', 100)]
-        response = self.client.open('/api/v1/sitedataschemas/',
-                                    method='GET',
-                                    query_string=query_string)
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        query_string = [
+            ("limit", 5)
+        ]
+        response = self.client.open(
+            '/api/v1/sitedataschemas/',
+            method='GET',
+            query_string=query_string)
+        response_data = json.loads(response.data)
+
+        self.assertEqual(len(response_data), 5)
 
     def test_sitedataschema_read(self):
         """
         Test case for sitedataschema_read
 
-
         """
-        response = self.client.open('/api/v1/sitedataschemas/{site_id}/'.format(site_id=56),
-                                    method='GET')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        response = self.client.open(
+            '/api/v1/sitedataschemas/{site_id}/'.format(
+                site_id=self.sitedataschema_model.site_id
+            ),
+            method='GET')
+        response_data = json.loads(response.data)
+        self.assertEqual(
+            response_data["site_id"], self.sitedataschema_model.site_id)
+        self.assertEqual(
+            response_data["schema"], self.sitedataschema_model.schema)
 
     def test_sitedataschema_update(self):
         """
@@ -239,12 +287,42 @@ class TestUserDataController(BaseTestCase):
 
 
         """
-        data = SiteDataSchemaUpdate()
-        response = self.client.open('/api/v1/sitedataschemas/{site_id}/'.format(site_id=56),
-                                    method='PUT',
-                                    data=json.dumps(data),
-                                    content_type='application/json')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        data = {
+            "site_id": random.randint(2, 2000000),
+            "schema": {"test": "data"}
+        }
+        model = db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            data=data,
+            action="create"
+        )
+        data = {
+            "schema": {"test": "updated_data"},
+        }
+
+        data = SiteDataSchemaUpdate(**data)
+
+        response = self.client.open(
+            '/api/v1/sitedataschemas/{site_id}/'.format(
+                site_id=model.site_id),
+            method='PUT',
+            data=json.dumps(data),
+            content_type='application/json')
+        response_data = json.loads(response.data)
+
+        updated_entry = db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            action="read",
+            query={"site_id": model.site_id}
+        )
+
+        self.assertEqual(updated_entry.site_id, model.site_id)
+        self.assertEqual(
+            response_data["site_id"], updated_entry.site_id)
+        self.assertEqual(
+            response_data["schema"], updated_entry.schema)
 
     def test_usersitedata_create(self):
         """
@@ -252,6 +330,23 @@ class TestUserDataController(BaseTestCase):
 
 
         """
+        data = UserSiteDataCreate(**{
+            # TODO: not what I did here
+            "site_id": random.randint(2, 2000000),
+            "user_id": uuid.uuid1(),
+            "data": {"test": "data"},
+            "data_processing_consent_at": datetime.utcnow()
+        })
+        response = self.client.open(
+            "/api/v1/usersitedata/",
+            method="POST",
+            data=json.dumps(data),
+            content_type="application/json")
+
+        response_data = json.loads(response.data)
+
+        self.assertEqual(response_data["site_id"], data.site_id)
+        self.assertEqual(response_data["schema"], data.schema)
         data = UserSiteData()
         response = self.client.open('/api/v1/usersitedata/',
                                     method='POST',

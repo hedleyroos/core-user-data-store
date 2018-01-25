@@ -45,7 +45,8 @@ def adminnote_delete(admin_note_id):  # noqa: E501
 
      # noqa: E501
 
-    :param admin_note_id
+    :param admin_note_id: Parameter to filter by id
+    :type admin_note_id: int
 
     :rtype: None
     """
@@ -68,10 +69,8 @@ def adminnote_list(offset=None, limit=None, admin_note_ids=None):  # noqa: E501
     :type offset: int
     :param limit: An optional query parameter to limit the number of results returned.
     :type limit: int
-    :param user_id: An optional query parameter to filter by user_id
-    :type user_id: dict | bytes
-    :param creator_id: An optional query parameter to filter by creator (a user_id)
-    :type creator_id: dict | bytes
+    :param admin_note_ids: An optional list of adminnote ids
+    :type admin_note_ids: List[int]
 
     :rtype: List[AdminNote]
     """
@@ -93,12 +92,8 @@ def adminnote_read(admin_note_id):  # noqa: E501
 
      # noqa: E501
 
-    :param user_id: A UUID value identifying the user.
-    :type user_id: dict | bytes
-    :param creator_id: The creator_id
-    :type creator_id: dict | bytes
-    :param created_at: The created_at value
-    :type created_at: str
+    :param admin_note_id: A unique integer value identifying the adminnote.
+    :type admin_note_id: int
 
     :rtype: AdminNote
     """
@@ -115,12 +110,8 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param user_id: A UUID value identifying the user.
-    :type user_id: dict | bytes
-    :param creator_id: The creator_id
-    :type creator_id: dict | bytes
-    :param created_at: The created_at value
-    :type created_at: str
+    :param admin_note_id: A unique integer value identifying the adminote.
+    :type admin_note_id: int
     :param data:
     :type data: dict | bytes
 
@@ -166,6 +157,14 @@ def sitedataschema_delete(site_id):  # noqa: E501
 
     :rtype: None
     """
+    return db_actions.crud(
+        model="SiteDataSchema",
+        api_model=SiteDataSchema,
+        action="delete",
+        query={
+            "site_id": site_id
+        }
+    )
 
 
 
@@ -181,7 +180,16 @@ def sitedataschema_list(offset=None, limit=None):  # noqa: E501
 
     :rtype: List[SiteDataSchema]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="SiteDataSchema",
+        api_model=SiteDataSchema,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "order_by": ["site_id"]
+        }
+    )
 
 
 def sitedataschema_read(site_id):  # noqa: E501
@@ -194,8 +202,12 @@ def sitedataschema_read(site_id):  # noqa: E501
 
     :rtype: SiteDataSchema
     """
-    return 'do some magic!'
-
+    return db_actions.crud(
+        model="SiteDataSchema",
+        api_model=SiteDataSchema,
+        action="read",
+        query={"site_id": site_id}
+    )
 
 def sitedataschema_update(site_id, data=None):  # noqa: E501
     """sitedataschema_update
@@ -209,9 +221,13 @@ def sitedataschema_update(site_id, data=None):  # noqa: E501
 
     :rtype: SiteDataSchema
     """
-    if connexion.request.is_json:
-        data = SiteDataSchemaUpdate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return db_actions.crud(
+        model="SiteDataSchema",
+        api_model=SiteDataSchema,
+        action="update",
+        data=data,
+        query={"site_id": site_id},
+    )
 
 
 def usersitedata_create(data=None):  # noqa: E501
@@ -225,8 +241,14 @@ def usersitedata_create(data=None):  # noqa: E501
     :rtype: UserSiteData
     """
     if connexion.request.is_json:
-        data = UserSiteDataCreate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="UserSiteData",
+        api_model=UserSiteData,
+        action="create",
+        data=data,
+    )
 
 
 def usersitedata_delete(user_id, site_id):  # noqa: E501
@@ -241,8 +263,15 @@ def usersitedata_delete(user_id, site_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
-
+    return db_actions.crud(
+        model="UserSiteData",
+        api_model=UserSiteData,
+        action="delete",
+        query={
+            "user_id": user_id,
+            "site_id": site_id
+        }
+    )
 
 def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # noqa: E501
     """usersitedata_list
@@ -260,7 +289,17 @@ def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # n
 
     :rtype: List[UserSiteData]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="UserSiteData",
+        api_model=UserSiteData,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "order_by": ["site_id", "user_id"],
+            "ids": [user_id, site_id]
+        }
+    )
 
 
 def usersitedata_read(user_id, site_id):  # noqa: E501
@@ -275,7 +314,15 @@ def usersitedata_read(user_id, site_id):  # noqa: E501
 
     :rtype: UserSiteData
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="UserDataSchema",
+        api_model=UserSiteData,
+        action="read",
+        query={
+            "user_id": user_id,
+            "site_id": site_id
+        }
+    )
 
 
 def usersitedata_update(user_id, site_id, data=None):  # noqa: E501
@@ -292,4 +339,13 @@ def usersitedata_update(user_id, site_id, data=None):  # noqa: E501
 
     :rtype: UserSiteData
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="UserSiteData",
+        api_model=UserSiteData,
+        action="update",
+        data=data,
+        query={
+            "user_id": user_id,
+            "site_id": site_id
+        },
+    )
