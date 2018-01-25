@@ -7,10 +7,10 @@ def datetime_to_string(date):
 
 DB_TO_API_ADMINNOTE_TRANSFORMATION = Transformation(
     mappings=[
-        Mapping(input_field="created_date", conversion=datetime_to_string),
-        Mapping(input_field="updated_date", conversion=datetime_to_string)
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string)
     ],
     copy_fields=[
-        "creator_id", "note", "user_id"
+        "id", "creator_id", "note", "user_id",
     ]
 )

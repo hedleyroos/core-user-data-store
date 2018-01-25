@@ -40,17 +40,12 @@ def adminnote_create(data=None):
     )
 
 
-def adminnote_delete(user_id, creator_id, created_at):  # noqa: E501
+def adminnote_delete(admin_note_id):  # noqa: E501
     """adminnote_delete
 
      # noqa: E501
 
-    :param user_id: A UUID value identifying the user.
-    :type user_id: dict | bytes
-    :param creator_id: The creator_id
-    :type creator_id: dict | bytes
-    :param created_at: The created_at value
-    :type created_at: str
+    :param admin_note_id
 
     :rtype: None
     """
@@ -59,14 +54,12 @@ def adminnote_delete(user_id, creator_id, created_at):  # noqa: E501
         api_model=AdminNote,
         action="delete",
         query={
-            "user_id": user_id,
-            "creator_id": creator_id,
-            "created_at": created_at
+            "id": admin_note_id
         }
     )
 
 
-def adminnote_list(offset=None, limit=None, user_id=None, creator_id=None):  # noqa: E501
+def adminnote_list(offset=None, limit=None, admin_note_ids=None):  # noqa: E501
     """adminnote_list
 
      # noqa: E501
@@ -82,10 +75,20 @@ def adminnote_list(offset=None, limit=None, user_id=None, creator_id=None):  # n
 
     :rtype: List[AdminNote]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="AdminNote",
+        api_model=AdminNote,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": admin_note_ids,
+            "order_by": ["id"]
+        }
+    )
 
 
-def adminnote_read(user_id, creator_id, created_at):  # noqa: E501
+def adminnote_read(admin_note_id):  # noqa: E501
     """adminnote_read
 
      # noqa: E501
@@ -99,10 +102,15 @@ def adminnote_read(user_id, creator_id, created_at):  # noqa: E501
 
     :rtype: AdminNote
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="AdminNote",
+        api_model=AdminNote,
+        action="read",
+        query={"id": admin_note_id}
+)
 
 
-def adminnote_update(user_id, creator_id, created_at, data=None):  # noqa: E501
+def adminnote_update(admin_note_id, data=None):  # noqa: E501
     """adminnote_update
 
      # noqa: E501

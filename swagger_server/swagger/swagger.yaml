@@ -80,7 +80,7 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /adminnotes/{user_id}/{creator_id}/{created_at}/:
+  /adminnotes/{admin_note_id}/:
     get:
       tags:
       - "user_data"
@@ -88,24 +88,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "user_id"
+      - name: "admin_note_id"
         in: "path"
-        description: "A UUID value identifying the user."
+        description: "A unique integer value identifying the admin note."
         required: true
-        type: "string"
-        format: "uuid"
-      - name: "creator_id"
-        in: "path"
-        description: "The creator_id"
-        required: true
-        type: "string"
-        format: "uuid"
-      - name: "created_at"
-        in: "path"
-        description: "The created_at value"
-        required: true
-        type: "string"
-        format: "date-time"
+        type: "integer"
       responses:
         200:
           description: ""
@@ -123,24 +110,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - name: "user_id"
+      - name: "admin_note_id"
         in: "path"
-        description: "A UUID value identifying the user."
+        description: "A unique integer value identifying the admin note."
         required: true
-        type: "string"
-        format: "uuid"
-      - name: "creator_id"
-        in: "path"
-        description: "The creator_id"
-        required: true
-        type: "string"
-        format: "uuid"
-      - name: "created_at"
-        in: "path"
-        description: "The created_at value"
-        required: true
-        type: "string"
-        format: "date-time"
+        type: "integer"
       - in: "body"
         name: "data"
         required: false
@@ -159,24 +133,11 @@ paths:
       - "user_data"
       operationId: "adminnote_delete"
       parameters:
-      - name: "user_id"
+      - name: "admin_note_id"
         in: "path"
-        description: "A UUID value identifying the user."
+        description: "A unique integer value identifying the admin note."
         required: true
-        type: "string"
-        format: "uuid"
-      - name: "creator_id"
-        in: "path"
-        description: "The creator_id"
-        required: true
-        type: "string"
-        format: "uuid"
-      - name: "created_at"
-        in: "path"
-        description: "The created_at value"
-        required: true
-        type: "string"
-        format: "date-time"
+        type: "integer"
       responses:
         204:
           description: "Deleted"
@@ -443,10 +404,14 @@ definitions:
     required:
     - "created_at"
     - "creator_id"
+    - "id"
     - "note"
     - "updated_at"
     - "user_id"
     properties:
+      id:
+        type: "integer"
+        readOnly: true
       user_id:
         type: "string"
         format: "uuid"
@@ -469,6 +434,7 @@ definitions:
       user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       creator_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
   admin_note_create:
     type: "object"
     required:

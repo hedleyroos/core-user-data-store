@@ -64,20 +64,16 @@ class TestUserDataController(BaseTestCase):
             "note": "This is text",
             "user_id": "%s" % uuid.uuid1(),
         }
-        create_response = self.client.open(
-            "/api/v1/adminnotes/",
-            method="POST",
-            data=json.dumps(data),
-            content_type="application/json")
-
-        create_response_data = json.loads(create_response.data)
-        import pdb; pdb.set_trace()
+        model = db_actions.crud(
+            model="AdminNote",
+            api_model=AdminNote,
+            data=data,
+            action="create"
+        )
 
         response = self.client.open(
-            '/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(
-                user_id=create_response_data["user_id"],
-                creator_id=create_response_data["creator_id"],
-                created_at=create_response_data["created_at"]
+            '/api/v1/adminnotes/{id}/'.format(
+                id=model.id
             ), method='DELETE')
 
         try:
@@ -86,9 +82,7 @@ class TestUserDataController(BaseTestCase):
                 api_model=AdminNote,
                 action="read",
                 query={
-                    "user_id": create_response_data["user_id"],
-                    "creator_id": create_response_data["creator_id"],
-                    "created_at": create_response_data["created_at"]
+                    "id": model.id
                 }
             )
             raise Exception
@@ -116,18 +110,8 @@ class TestUserDataController(BaseTestCase):
             ))
         query_string = [
             (
-                'adminnote_user_ids',
-                ",".join(map(str, [adminnote.user_id for adminnote in objects]))
-            ),
-            (
-                'adminnote_creator_ids',
-                ",".join(map(
-                    str, [adminnote.creator_id for adminnote in objects]))
-            ),
-            (
-                "adminnote_created_ats",
-                ",".join(map(
-                    str, [adminnote.created_at for adminnote in objects]))
+                'admin_note_ids',
+                ",".join(map(str, [adminnote.id for adminnote in objects]))
             )
         ]
         response = self.client.open(
@@ -144,18 +128,15 @@ class TestUserDataController(BaseTestCase):
 
         """
         response = self.client.open(
-            '/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(
-                user_id=self.adminnote_model.user_id,
-                creator_id=self.adminnote_model.creator_id,
-                created_at=self.adminnote_model.created_at
+            '/api/v1/adminnotes/{admin_note_id}/'.format(
+                admin_note_id=self.adminnote_model.id
             ),
             method='GET')
         response_data = json.loads(response.data)
         self.assertEqual(response_data["user_id"], self.adminnote_model.user_id)
         self.assertEqual(
             response_data["creator_id"], self.adminnote_model.creator_id)
-        self.assertEqual(
-            response_data["created_at"], self.adminnote_model.created_at)
+        self.assertEqual(response_data["note"], self.adminnote_model.note)
 
     def test_adminnote_update(self):
         """

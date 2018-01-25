@@ -1,17 +1,28 @@
+import typing
+
 from user_data_store import mappings
 from user_data_store import models
+from user_data_store import settings
 from user_data_store.models import db
 
 
-def crud(model,api_model, action, data=None, query=None):
+ApiModel = typing.TypeVar("ApiModel")
+SqlAlchemyModel = typing.TypeVar("SqlAlchemyModel")
+
+def crud(
+        model: SqlAlchemyModel,
+        api_model: ApiModel,
+        action: str,
+        data: dict = None,
+        query: dict = None) -> typing.Union[ApiModel, typing.List[ApiModel]]:
     model = getattr(models, model)
-    return serializer(
+    return transform(
         globals()["%s_entry" % action](
             model=model,
             **{"data": data, "query": query}
         ),
         api_model=api_model
-    )
+)
 
 
 def create_entry(model, **kwargs):
@@ -45,25 +56,35 @@ def list_entry(model, **kwargs):
     query = model.query
     if kwargs["query"].get("ids"):
         query = query.filter(model.id.in_(kwargs["query"].get("ids")))
+
+    # Append order by
+    # NOTE: order_by(SqlAlchemyModel.column, SqlAlchemyModel.column ...) is
+    # equal to order_by(SqlAlchemyModel.column).order_by(
+    # SqlAlchemyModel.column)...
+    for column in kwargs["query"]["order_by"]:
+        query = query.order_by(getattr(model, column))
     return query.offset(
-        kwargs["query"].get("offset", None)
+        kwargs["query"].get("offset", 0)
     ).limit(
-        kwargs["query"].get("limit", None)
+        kwargs["query"].get("limit", settings.DEFAULT_API_LIMIT)
     ).all()
 
 
-def serializer(instance, api_model):
+def transform(instance: SqlAlchemyModel, api_model: ApiModel) -> \
+        typing.Union[ApiModel, typing.List[ApiModel]]:
     """
-    Translate model object into a dictionary, to assist with json
-    serialization.
+    Translate model object into a swagger API model instance or a list of
+    swagger API model instances. To assist with json serialization later on in
+    flask.
     :param instance: SQLAlchemy model instance
-    :return: python dict
+    :param api_model: Swagger API model class
+    :return: Swagger API model instance
+    :return: List[Swagger API model instance]
     """
     data = None
     model_name = instance.__class__.__name__ \
         if not isinstance(instance, list) else instance[0].__class__.__name__
-    transformer = getattr(mappings,
-                          "DB_TO_API_%s_TRANSFORMATION" % model_name.upper())
+    transformer = getattr(mappings, "DB_TO_API_%s_TRANSFORMATION" % model_name.upper())
 
     # TODO look at instance.__dict__ later, seems to not always provide the
     # expected dict.
