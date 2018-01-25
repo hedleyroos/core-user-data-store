@@ -44,9 +44,10 @@ class UserSiteData(db.Model):
 
 class AdminNote(db.Model):
     __tablename__ = "adminnote"
-    user_id = db.Column(UUID, primary_key=True)
-    creator_id = db.Column(UUID, primary_key=True)
-    created_at = db.Column(db.DateTime, primary_key=True, default=utcnow())
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(UUID)
+    creator_id = db.Column(UUID)
+    created_at = db.Column(db.DateTime, default=utcnow())
     note = db.Column(db.Text)
     updated_at = db.Column(
         db.DateTime, default=utcnow(), onupdate=utcnow())
