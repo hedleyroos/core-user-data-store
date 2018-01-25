@@ -32,13 +32,13 @@ def adminnote_create(data=None):
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
-    note = AdminNote(**db_actions.crud(
+    return db_actions.crud(
         model="AdminNote",
+        api_model=AdminNote,
         action="create",
         data=data,
-    ))
+    )
 
-    return note
 
 def adminnote_delete(user_id, creator_id, created_at):  # noqa: E501
     """adminnote_delete
@@ -123,8 +123,14 @@ def sitedataschema_create(data=None):  # noqa: E501
     :rtype: SiteDataSchema
     """
     if connexion.request.is_json:
-        data = SiteDataSchemaCreate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="SiteDataSchema",
+        api_model=SiteDataSchema,
+        action="create",
+        data=data,
+    )
 
 
 def sitedataschema_delete(site_id):  # noqa: E501
@@ -137,7 +143,7 @@ def sitedataschema_delete(site_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+
 
 
 def sitedataschema_list(offset=None, limit=None):  # noqa: E501

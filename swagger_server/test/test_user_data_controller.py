@@ -3,11 +3,7 @@
 from __future__ import absolute_import
 
 import uuid
-from datetime import datetime
 
-import logging
-
-from swagger_server.controllers import user_data_controller
 from swagger_server.models.admin_note import AdminNote
 from swagger_server.models.admin_note_create import AdminNoteCreate
 from swagger_server.models.admin_note_update import AdminNoteUpdate
@@ -15,21 +11,12 @@ from swagger_server.models.site_data_schema import SiteDataSchema
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate
 from swagger_server.models.user_site_data import UserSiteData
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate
-from swagger_server.util import serialize_date
 from . import BaseTestCase
-from six import BytesIO
 from flask import json
-
 
 
 class TestUserDataController(BaseTestCase):
     """ UserDataController integration test stubs """
-
-    logging.disable(logging.CRITICAL)
-
-    user_id = uuid.uuid1()
-    creator_id = uuid.uuid1()
-    created_at = None
 
     def test_adminnote_create(self):
         """
@@ -37,19 +24,22 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = AdminNoteCreate(**{
-            "creator_id": self.creator_id.hex,
+            "creator_id": "%s" % uuid.uuid1(),
             "note": "This is text",
-            "user_id": self.user_id.hex,
+            "user_id": "%s" % uuid.uuid1(),
         })
-        response = self.client.open('/api/v1/adminnotes/',
-                                    method='POST',
-                                    data=json.dumps(data),
-                                    content_type='application/json')
+        response = self.client.open(
+            "/api/v1/adminnotes/",
+            method="POST",
+            data=json.dumps(data),
+            content_type="application/json")
 
-        import pdb; pdb.set_trace()
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["creator_id"], data.creator_id)
+        self.assertEqual(response_data["note"], data.note)
+        self.assertEqual(response_data["user_id"], data.user_id)
 
-        self.assert200(response, "Response body is : " +
-                       response.data.decode('utf-8'))
+
 
     def test_adminnote_delete(self):
         """
@@ -110,12 +100,19 @@ class TestUserDataController(BaseTestCase):
 
 
         """
-        data = SiteDataSchema()
-        response = self.client.open('/api/v1/sitedataschemas/',
-                                    method='POST',
-                                    data=json.dumps(data),
-                                    content_type='application/json')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        data = SiteDataSchema(**{
+            "site_id": 1,
+            "schema": object.__dict__
+        })
+        response = self.client.open(
+            "/api/v1/sitedataschemas/",
+            method="POST",
+            data=json.dumps(data),
+            content_type="application/json")
+
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["site_id"], data.site_id)
+        self.assertEqual(response_data["schema"], data.schema)
 
     def test_sitedataschema_delete(self):
         """
