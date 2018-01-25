@@ -54,7 +54,16 @@ def adminnote_delete(user_id, creator_id, created_at):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="AdminNote",
+        api_model=AdminNote,
+        action="delete",
+        query={
+            "user_id": user_id,
+            "creator_id": creator_id,
+            "created_at": created_at
+        }
+    )
 
 
 def adminnote_list(offset=None, limit=None, user_id=None, creator_id=None):  # noqa: E501

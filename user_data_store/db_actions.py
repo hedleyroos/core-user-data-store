@@ -36,8 +36,7 @@ def update_entry(model, **kwargs):
 
 
 def delete_entry(model, **kwargs):
-    # Can not safely without explicit select on id.
-    instance = model.query.get(kwargs["query"]["id"])
+    instance = model.query.filter_by(**kwargs["query"]).first_or_404()
     db.session.delete(instance)
     db.session.commit()
 
@@ -47,7 +46,7 @@ def list_entry(model, **kwargs):
     if kwargs["query"].get("ids"):
         query = query.filter(model.id.in_(kwargs["query"].get("ids")))
     return query.offset(
-        kwargs["query"].get("offet", None)
+        kwargs["query"].get("offset", None)
     ).limit(
         kwargs["query"].get("limit", None)
     ).all()

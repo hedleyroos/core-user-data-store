@@ -2,15 +2,17 @@
 
 from __future__ import absolute_import
 
+import random
 import uuid
+import werkzeug
 
 from swagger_server.models.admin_note import AdminNote
-from swagger_server.models.admin_note_create import AdminNoteCreate
 from swagger_server.models.admin_note_update import AdminNoteUpdate
 from swagger_server.models.site_data_schema import SiteDataSchema
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate
 from swagger_server.models.user_site_data import UserSiteData
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate
+from user_data_store import db_actions
 from . import BaseTestCase
 from flask import json
 
@@ -18,12 +20,25 @@ from flask import json
 class TestUserDataController(BaseTestCase):
     """ UserDataController integration test stubs """
 
+    def setUp(self):
+        self.adminnote_data = {
+            "creator_id": "%s" % uuid.uuid1(),
+            "note": "This is text",
+            "user_id": "%s" % uuid.uuid1(),
+        }
+        self.adminnote_model = db_actions.crud(
+            model="AdminNote",
+            api_model=AdminNote,
+            data=self.adminnote_data,
+            action="create"
+        )
+
     def test_adminnote_create(self):
         """
         Test case for adminnote_create
 
         """
-        data = AdminNoteCreate(**{
+        data = AdminNote(**{
             "creator_id": "%s" % uuid.uuid1(),
             "note": "This is text",
             "user_id": "%s" % uuid.uuid1(),
@@ -39,21 +54,46 @@ class TestUserDataController(BaseTestCase):
         self.assertEqual(response_data["note"], data.note)
         self.assertEqual(response_data["user_id"], data.user_id)
 
-
-
     def test_adminnote_delete(self):
         """
         Test case for adminnote_delete
 
         """
+        data = {
+            "creator_id": "%s" % uuid.uuid1(),
+            "note": "This is text",
+            "user_id": "%s" % uuid.uuid1(),
+        }
+        create_response = self.client.open(
+            "/api/v1/adminnotes/",
+            method="POST",
+            data=json.dumps(data),
+            content_type="application/json")
+
+        create_response_data = json.loads(create_response.data)
+        import pdb; pdb.set_trace()
+
         response = self.client.open(
             '/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(
-                user_id=self.user_id.hex,
-                creator_id=self.creator_id.hex,
-                created_at=self.created_at
+                user_id=create_response_data["user_id"],
+                creator_id=create_response_data["creator_id"],
+                created_at=create_response_data["created_at"]
             ), method='DELETE')
 
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        try:
+            db_actions.crud(
+                model="AdminNote",
+                api_model=AdminNote,
+                action="read",
+                query={
+                    "user_id": create_response_data["user_id"],
+                    "creator_id": create_response_data["creator_id"],
+                    "created_at": create_response_data["created_at"]
+                }
+            )
+            raise Exception
+        except werkzeug.exceptions.NotFound:
+            pass
 
     def test_adminnote_list(self):
         """
@@ -61,24 +101,61 @@ class TestUserDataController(BaseTestCase):
 
 
         """
-        query_string = [('offset', 1),
-                        ('limit', 100),
-                        ('user_id', 'user_id_example'),
-                        ('creator_id', 'creator_id_example')]
-        response = self.client.open('/api/v1/adminnotes/',
-                                    method='GET',
-                                    query_string=query_string)
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        objects = []
+        for index in range(1, random.randint(2, 20)):
+            data = {
+                "user_id": "%s" % uuid.uuid1(),
+                "creator_id": "%s" % uuid.uuid1(),
+                "note": "List notes"
+            }
+            objects.append(db_actions.crud(
+                model="AdminNote",
+                api_model=AdminNote,
+                data=data,
+                action="create"
+            ))
+        query_string = [
+            (
+                'adminnote_user_ids',
+                ",".join(map(str, [adminnote.user_id for adminnote in objects]))
+            ),
+            (
+                'adminnote_creator_ids',
+                ",".join(map(
+                    str, [adminnote.creator_id for adminnote in objects]))
+            ),
+            (
+                "adminnote_created_ats",
+                ",".join(map(
+                    str, [adminnote.created_at for adminnote in objects]))
+            )
+        ]
+        response = self.client.open(
+            '/api/v1/adminnotes/',
+            method='GET',
+            query_string=query_string)
+        response_data = json.loads(response.data)
+
+        self.assertEqual(len(response_data), len(objects))
 
     def test_adminnote_read(self):
         """
         Test case for adminnote_read
 
-
         """
-        response = self.client.open('/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(user_id='user_id_example', creator_id='creator_id_example', created_at='2013-10-20T19:20:30+01:00'),
-                                    method='GET')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        response = self.client.open(
+            '/api/v1/adminnotes/{user_id}/{creator_id}/{created_at}/'.format(
+                user_id=self.adminnote_model.user_id,
+                creator_id=self.adminnote_model.creator_id,
+                created_at=self.adminnote_model.created_at
+            ),
+            method='GET')
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["user_id"], self.adminnote_model.user_id)
+        self.assertEqual(
+            response_data["creator_id"], self.adminnote_model.creator_id)
+        self.assertEqual(
+            response_data["created_at"], self.adminnote_model.created_at)
 
     def test_adminnote_update(self):
         """
