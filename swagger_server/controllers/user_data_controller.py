@@ -17,7 +17,7 @@ from user_data_store import db_actions
 
 from user_data_store.models import AdminNote as SQLA_AdminNote
 
-from user_data_store.site_config import app
+from user_data_store.settings import app
 
 db = SQLAlchemy(app)
 

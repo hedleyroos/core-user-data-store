@@ -1,3 +1,4 @@
+from user_data_store import mappings
 from user_data_store import models
 from user_data_store.models import db
 
@@ -60,17 +61,25 @@ def serializer(instance, api_model):
     :return: python dict
     """
     data = None
+    model_name = instance.__class__.__name__ \
+        if not isinstance(instance, list) else instance[0].__class__.__name__
+    transformer = getattr(mappings,
+                          "DB_TO_API_%s_TRANSFORMATION" % model_name.upper())
+
+    # TODO look at instance.__dict__ later, seems to not always provide the
+    # expected dict.
     if isinstance(instance, list):
         data = []
         for obj in instance:
             obj_data = {}
             for key in obj.__table__.columns.keys():
                 obj_data[key] = getattr(obj, key)
-            data.append(api_model.from_dict(obj_data))
+            data.append(
+                api_model.from_dict(transformer.apply(obj_data))
+            )
     else:
         data = {}
         for key in instance.__table__.columns.keys():
             data[key] = getattr(instance, key)
-        data = api_model(**data)
-
+        data = api_model.from_dict(transformer.apply(data))
     return data

@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import expression
 
-from user_data_store.site_config import app
+from user_data_store.settings import app
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
