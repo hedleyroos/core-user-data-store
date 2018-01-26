@@ -176,10 +176,13 @@ definitions:
         format: uuid
       site_id:
         type: integer
-      data_processing_consent_provided:
-        type: boolean
       data:
         type: object
+      consented_at:
+        type: string
+        format: date
+      blocked:
+        type: boolean
       created_at:
         type: string
         format: date-time
@@ -191,8 +194,9 @@ definitions:
     required:
       - user_id
       - site_id
-      - data_processing_consent_provided
       - data
+      - consented_at
+      - blocked
       - created_at
       - updated_at
 
@@ -204,23 +208,28 @@ definitions:
         format: uuid
       site_id:
         type: integer
-      data_processing_consent_provided:
-        type: boolean
       data:
         type: object
+      consented_at:
+        type: string
+        format: date
+      blocked:
+        type: boolean
     required:
       - user_id
       - site_id
-      - data_processing_consent_provided
       - data
 
   user_site_data_update:
     type: object
     properties:
-      data_processing_consent_provided:
-        type: boolean
       data:
         type: object
+      consented_at:
+        type: string
+        format: date
+      blocked:
+        type: boolean
     minProperties: 1
 
 paths:
