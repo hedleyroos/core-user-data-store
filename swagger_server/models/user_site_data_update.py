@@ -15,26 +15,31 @@ class UserSiteDataUpdate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, data_processing_consent_provided: bool=None, data: object=None):  # noqa: E501
+    def __init__(self, data: object=None, consented_at: date=None, blocked: bool=None):  # noqa: E501
         """UserSiteDataUpdate - a model defined in Swagger
 
-        :param data_processing_consent_provided: The data_processing_consent_provided of this UserSiteDataUpdate.  # noqa: E501
-        :type data_processing_consent_provided: bool
         :param data: The data of this UserSiteDataUpdate.  # noqa: E501
         :type data: object
+        :param consented_at: The consented_at of this UserSiteDataUpdate.  # noqa: E501
+        :type consented_at: date
+        :param blocked: The blocked of this UserSiteDataUpdate.  # noqa: E501
+        :type blocked: bool
         """
         self.swagger_types = {
-            'data_processing_consent_provided': bool,
-            'data': object
+            'data': object,
+            'consented_at': date,
+            'blocked': bool
         }
 
         self.attribute_map = {
-            'data_processing_consent_provided': 'data_processing_consent_provided',
-            'data': 'data'
+            'data': 'data',
+            'consented_at': 'consented_at',
+            'blocked': 'blocked'
         }
 
-        self._data_processing_consent_provided = data_processing_consent_provided
         self._data = data
+        self._consented_at = consented_at
+        self._blocked = blocked
 
     @classmethod
     def from_dict(cls, dikt) -> 'UserSiteDataUpdate':
@@ -46,27 +51,6 @@ class UserSiteDataUpdate(Model):
         :rtype: UserSiteDataUpdate
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def data_processing_consent_provided(self) -> bool:
-        """Gets the data_processing_consent_provided of this UserSiteDataUpdate.
-
-
-        :return: The data_processing_consent_provided of this UserSiteDataUpdate.
-        :rtype: bool
-        """
-        return self._data_processing_consent_provided
-
-    @data_processing_consent_provided.setter
-    def data_processing_consent_provided(self, data_processing_consent_provided: bool):
-        """Sets the data_processing_consent_provided of this UserSiteDataUpdate.
-
-
-        :param data_processing_consent_provided: The data_processing_consent_provided of this UserSiteDataUpdate.
-        :type data_processing_consent_provided: bool
-        """
-
-        self._data_processing_consent_provided = data_processing_consent_provided
 
     @property
     def data(self) -> object:
@@ -88,3 +72,45 @@ class UserSiteDataUpdate(Model):
         """
 
         self._data = data
+
+    @property
+    def consented_at(self) -> date:
+        """Gets the consented_at of this UserSiteDataUpdate.
+
+
+        :return: The consented_at of this UserSiteDataUpdate.
+        :rtype: date
+        """
+        return self._consented_at
+
+    @consented_at.setter
+    def consented_at(self, consented_at: date):
+        """Sets the consented_at of this UserSiteDataUpdate.
+
+
+        :param consented_at: The consented_at of this UserSiteDataUpdate.
+        :type consented_at: date
+        """
+
+        self._consented_at = consented_at
+
+    @property
+    def blocked(self) -> bool:
+        """Gets the blocked of this UserSiteDataUpdate.
+
+
+        :return: The blocked of this UserSiteDataUpdate.
+        :rtype: bool
+        """
+        return self._blocked
+
+    @blocked.setter
+    def blocked(self, blocked: bool):
+        """Sets the blocked of this UserSiteDataUpdate.
+
+
+        :param blocked: The blocked of this UserSiteDataUpdate.
+        :type blocked: bool
+        """
+
+        self._blocked = blocked
