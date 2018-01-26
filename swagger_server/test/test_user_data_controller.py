@@ -48,6 +48,21 @@ class TestUserDataController(BaseTestCase):
             action="create"
         )
 
+        self.usersitedata_data = {
+            # TODO: not what I did here
+            "site_id": random.randint(2, 2000000),
+            "user_id": "%s" % uuid.uuid1(),
+            "data": {"test": "data"},
+            "consented_at": datetime.utcnow(),
+            "blocked": False
+        }
+        self.usersitedata_model = db_actions.crud(
+            model="UserSiteData",
+            api_model=UserSiteData,
+            data=self.usersitedata_data,
+            action="create"
+        )
+
     def test_adminnote_create(self):
         """
         Test case for adminnote_create
@@ -333,9 +348,10 @@ class TestUserDataController(BaseTestCase):
         data = UserSiteDataCreate(**{
             # TODO: not what I did here
             "site_id": random.randint(2, 2000000),
-            "user_id": uuid.uuid1(),
+            "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "data"},
-            "data_processing_consent_at": datetime.utcnow()
+            "consented_at": datetime.utcnow(),
+            "blocked": False
         })
         response = self.client.open(
             "/api/v1/usersitedata/",
@@ -346,23 +362,49 @@ class TestUserDataController(BaseTestCase):
         response_data = json.loads(response.data)
 
         self.assertEqual(response_data["site_id"], data.site_id)
-        self.assertEqual(response_data["schema"], data.schema)
-        data = UserSiteData()
-        response = self.client.open('/api/v1/usersitedata/',
-                                    method='POST',
-                                    data=json.dumps(data),
-                                    content_type='application/json')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        self.assertEqual(response_data["user_id"], data.user_id)
+        self.assertEqual(response_data["data"], data.data)
+        self.assertEqual(response_data["blocked"], data.blocked)
 
     def test_usersitedata_delete(self):
         """
         Test case for usersitedata_delete
 
-
         """
-        response = self.client.open('/api/v1/usersitedata/{user_id}/{site_id}/'.format(user_id='user_id_example', site_id=56),
-                                    method='DELETE')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        data = {
+            # TODO: not what I did here
+            "site_id": random.randint(2, 2000000),
+            "user_id": "%s" % uuid.uuid1(),
+            "data": {"test": "delete this data"},
+            "consented_at": datetime.utcnow(),
+            "blocked": False
+        }
+        model = db_actions.crud(
+            model="UserSiteData",
+            api_model=UserSiteData,
+            data=data,
+            action="create"
+        )
+
+        response = self.client.open(
+            '/api/v1/usersitedata/{user_id}/{site_id}/'.format(
+                user_id=model.user_id,
+                site_id=model.site_id
+            ), method='DELETE')
+
+        try:
+            db_actions.crud(
+                model="UserSiteData",
+                api_model=UserSiteData,
+                action="read",
+                query={
+                    "user_id": model.user_id,
+                    "site_id": model.site_id
+                }
+            )
+            raise Exception
+        except werkzeug.exceptions.NotFound:
+            pass
 
     def test_usersitedata_list(self):
         """
@@ -370,37 +412,84 @@ class TestUserDataController(BaseTestCase):
 
 
         """
-        query_string = [('offset', 1),
-                        ('limit', 100),
-                        ('user_id', 'user_id_example'),
-                        ('site_id', 56)]
-        response = self.client.open('/api/v1/usersitedata/',
-                                    method='GET',
-                                    query_string=query_string)
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        query_string = [
+            ("limit", 5)
+        ]
+        response = self.client.open(
+            '/api/v1/usersitedata/',
+            method='GET',
+            query_string=query_string)
+        response_data = json.loads(response.data)
+
+        self.assertEqual(len(response_data), 5)
 
     def test_usersitedata_read(self):
         """
         Test case for usersitedata_read
 
-
         """
-        response = self.client.open('/api/v1/usersitedata/{user_id}/{site_id}/'.format(user_id='user_id_example', site_id=56),
-                                    method='GET')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        response = self.client.open(
+            '/api/v1/usersitedata/{user_id}/{site_id}/'.format(
+                user_id=self.usersitedata_model.user_id,
+                site_id=self.usersitedata_model.site_id
+            ),
+            method='GET')
+
+        response_data = json.loads(response.data)
+        self.assertEquals(
+            response_data["user_id"], self.usersitedata_model.user_id)
+        self.assertEquals(
+            response_data["site_id"], self.usersitedata_model.site_id)
 
     def test_usersitedata_update(self):
         """
         Test case for usersitedata_update
 
-
         """
-        data = UserSiteDataUpdate()
-        response = self.client.open('/api/v1/usersitedata/{user_id}/{site_id}/'.format(user_id='user_id_example', site_id=56),
-                                    method='PUT',
-                                    data=json.dumps(data),
-                                    content_type='application/json')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        data = {
+            # TODO: not what I did here
+            "site_id": random.randint(2, 2000000),
+            "user_id": "%s" % uuid.uuid1(),
+            "data": {"test": "data"},
+            "consented_at": datetime.utcnow(),
+            "blocked": False
+        }
+        model = db_actions.crud(
+            model="UserSiteData",
+            api_model=UserSiteData,
+            data=data,
+            action="create"
+        )
+        data = {
+            "data": {"test": "updated_data"},
+        }
+
+        data = UserSiteDataUpdate(**data)
+
+        response = self.client.open(
+            '/api/v1/usersitedata/{user_id}/{site_id}/'.format(
+                user_id=model.user_id,
+                site_id=model.site_id),
+            method='PUT',
+            data=json.dumps(data),
+            content_type='application/json')
+        response_data = json.loads(response.data)
+
+        updated_entry = db_actions.crud(
+            model="UserSiteData",
+            api_model=UserSiteData,
+            action="read",
+            query={
+                "user_id": model.user_id,
+                "site_id": model.site_id
+            }
+        )
+
+        self.assertEqual(updated_entry.site_id, model.site_id)
+        self.assertEqual(
+            response_data["site_id"], updated_entry.site_id)
+        self.assertEqual(
+            response_data["data"], updated_entry.data)
 
 
 if __name__ == '__main__':

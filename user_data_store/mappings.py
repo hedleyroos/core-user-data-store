@@ -32,9 +32,10 @@ DB_TO_API_SITEDATASCHEMA_TRANSFORMATION = Transformation(
 DB_TO_API_USERSITEDATA_TRANSFORMATION = Transformation(
     mappings=[
         Mapping(input_field="created_at", conversion=datetime_to_string),
-        Mapping(input_field="updated_at", conversion=datetime_to_string)
+        Mapping(input_field="updated_at", conversion=datetime_to_string),
+        Mapping(input_field="consented_at", conversion=datetime_to_string)
     ],
     copy_fields=[
-        "site_id", "data", "user_id"
+        "site_id", "data", "user_id", "blocked",
     ]
 )

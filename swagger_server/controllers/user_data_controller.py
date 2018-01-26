@@ -297,7 +297,7 @@ def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # n
             "offset": offset,
             "limit": limit,
             "order_by": ["site_id", "user_id"],
-            "ids": [user_id, site_id]
+            "ids": user_id or site_id
         }
     )
 
@@ -315,7 +315,7 @@ def usersitedata_read(user_id, site_id):  # noqa: E501
     :rtype: UserSiteData
     """
     return db_actions.crud(
-        model="UserDataSchema",
+        model="UserSiteData",
         api_model=UserSiteData,
         action="read",
         query={
