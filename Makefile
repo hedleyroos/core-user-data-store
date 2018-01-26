@@ -2,6 +2,7 @@ VENV=./ve
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
 FLAKE8=$(VENV)/bin/flake8
+PYTEST=$(VENV)/bin/pytest
 FLASK=$(VENV)/bin/flask
 CODEGEN_VERSION=2.3.1
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
@@ -16,7 +17,7 @@ GREEN=\033[0;32m
 CYAN=\033[0;36m
 
 .SILENT: docs-build
-.PHONY: check
+.PHONY: check test
 
 help:
 	@echo "usage: make <target>"
@@ -103,6 +104,12 @@ $(FLAKE8): $(VENV)
 check: $(FLAKE8)
 	$(FLAKE8)
 
+$(PYTEST): $(VENV)
+	$(PIP) install pytest pytest-cov
+
+test: $(PYTEST)
+	$(PYTEST) --verbose --cov=user_data_store user_data_store/
+
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
 
@@ -113,3 +120,4 @@ makemigrations: $(VENV)
 migrate: $(VENV)
 	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
 	FLASK_APP=user_data_store/models.py $(FLASK) db upgrade -d user_data_store/migrations
+
