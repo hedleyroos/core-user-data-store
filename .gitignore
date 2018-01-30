@@ -91,9 +91,6 @@ venv/
 ENV/
 ve/
 
-# PyCharm IDE
-.idea/
-
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -103,6 +100,9 @@ ve/
 
 # mkdocs documentation
 /site
+
+# PyCharm IDE
+.idea/
 
 # mypy
 .mypy_cache/

@@ -6,7 +6,6 @@ PYTEST=$(VENV)/bin/pytest
 FLASK=$(VENV)/bin/flask
 CODEGEN_VERSION=2.3.1
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
-USER_DATA_STORE_CLIENT_DIR=user_data_store_client
 DB_NAME=user_data_store
 DB_USER=user_data_store
 
@@ -29,11 +28,9 @@ help:
 	@echo "    $(CYAN)user-data-store-client$(CLEAR): Generate a client for the User Data Store API."
 	@echo "    $(CYAN)user-data-store-api$(CLEAN): Generate a Flask server for the User Data Store API."
 
-
-
 $(VENV):
 	@echo "$(CYAN)Initialise base ve...$(CLEAR)"
-	virtualenv $(VENV) -p python3.5
+	virtualenv $(VENV) -p python3
 	@echo "$(GREEN)DONE$(CLEAR)"
 
 # Creates the virtual environment.
@@ -73,6 +70,9 @@ docs-build:  $(VENV)
 	rm -rf docs/build/
 	@echo "$(GREEN)DONE$(CLEAR)"
 
+swagger-codegen-cli-$(CODEGEN_VERSION).jar:
+	wget https://oss.sonatype.org/content/repositories/releases/io/swagger/swagger-codegen-cli/$(CODEGEN_VERSION)/swagger-codegen-cli-$(CODEGEN_VERSION).jar
+
 prism:
 	curl -L https://github.com/stoplightio/prism/releases/download/v0.6.21/prism_linux_amd64 -o prism
 	chmod +x prism
@@ -83,23 +83,17 @@ mock-user-data-store-api: prism
 validate-swagger: prism
 	@./prism validate -s swagger/user_data_store.yml && echo "The Swagger spec contains no errors"
 
-swagger-codegen-cli-$(CODEGEN_VERSION).jar:
-	wget https://oss.sonatype.org/content/repositories/releases/io/swagger/swagger-codegen-cli/$(CODEGEN_VERSION)/swagger-codegen-cli-$(CODEGEN_VERSION).jar
-
-# Generate the client code to interface with the User Data Store
-user-data-store-client: swagger-codegen-cli-$(CODEGEN_VERSION).jar
-	@echo "$(CYAN)Generating the client for the User Data Store API...$(CLEAR)"
-	$(CODEGEN) -l python -i swagger/user_data_store.yml -o /tmp/$(USER_DATA_STORE_CLIENT_DIR)
-	cp -r /tmp/$(USER_DATA_STORE_CLIENT_DIR)/swagger_client* $(USER_DATA_STORE_CLIENT_DIR)
-	rm -rf /tmp/$(USER_DATA_STORE_CLIENT_DIR)
+$(FLAKE8): $(VENV)
+	$(PIP) install flake8
 
 # Generate the flask server code for the User Data Store
 user-data-store-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
 	@echo "$(CYAN)Generating flask server for the User Data Store API...$(CLEAR)"
 	$(CODEGEN) -i swagger/user_data_store.yml -l python-flask -o .
 
-$(FLAKE8): $(VENV)
-	$(PIP) install flake8
+runserver: $(VENV)
+	@echo "$(CYAN)Firing up server...$(CLEAR)"
+	$(PYTHON) -m swagger_server
 
 check: $(FLAKE8)
 	$(FLAKE8)
@@ -108,10 +102,11 @@ $(PYTEST): $(VENV)
 	$(PIP) install pytest pytest-cov
 
 test: $(PYTEST)
-	$(PYTEST) --verbose --cov=user_data_store user_data_store/
+	$(PYTEST) --verbose --cov=user_data_store user_data_store/ swagger_server/test/
 
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
+	make migrate
 
 makemigrations: $(VENV)
 	@echo "$(CYAN)Creating migrating...$(CLEAR)"
@@ -120,4 +115,3 @@ makemigrations: $(VENV)
 migrate: $(VENV)
 	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
 	FLASK_APP=user_data_store/models.py $(FLASK) db upgrade -d user_data_store/migrations
-
