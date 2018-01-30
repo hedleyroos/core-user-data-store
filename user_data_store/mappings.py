@@ -9,6 +9,7 @@ def datetime_to_string(date):
 def object_to_json(object):
     return object.__dict__
 
+
 DB_TO_API_ADMINNOTE_TRANSFORMATION = Transformation(
     mappings=[
         Mapping(input_field="created_at", conversion=datetime_to_string),
