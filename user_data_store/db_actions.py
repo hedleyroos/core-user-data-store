@@ -9,6 +9,7 @@ from user_data_store.models import db
 ApiModel = typing.TypeVar("ApiModel")
 SqlAlchemyModel = typing.TypeVar("SqlAlchemyModel")
 
+
 def crud(
         model: SqlAlchemyModel,
         api_model: ApiModel,
@@ -22,7 +23,7 @@ def crud(
             **{"data": data, "query": query}
         ),
         api_model=api_model
-)
+    )
 
 
 def create_entry(model, **kwargs):

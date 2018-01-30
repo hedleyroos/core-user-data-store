@@ -16,6 +16,7 @@ migrate = Migrate(app, db)
 class utcnow(expression.FunctionElement):
     type = types.DateTime()
 
+
 @compiles(utcnow, "postgresql")
 def pg_utcnow(element, compiler, **kw):
     return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
