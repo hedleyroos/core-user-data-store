@@ -2,7 +2,6 @@ sudo: true
 cache: pip
 language: python
 python:
-  - "3.5"
   - "3.6"
 services:
   - docker
@@ -10,11 +9,12 @@ services:
 
 install:
   - pip install -r requirements.txt -r test-requirements.txt
+  - pip install coveralls
 
-script: pytest --verbose --cov=user_data_store user_data_store/
+script: tox
 
 after_success:
+  - coveralls
   - export REPO=dockerhubowner/core-user-data-store
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN ; fi`
   - docker build -t $REPO:$TAG .
-
