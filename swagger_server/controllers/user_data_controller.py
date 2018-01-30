@@ -121,6 +121,9 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
 
     :rtype: AdminNote
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="AdminNote",
         api_model=AdminNote,
@@ -229,6 +232,9 @@ def sitedataschema_update(site_id, data=None):  # noqa: E501
 
     :rtype: SiteDataSchema
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="SiteDataSchema",
         api_model=SiteDataSchema,
@@ -357,6 +363,9 @@ def usersitedata_update(user_id, site_id, data=None):  # noqa: E501
 
     :rtype: UserSiteData
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="UserSiteData",
         api_model=UserSiteData,
