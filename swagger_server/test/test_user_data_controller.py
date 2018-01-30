@@ -8,6 +8,7 @@ from datetime import datetime
 
 import werkzeug
 
+from swagger_server.models import AdminNoteCreate
 from swagger_server.models import SiteDataSchemaCreate
 from swagger_server.models import UserSiteDataCreate
 from swagger_server.models.admin_note import AdminNote
@@ -68,7 +69,7 @@ class TestUserDataController(BaseTestCase):
         Test case for adminnote_create
 
         """
-        data = AdminNote(**{
+        data = AdminNoteCreate(**{
             "creator_id": "%s" % uuid.uuid1(),
             "note": "This is text",
             "user_id": "%s" % uuid.uuid1(),
@@ -106,7 +107,7 @@ class TestUserDataController(BaseTestCase):
                 id=model.id
             ), method='DELETE')
 
-        try:
+        with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
                 model="AdminNote",
                 api_model=AdminNote,
@@ -115,9 +116,6 @@ class TestUserDataController(BaseTestCase):
                     "id": model.id
                 }
             )
-            raise Exception
-        except werkzeug.exceptions.NotFound:
-            pass
 
     def test_adminnote_list(self):
         """
@@ -250,7 +248,7 @@ class TestUserDataController(BaseTestCase):
                 site_id=model.site_id
             ), method='DELETE')
 
-        try:
+        with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
                 model="SiteDataSchema",
                 api_model=SiteDataSchema,
@@ -259,9 +257,6 @@ class TestUserDataController(BaseTestCase):
                     "site_id": model.site_id
                 }
             )
-            raise Exception
-        except werkzeug.exceptions.NotFound:
-            pass
 
     def test_sitedataschema_list(self):
         """
@@ -392,7 +387,7 @@ class TestUserDataController(BaseTestCase):
                 site_id=model.site_id
             ), method='DELETE')
 
-        try:
+        with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
                 model="UserSiteData",
                 api_model=UserSiteData,
@@ -402,9 +397,6 @@ class TestUserDataController(BaseTestCase):
                     "site_id": model.site_id
                 }
             )
-            raise Exception
-        except werkzeug.exceptions.NotFound:
-            pass
 
     def test_usersitedata_list(self):
         """

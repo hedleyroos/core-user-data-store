@@ -74,16 +74,20 @@ def adminnote_list(offset=None, limit=None, admin_note_ids=None):  # noqa: E501
 
     :rtype: List[AdminNote]
     """
+    query = {
+        "ids": admin_note_ids,
+        "order_by": ["id"]
+    }
+    if offset:
+        query["offset"] = offset
+    if limit:
+        query["limit"] = limit
+
     return db_actions.crud(
         model="AdminNote",
         api_model=AdminNote,
         action="list",
-        query={
-            "offset": offset,
-            "limit": limit,
-            "ids": admin_note_ids,
-            "order_by": ["id"]
-        }
+        query=query
     )
 
 
@@ -180,15 +184,19 @@ def sitedataschema_list(offset=None, limit=None):  # noqa: E501
 
     :rtype: List[SiteDataSchema]
     """
+    query = {
+        "order_by": ["site_id"]
+    }
+    if limit:
+        query["limit"] = limit
+    if offset:
+        query["offset"] = offset
+
     return db_actions.crud(
         model="SiteDataSchema",
         api_model=SiteDataSchema,
         action="list",
-        query={
-            "offset": offset,
-            "limit": limit,
-            "order_by": ["site_id"]
-        }
+        query=query
     )
 
 
@@ -273,6 +281,7 @@ def usersitedata_delete(user_id, site_id):  # noqa: E501
         }
     )
 
+
 def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # noqa: E501
     """usersitedata_list
 
@@ -289,16 +298,25 @@ def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # n
 
     :rtype: List[UserSiteData]
     """
+
+    query = {
+        "order_by": ["site_id", "user_id"],
+    }
+
+    if offset:
+        query["offset"] = offset
+    if limit:
+        query["limit"] = limit
+    if user_id:
+        query["ids"] = user_id
+    if site_id:
+        query["ids"] = site_id
+
     return db_actions.crud(
         model="UserSiteData",
         api_model=UserSiteData,
         action="list",
-        query={
-            "offset": offset,
-            "limit": limit,
-            "order_by": ["site_id", "user_id"],
-            "ids": user_id or site_id
-        }
+        query=query
     )
 
 
