@@ -17,5 +17,5 @@ class BaseTestCase(TestCase):
         app.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
         DB.init_app(app.app)
         app.add_api('swagger.yaml',
-                    arguments={'title': 'Test Access Control API'})
+                    arguments={'title': 'Test User Data Store'})
         return app.app

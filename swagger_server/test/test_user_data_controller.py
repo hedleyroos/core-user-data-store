@@ -75,7 +75,7 @@ class TestUserDataController(BaseTestCase):
             "user_id": "%s" % uuid.uuid1(),
         })
         response = self.client.open(
-            "/api/v1/adminnotes/",
+            "/api/v1/adminnotes",
             method="POST",
             data=json.dumps(data),
             content_type="application/json")
@@ -103,7 +103,7 @@ class TestUserDataController(BaseTestCase):
         )
 
         response = self.client.open(
-            '/api/v1/adminnotes/{id}/'.format(
+            '/api/v1/adminnotes/{id}'.format(
                 id=model.id
             ), method='DELETE')
 
@@ -141,7 +141,7 @@ class TestUserDataController(BaseTestCase):
             ("admin_note_ids", ",".join(map(str, [adminnote.id for adminnote in objects])))
         ]
         response = self.client.open(
-            '/api/v1/adminnotes/',
+            '/api/v1/adminnotes',
             method='GET',
             query_string=query_string)
         response_data = json.loads(response.data)
@@ -154,7 +154,7 @@ class TestUserDataController(BaseTestCase):
 
         """
         response = self.client.open(
-            '/api/v1/adminnotes/{admin_note_id}/'.format(
+            '/api/v1/adminnotes/{admin_note_id}'.format(
                 admin_note_id=self.adminnote_model.id
             ),
             method='GET')
@@ -187,7 +187,7 @@ class TestUserDataController(BaseTestCase):
         data = AdminNoteUpdate(**data)
 
         response = self.client.open(
-            '/api/v1/adminnotes/{admin_note_id}/'.format(
+            '/api/v1/adminnotes/{admin_note_id}'.format(
                 admin_note_id=model.id),
             method='PUT',
             data=json.dumps(data),
@@ -217,7 +217,7 @@ class TestUserDataController(BaseTestCase):
             "schema": {"test": "data"}
         })
         response = self.client.open(
-            "/api/v1/sitedataschemas/",
+            "/api/v1/sitedataschemas",
             method="POST",
             data=json.dumps(data),
             content_type="application/json")
@@ -244,7 +244,7 @@ class TestUserDataController(BaseTestCase):
         )
 
         response = self.client.open(
-            '/api/v1/sitedataschemas/{site_id}/'.format(
+            '/api/v1/sitedataschemas/{site_id}'.format(
                 site_id=model.site_id
             ), method='DELETE')
 
@@ -268,7 +268,7 @@ class TestUserDataController(BaseTestCase):
             ("limit", 5)
         ]
         response = self.client.open(
-            '/api/v1/sitedataschemas/',
+            '/api/v1/sitedataschemas',
             method='GET',
             query_string=query_string)
         response_data = json.loads(response.data)
@@ -281,7 +281,7 @@ class TestUserDataController(BaseTestCase):
 
         """
         response = self.client.open(
-            '/api/v1/sitedataschemas/{site_id}/'.format(
+            '/api/v1/sitedataschemas/{site_id}'.format(
                 site_id=self.sitedataschema_model.site_id
             ),
             method='GET')
@@ -314,7 +314,7 @@ class TestUserDataController(BaseTestCase):
         data = SiteDataSchemaUpdate(**data)
 
         response = self.client.open(
-            '/api/v1/sitedataschemas/{site_id}/'.format(
+            '/api/v1/sitedataschemas/{site_id}'.format(
                 site_id=model.site_id),
             method='PUT',
             data=json.dumps(data),
@@ -349,7 +349,7 @@ class TestUserDataController(BaseTestCase):
             "blocked": False
         })
         response = self.client.open(
-            "/api/v1/usersitedata/",
+            "/api/v1/usersitedata",
             method="POST",
             data=json.dumps(data),
             content_type="application/json")
@@ -382,7 +382,7 @@ class TestUserDataController(BaseTestCase):
         )
 
         response = self.client.open(
-            '/api/v1/usersitedata/{user_id}/{site_id}/'.format(
+            '/api/v1/usersitedata/{user_id}/{site_id}'.format(
                 user_id=model.user_id,
                 site_id=model.site_id
             ), method='DELETE')
@@ -408,7 +408,7 @@ class TestUserDataController(BaseTestCase):
             ("limit", 5)
         ]
         response = self.client.open(
-            '/api/v1/usersitedata/',
+            '/api/v1/usersitedata',
             method='GET',
             query_string=query_string)
         response_data = json.loads(response.data)
@@ -421,7 +421,7 @@ class TestUserDataController(BaseTestCase):
 
         """
         response = self.client.open(
-            '/api/v1/usersitedata/{user_id}/{site_id}/'.format(
+            '/api/v1/usersitedata/{user_id}/{site_id}'.format(
                 user_id=self.usersitedata_model.user_id,
                 site_id=self.usersitedata_model.site_id
             ),
@@ -459,7 +459,7 @@ class TestUserDataController(BaseTestCase):
         data = UserSiteDataUpdate(**data)
 
         response = self.client.open(
-            '/api/v1/usersitedata/{user_id}/{site_id}/'.format(
+            '/api/v1/usersitedata/{user_id}/{site_id}'.format(
                 user_id=model.user_id,
                 site_id=model.site_id),
             method='PUT',

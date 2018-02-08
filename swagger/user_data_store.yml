@@ -233,7 +233,7 @@ definitions:
     minProperties: 1
 
 paths:
-  /adminnotes/:
+  /adminnotes:
     get:
       operationId: adminnote_list
       parameters:
@@ -280,7 +280,7 @@ paths:
       tags:
         - user_data
 
-  /adminnotes/{admin_note_id}/:
+  /adminnotes/{admin_note_id}:
     parameters:
       - $ref: '#/parameters/admin_note_id'
     delete:
@@ -326,7 +326,7 @@ paths:
       tags:
         - user_data
 
-  /sitedataschemas/:
+  /sitedataschemas:
     get:
       operationId: sitedataschema_list
       parameters:
@@ -362,7 +362,7 @@ paths:
       tags:
         - user_data
 
-  /sitedataschemas/{site_id}/:
+  /sitedataschemas/{site_id}:
     parameters:
       - $ref: '#/parameters/site_id'
     delete:
@@ -402,7 +402,7 @@ paths:
       tags:
         - user_data
 
-  /usersitedata/:
+  /usersitedata:
     get:
       operationId: usersitedata_list
       parameters:
@@ -440,7 +440,7 @@ paths:
       tags:
         - user_data
 
-  /usersitedata/{user_id}/{site_id}/:
+  /usersitedata/{user_id}/{site_id}:
     parameters:
       - $ref: '#/parameters/user_id'
       - $ref: '#/parameters/site_id'
