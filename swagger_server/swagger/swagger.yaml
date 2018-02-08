@@ -12,7 +12,7 @@ schemes:
 security:
 - APIKeyHeader: []
 paths:
-  /adminnotes/:
+  /adminnotes:
     get:
       tags:
       - "user_data"
@@ -80,7 +80,7 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /adminnotes/{admin_note_id}/:
+  /adminnotes/{admin_note_id}:
     get:
       tags:
       - "user_data"
@@ -144,7 +144,7 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /sitedataschemas/:
+  /sitedataschemas:
     get:
       tags:
       - "user_data"
@@ -196,7 +196,7 @@ paths:
           schema:
             $ref: "#/definitions/site_data_schema"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /sitedataschemas/{site_id}/:
+  /sitedataschemas/{site_id}:
     get:
       tags:
       - "user_data"
@@ -254,7 +254,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /usersitedata/:
+  /usersitedata:
     get:
       tags:
       - "user_data"
@@ -317,7 +317,7 @@ paths:
           schema:
             $ref: "#/definitions/user_site_data"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /usersitedata/{user_id}/{site_id}/:
+  /usersitedata/{user_id}/{site_id}:
     get:
       tags:
       - "user_data"
