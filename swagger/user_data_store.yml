@@ -32,6 +32,7 @@ parameters:
     minimum: 1
     maximum: 100
     default: 20
+
   optional_offset:
     description: >-
       An optional query parameter specifying the offset in the result set to
@@ -42,12 +43,14 @@ parameters:
     type: integer
     default: 0
     minimum: 0
+
   optional_site_filter:
     description: An optional query parameter to filter by site_id
     in: query
     name: site_id
     required: false
     type: integer
+
   optional_user_filter:
     description: An optional query parameter to filter by user_id
     in: query
@@ -55,18 +58,21 @@ parameters:
     required: false
     type: string
     format: uuid
+
   admin_note_id:
     description: A unique integer value identifying the admin note.
     in: path
     name: admin_note_id
     required: true
     type: integer
+
   site_id:
     description: A unique integer value identifying the site.
     in: path
     name: site_id
     required: true
     type: integer
+
   user_id:
     description: A UUID value identifying the user.
     in: path
@@ -176,11 +182,11 @@ definitions:
         format: uuid
       site_id:
         type: integer
-      data:
-        type: object
       consented_at:
         type: string
         format: date
+      data:
+        type: object
       blocked:
         type: boolean
       created_at:
@@ -194,9 +200,9 @@ definitions:
     required:
       - user_id
       - site_id
-      - data
       - consented_at
       - blocked
+      - data
       - created_at
       - updated_at
 
@@ -208,13 +214,13 @@ definitions:
         format: uuid
       site_id:
         type: integer
-      data:
-        type: object
       consented_at:
         type: string
         format: date
       blocked:
         type: boolean
+      data:
+        type: object
     required:
       - user_id
       - site_id
@@ -223,13 +229,13 @@ definitions:
   user_site_data_update:
     type: object
     properties:
-      data:
-        type: object
       consented_at:
         type: string
         format: date
       blocked:
         type: boolean
+      data:
+        type: object
     minProperties: 1
 
 paths:
