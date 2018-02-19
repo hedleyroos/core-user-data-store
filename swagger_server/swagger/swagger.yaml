@@ -514,12 +514,12 @@ definitions:
         format: "uuid"
       site_id:
         type: "integer"
-      data:
-        type: "object"
-        properties: {}
       consented_at:
         type: "string"
         format: "date"
+      data:
+        type: "object"
+        properties: {}
       blocked:
         type: "boolean"
       created_at:
@@ -531,8 +531,8 @@ definitions:
         format: "date-time"
         readOnly: true
     example:
-      data: "{}"
       consented_at: "2000-01-23"
+      data: "{}"
       blocked: true
       updated_at: "2000-01-23T04:56:07.000+00:00"
       user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
@@ -550,25 +550,25 @@ definitions:
         format: "uuid"
       site_id:
         type: "integer"
-      data:
-        type: "object"
-        properties: {}
       consented_at:
         type: "string"
         format: "date"
       blocked:
         type: "boolean"
+      data:
+        type: "object"
+        properties: {}
   user_site_data_update:
     type: "object"
     properties:
-      data:
-        type: "object"
-        properties: {}
       consented_at:
         type: "string"
         format: "date"
       blocked:
         type: "boolean"
+      data:
+        type: "object"
+        properties: {}
 parameters:
   optional_limit:
     name: "limit"

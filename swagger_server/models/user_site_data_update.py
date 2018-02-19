@@ -15,31 +15,31 @@ class UserSiteDataUpdate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, data: object=None, consented_at: date=None, blocked: bool=None):  # noqa: E501
+    def __init__(self, consented_at: date=None, blocked: bool=None, data: object=None):  # noqa: E501
         """UserSiteDataUpdate - a model defined in Swagger
 
-        :param data: The data of this UserSiteDataUpdate.  # noqa: E501
-        :type data: object
         :param consented_at: The consented_at of this UserSiteDataUpdate.  # noqa: E501
         :type consented_at: date
         :param blocked: The blocked of this UserSiteDataUpdate.  # noqa: E501
         :type blocked: bool
+        :param data: The data of this UserSiteDataUpdate.  # noqa: E501
+        :type data: object
         """
         self.swagger_types = {
-            'data': object,
             'consented_at': date,
-            'blocked': bool
+            'blocked': bool,
+            'data': object
         }
 
         self.attribute_map = {
-            'data': 'data',
             'consented_at': 'consented_at',
-            'blocked': 'blocked'
+            'blocked': 'blocked',
+            'data': 'data'
         }
 
-        self._data = data
         self._consented_at = consented_at
         self._blocked = blocked
+        self._data = data
 
     @classmethod
     def from_dict(cls, dikt) -> 'UserSiteDataUpdate':
@@ -51,27 +51,6 @@ class UserSiteDataUpdate(Model):
         :rtype: UserSiteDataUpdate
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def data(self) -> object:
-        """Gets the data of this UserSiteDataUpdate.
-
-
-        :return: The data of this UserSiteDataUpdate.
-        :rtype: object
-        """
-        return self._data
-
-    @data.setter
-    def data(self, data: object):
-        """Sets the data of this UserSiteDataUpdate.
-
-
-        :param data: The data of this UserSiteDataUpdate.
-        :type data: object
-        """
-
-        self._data = data
 
     @property
     def consented_at(self) -> date:
@@ -114,3 +93,24 @@ class UserSiteDataUpdate(Model):
         """
 
         self._blocked = blocked
+
+    @property
+    def data(self) -> object:
+        """Gets the data of this UserSiteDataUpdate.
+
+
+        :return: The data of this UserSiteDataUpdate.
+        :rtype: object
+        """
+        return self._data
+
+    @data.setter
+    def data(self, data: object):
+        """Sets the data of this UserSiteDataUpdate.
+
+
+        :param data: The data of this UserSiteDataUpdate.
+        :type data: object
+        """
+
+        self._data = data

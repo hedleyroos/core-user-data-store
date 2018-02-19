@@ -15,17 +15,17 @@ class UserSiteData(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, user_id: str=None, site_id: int=None, data: object=None, consented_at: date=None, blocked: bool=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
+    def __init__(self, user_id: str=None, site_id: int=None, consented_at: date=None, data: object=None, blocked: bool=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
         """UserSiteData - a model defined in Swagger
 
         :param user_id: The user_id of this UserSiteData.  # noqa: E501
         :type user_id: str
         :param site_id: The site_id of this UserSiteData.  # noqa: E501
         :type site_id: int
-        :param data: The data of this UserSiteData.  # noqa: E501
-        :type data: object
         :param consented_at: The consented_at of this UserSiteData.  # noqa: E501
         :type consented_at: date
+        :param data: The data of this UserSiteData.  # noqa: E501
+        :type data: object
         :param blocked: The blocked of this UserSiteData.  # noqa: E501
         :type blocked: bool
         :param created_at: The created_at of this UserSiteData.  # noqa: E501
@@ -36,8 +36,8 @@ class UserSiteData(Model):
         self.swagger_types = {
             'user_id': str,
             'site_id': int,
-            'data': object,
             'consented_at': date,
+            'data': object,
             'blocked': bool,
             'created_at': datetime,
             'updated_at': datetime
@@ -46,8 +46,8 @@ class UserSiteData(Model):
         self.attribute_map = {
             'user_id': 'user_id',
             'site_id': 'site_id',
-            'data': 'data',
             'consented_at': 'consented_at',
+            'data': 'data',
             'blocked': 'blocked',
             'created_at': 'created_at',
             'updated_at': 'updated_at'
@@ -55,8 +55,8 @@ class UserSiteData(Model):
 
         self._user_id = user_id
         self._site_id = site_id
-        self._data = data
         self._consented_at = consented_at
+        self._data = data
         self._blocked = blocked
         self._created_at = created_at
         self._updated_at = updated_at
@@ -119,29 +119,6 @@ class UserSiteData(Model):
         self._site_id = site_id
 
     @property
-    def data(self) -> object:
-        """Gets the data of this UserSiteData.
-
-
-        :return: The data of this UserSiteData.
-        :rtype: object
-        """
-        return self._data
-
-    @data.setter
-    def data(self, data: object):
-        """Sets the data of this UserSiteData.
-
-
-        :param data: The data of this UserSiteData.
-        :type data: object
-        """
-        if data is None:
-            raise ValueError("Invalid value for `data`, must not be `None`")  # noqa: E501
-
-        self._data = data
-
-    @property
     def consented_at(self) -> date:
         """Gets the consented_at of this UserSiteData.
 
@@ -163,6 +140,29 @@ class UserSiteData(Model):
             raise ValueError("Invalid value for `consented_at`, must not be `None`")  # noqa: E501
 
         self._consented_at = consented_at
+
+    @property
+    def data(self) -> object:
+        """Gets the data of this UserSiteData.
+
+
+        :return: The data of this UserSiteData.
+        :rtype: object
+        """
+        return self._data
+
+    @data.setter
+    def data(self, data: object):
+        """Sets the data of this UserSiteData.
+
+
+        :param data: The data of this UserSiteData.
+        :type data: object
+        """
+        if data is None:
+            raise ValueError("Invalid value for `data`, must not be `None`")  # noqa: E501
+
+        self._data = data
 
     @property
     def blocked(self) -> bool:
