@@ -3,6 +3,10 @@ cache: pip
 language: python
 python:
   - "3.6"
+
+env:
+  global:
+
 services:
   - docker
   - postgresql
@@ -15,6 +19,22 @@ script: tox
 
 after_success:
   - coveralls
-  - export REPO=dockerhubowner/core-user-data-store
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN ; fi`
-  - docker build -t $REPO:$TAG .
+
+deploy:
+  - provider: script
+    script: bash ./scripts/docker_push.sh
+    on:
+      branch: feature/GE-850
+  - provider: script
+    script: bash ./scripts/docker_push.sh
+    on:
+      branch: master
+  - provider: script
+    script: bash ./scripts/docker_push.sh
+    on:
+      branch: develop
+  - provider: script
+    script: bash ./scripts/docker_push.sh
+    on:
+      all_branches: true
+      condition: "${TRAVIS_BRANCH} =~ ^release.*$" # Only release branches
