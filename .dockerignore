@@ -39,6 +39,7 @@ coverage.xml
 *,cover
 .hypothesis/
 venv/
+ve/
 .python-version
 
 # Translations
@@ -46,7 +47,7 @@ venv/
 *.pot
 
 # Sphinx documentation
-docs/_build/
+docs/
 
 # PyBuilder
 target/
