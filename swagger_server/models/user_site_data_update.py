@@ -15,18 +15,18 @@ class UserSiteDataUpdate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, consented_at: date=None, blocked: bool=None, data: object=None):  # noqa: E501
+    def __init__(self, consented_at: datetime=None, blocked: bool=None, data: object=None):  # noqa: E501
         """UserSiteDataUpdate - a model defined in Swagger
 
         :param consented_at: The consented_at of this UserSiteDataUpdate.  # noqa: E501
-        :type consented_at: date
+        :type consented_at: datetime
         :param blocked: The blocked of this UserSiteDataUpdate.  # noqa: E501
         :type blocked: bool
         :param data: The data of this UserSiteDataUpdate.  # noqa: E501
         :type data: object
         """
         self.swagger_types = {
-            'consented_at': date,
+            'consented_at': datetime,
             'blocked': bool,
             'data': object
         }
@@ -53,22 +53,22 @@ class UserSiteDataUpdate(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def consented_at(self) -> date:
+    def consented_at(self) -> datetime:
         """Gets the consented_at of this UserSiteDataUpdate.
 
 
         :return: The consented_at of this UserSiteDataUpdate.
-        :rtype: date
+        :rtype: datetime
         """
         return self._consented_at
 
     @consented_at.setter
-    def consented_at(self, consented_at: date):
+    def consented_at(self, consented_at: datetime):
         """Sets the consented_at of this UserSiteDataUpdate.
 
 
         :param consented_at: The consented_at of this UserSiteDataUpdate.
-        :type consented_at: date
+        :type consented_at: datetime
         """
 
         self._consented_at = consented_at

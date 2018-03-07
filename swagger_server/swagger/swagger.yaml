@@ -516,7 +516,7 @@ definitions:
         type: "integer"
       consented_at:
         type: "string"
-        format: "date"
+        format: "date-time"
       data:
         type: "object"
         properties: {}
@@ -531,7 +531,7 @@ definitions:
         format: "date-time"
         readOnly: true
     example:
-      consented_at: "2000-01-23"
+      consented_at: "2000-01-23T04:56:07.000+00:00"
       data: "{}"
       blocked: true
       updated_at: "2000-01-23T04:56:07.000+00:00"
@@ -552,7 +552,7 @@ definitions:
         type: "integer"
       consented_at:
         type: "string"
-        format: "date"
+        format: "date-time"
       blocked:
         type: "boolean"
       data:
@@ -563,7 +563,7 @@ definitions:
     properties:
       consented_at:
         type: "string"
-        format: "date"
+        format: "date-time"
       blocked:
         type: "boolean"
       data:
