@@ -15,7 +15,7 @@ class UserSiteDataCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, user_id: str=None, site_id: int=None, consented_at: date=None, blocked: bool=None, data: object=None):  # noqa: E501
+    def __init__(self, user_id: str=None, site_id: int=None, consented_at: datetime=None, blocked: bool=None, data: object=None):  # noqa: E501
         """UserSiteDataCreate - a model defined in Swagger
 
         :param user_id: The user_id of this UserSiteDataCreate.  # noqa: E501
@@ -23,7 +23,7 @@ class UserSiteDataCreate(Model):
         :param site_id: The site_id of this UserSiteDataCreate.  # noqa: E501
         :type site_id: int
         :param consented_at: The consented_at of this UserSiteDataCreate.  # noqa: E501
-        :type consented_at: date
+        :type consented_at: datetime
         :param blocked: The blocked of this UserSiteDataCreate.  # noqa: E501
         :type blocked: bool
         :param data: The data of this UserSiteDataCreate.  # noqa: E501
@@ -32,7 +32,7 @@ class UserSiteDataCreate(Model):
         self.swagger_types = {
             'user_id': str,
             'site_id': int,
-            'consented_at': date,
+            'consented_at': datetime,
             'blocked': bool,
             'data': object
         }
@@ -109,22 +109,22 @@ class UserSiteDataCreate(Model):
         self._site_id = site_id
 
     @property
-    def consented_at(self) -> date:
+    def consented_at(self) -> datetime:
         """Gets the consented_at of this UserSiteDataCreate.
 
 
         :return: The consented_at of this UserSiteDataCreate.
-        :rtype: date
+        :rtype: datetime
         """
         return self._consented_at
 
     @consented_at.setter
-    def consented_at(self, consented_at: date):
+    def consented_at(self, consented_at: datetime):
         """Sets the consented_at of this UserSiteDataCreate.
 
 
         :param consented_at: The consented_at of this UserSiteDataCreate.
-        :type consented_at: date
+        :type consented_at: datetime
         """
 
         self._consented_at = consented_at

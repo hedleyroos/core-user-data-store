@@ -15,7 +15,7 @@ class UserSiteData(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, user_id: str=None, site_id: int=None, consented_at: date=None, data: object=None, blocked: bool=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
+    def __init__(self, user_id: str=None, site_id: int=None, consented_at: datetime=None, data: object=None, blocked: bool=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
         """UserSiteData - a model defined in Swagger
 
         :param user_id: The user_id of this UserSiteData.  # noqa: E501
@@ -23,7 +23,7 @@ class UserSiteData(Model):
         :param site_id: The site_id of this UserSiteData.  # noqa: E501
         :type site_id: int
         :param consented_at: The consented_at of this UserSiteData.  # noqa: E501
-        :type consented_at: date
+        :type consented_at: datetime
         :param data: The data of this UserSiteData.  # noqa: E501
         :type data: object
         :param blocked: The blocked of this UserSiteData.  # noqa: E501
@@ -36,7 +36,7 @@ class UserSiteData(Model):
         self.swagger_types = {
             'user_id': str,
             'site_id': int,
-            'consented_at': date,
+            'consented_at': datetime,
             'data': object,
             'blocked': bool,
             'created_at': datetime,
@@ -119,22 +119,22 @@ class UserSiteData(Model):
         self._site_id = site_id
 
     @property
-    def consented_at(self) -> date:
+    def consented_at(self) -> datetime:
         """Gets the consented_at of this UserSiteData.
 
 
         :return: The consented_at of this UserSiteData.
-        :rtype: date
+        :rtype: datetime
         """
         return self._consented_at
 
     @consented_at.setter
-    def consented_at(self, consented_at: date):
+    def consented_at(self, consented_at: datetime):
         """Sets the consented_at of this UserSiteData.
 
 
         :param consented_at: The consented_at of this UserSiteData.
-        :type consented_at: date
+        :type consented_at: datetime
         """
         if consented_at is None:
             raise ValueError("Invalid value for `consented_at`, must not be `None`")  # noqa: E501
