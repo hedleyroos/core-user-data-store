@@ -20,8 +20,12 @@ class TestAuthMiddleware(BaseTestCase):
             data=self.sitedataschema_data,
             action="create"
         )
-        self.key = "ui1Iehoh3xaecaeRaehi"
-        os.environ["ALLOWED_KEYS"] = "ui1Iehoh3xaecaeRaehi"
+
+        # Environment variable is a list of strings
+        os.environ["ALLOWED_API_KEYS"] = \
+            "ui1Iehoh3xaecaeRaehi, thisisanotherkey"
+
+        self.headers = {"X-API-KEY": "ui1Iehoh3xaecaeRaehi"}
 
     def test_unauthorized_request(self):
         response = self.client.open(
@@ -47,6 +51,6 @@ class TestAuthMiddleware(BaseTestCase):
                 site_id=self.sitedataschema_model.site_id
             ),
             method='GET',
-            headers={"X-API-KEY": self.key}
+            headers=self.headers
         )
         self.assert200(response)

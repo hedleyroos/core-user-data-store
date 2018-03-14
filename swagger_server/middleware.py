@@ -12,9 +12,9 @@ class AuthMiddleware(object):
         request = Request(environ)
         key = request.headers.get("X-Api-Key", None)
         if key:
-            if key in os.environ.get("ALLOWED_KEYS"):
+            if key in os.environ.get("ALLOWED_API_KEYS"):
                 return self.app(environ, start_response)
-            response = Response(status="403 Forbidden")
+            response = Response("Forbidden", status="403")
             return response(environ, start_response)
-        response = Response(status="401 Unauthorized")
+        response = Response("Unauthorized", status="401")
         return response(environ, start_response)

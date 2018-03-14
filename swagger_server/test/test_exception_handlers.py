@@ -37,8 +37,9 @@ class TestExceptions(BaseTestCase):
             action="create"
         )
 
-        self.key = "ui1Iehoh3xaecaeRaehi"
-        os.environ["ALLOWED_KEYS"] = "ui1Iehoh3xaecaeRaehi"
+        os.environ["ALLOWED_API_KEYS"] = "ui1Iehoh3xaecaeRaehi"
+
+        self.headers = {"X-API-KEY": "ui1Iehoh3xaecaeRaehi"}
 
     def test_response(self):
         """
@@ -51,7 +52,7 @@ class TestExceptions(BaseTestCase):
             method="POST",
             data=json.dumps(data),
             content_type="application/json",
-            headers={"X-API-KEY": self.key}
+            headers=self.headers
         )
         r_data = json.loads(response.data)
         self.assertEqual(response.status_code, 500)
