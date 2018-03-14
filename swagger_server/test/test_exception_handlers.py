@@ -6,9 +6,10 @@ import random
 import uuid
 from datetime import datetime
 
+import os
 import werkzeug
 
-from swagger_server.models import AdminNoteCreate
+from swagger_server.models import AdminNoteCreate, SiteDataSchema
 from swagger_server.models import SiteDataSchemaCreate
 from swagger_server.models import UserSiteDataCreate
 from swagger_server.models.admin_note import AdminNote
@@ -36,6 +37,9 @@ class TestExceptions(BaseTestCase):
             action="create"
         )
 
+        self.key = "ui1Iehoh3xaecaeRaehi"
+        os.environ["ALLOWED_KEYS"] = "ui1Iehoh3xaecaeRaehi"
+
     def test_response(self):
         """
         Test case for adminnote_create
@@ -46,7 +50,9 @@ class TestExceptions(BaseTestCase):
             "/api/v1/sitedataschemas",
             method="POST",
             data=json.dumps(data),
-            content_type="application/json")
+            content_type="application/json",
+            headers={"X-API-KEY": self.key}
+        )
         r_data = json.loads(response.data)
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
