@@ -78,7 +78,8 @@ class TestUserDataController(BaseTestCase):
             "/api/v1/adminnotes",
             method="POST",
             data=json.dumps(data),
-            content_type="application/json")
+            content_type="application/json",
+            headers={"X-API-KEY": "asdf"})
 
         response_data = json.loads(response.data)
         self.assertEqual(response_data["creator_id"], data.creator_id)
