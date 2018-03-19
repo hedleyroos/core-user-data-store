@@ -21,11 +21,7 @@ class TestAuthMiddleware(BaseTestCase):
             action="create"
         )
 
-        # Environment variable is a list of strings
-        os.environ["ALLOWED_API_KEYS"] = \
-            "ui1Iehoh3xaecaeRaehi, thisisanotherkey"
-
-        self.headers = {"X-API-KEY": "ui1Iehoh3xaecaeRaehi"}
+        self.headers = {"X-API-KEY": "test-api-key"}
 
     def test_unauthorized_request(self):
         response = self.client.open(
@@ -35,15 +31,15 @@ class TestAuthMiddleware(BaseTestCase):
             method='GET')
         self.assert401(response)
 
-    def test_forbidden_request(self):
+    def test_incorrect_token(self):
         response = self.client.open(
             '/api/v1/sitedataschemas/{site_id}'.format(
                 site_id=self.sitedataschema_model.site_id
             ),
             method='GET',
-            headers={"X-API-KEY": "qwerty"}
+            headers={"X-API-KEY": "wrong-key"}
         )
-        self.assert403(response)
+        self.assert401(response)
 
     def test_authorized_request(self):
         response = self.client.open(

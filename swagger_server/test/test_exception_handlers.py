@@ -37,9 +37,7 @@ class TestExceptions(BaseTestCase):
             action="create"
         )
 
-        os.environ["ALLOWED_API_KEYS"] = "ui1Iehoh3xaecaeRaehi"
-
-        self.headers = {"X-API-KEY": "ui1Iehoh3xaecaeRaehi"}
+        self.headers = {"X-API-KEY": "test-api-key"}
 
     def test_response(self):
         """
