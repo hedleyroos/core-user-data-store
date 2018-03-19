@@ -6,7 +6,6 @@ import random
 import uuid
 from datetime import datetime
 
-import os
 import werkzeug
 
 from swagger_server.models import AdminNoteCreate
@@ -19,6 +18,7 @@ from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate
 from swagger_server.models.user_site_data import UserSiteData
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate
 from user_data_store import db_actions
+from user_data_store.settings import API_KEY_HEADER
 from . import BaseTestCase
 from flask import json
 
@@ -65,7 +65,7 @@ class TestUserDataController(BaseTestCase):
             action="create"
         )
 
-        self.headers = {"X-API-KEY": "test-api-key"}
+        self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_adminnote_create(self):
         """
