@@ -1,4 +1,6 @@
 from __future__ import with_statement
+
+import os
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
@@ -12,6 +14,10 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 logger = logging.getLogger('alembic.env')
+
+orig_environ = dict(os.environ)
+orig_environ["ALLOWED_API_KEYS"] = "test-api-key"
+os.environ.update(orig_environ)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
