@@ -15,10 +15,6 @@ config = context.config
 fileConfig(config.config_file_name)
 logger = logging.getLogger('alembic.env')
 
-orig_environ = dict(os.environ)
-orig_environ["ALLOWED_API_KEYS"] = "test-api-key"
-os.environ.update(orig_environ)
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel

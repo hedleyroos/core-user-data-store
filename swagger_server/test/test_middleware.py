@@ -1,5 +1,7 @@
 import random
 
+from werkzeug.test import Client
+
 from swagger_server.models.site_data_schema import SiteDataSchema
 from swagger_server.test import BaseTestCase
 from user_data_store import db_actions
@@ -19,7 +21,6 @@ class TestAuthMiddleware(BaseTestCase):
             data=self.sitedataschema_data,
             action="create"
         )
-
         self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_unauthorized_request(self):
