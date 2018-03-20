@@ -18,6 +18,7 @@ from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate
 from swagger_server.models.user_site_data import UserSiteData
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate
 from user_data_store import db_actions
+from user_data_store.settings import API_KEY_HEADER
 from . import BaseTestCase
 from flask import json
 
@@ -64,6 +65,8 @@ class TestUserDataController(BaseTestCase):
             action="create"
         )
 
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+
     def test_adminnote_create(self):
         """
         Test case for adminnote_create
@@ -78,7 +81,8 @@ class TestUserDataController(BaseTestCase):
             "/api/v1/adminnotes",
             method="POST",
             data=json.dumps(data),
-            content_type="application/json")
+            content_type="application/json",
+            headers=self.headers)
 
         response_data = json.loads(response.data)
         self.assertEqual(response_data["creator_id"], data.creator_id)
@@ -105,7 +109,8 @@ class TestUserDataController(BaseTestCase):
         response = self.client.open(
             '/api/v1/adminnotes/{id}'.format(
                 id=model.id
-            ), method='DELETE')
+            ), method='DELETE',
+            headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -143,7 +148,8 @@ class TestUserDataController(BaseTestCase):
         response = self.client.open(
             '/api/v1/adminnotes',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 2)
@@ -157,7 +163,8 @@ class TestUserDataController(BaseTestCase):
             '/api/v1/adminnotes/{admin_note_id}'.format(
                 admin_note_id=self.adminnote_model.id
             ),
-            method='GET')
+            method='GET',
+            headers=self.headers)
         response_data = json.loads(response.data)
         self.assertEqual(response_data["user_id"], self.adminnote_model.user_id)
         self.assertEqual(
@@ -191,7 +198,8 @@ class TestUserDataController(BaseTestCase):
                 admin_note_id=model.id),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         response_data = json.loads(response.data)
 
         updated_entry = db_actions.crud(
@@ -220,7 +228,8 @@ class TestUserDataController(BaseTestCase):
             "/api/v1/sitedataschemas",
             method="POST",
             data=json.dumps(data),
-            content_type="application/json")
+            content_type="application/json",
+            headers=self.headers)
 
         response_data = json.loads(response.data)
 
@@ -246,7 +255,8 @@ class TestUserDataController(BaseTestCase):
         response = self.client.open(
             '/api/v1/sitedataschemas/{site_id}'.format(
                 site_id=model.site_id
-            ), method='DELETE')
+            ), method='DELETE',
+            headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -270,7 +280,8 @@ class TestUserDataController(BaseTestCase):
         response = self.client.open(
             '/api/v1/sitedataschemas',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 5)
@@ -284,7 +295,8 @@ class TestUserDataController(BaseTestCase):
             '/api/v1/sitedataschemas/{site_id}'.format(
                 site_id=self.sitedataschema_model.site_id
             ),
-            method='GET')
+            method='GET',
+            headers=self.headers)
         response_data = json.loads(response.data)
         self.assertEqual(
             response_data["site_id"], self.sitedataschema_model.site_id)
@@ -318,7 +330,8 @@ class TestUserDataController(BaseTestCase):
                 site_id=model.site_id),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         response_data = json.loads(response.data)
 
         updated_entry = db_actions.crud(
@@ -352,7 +365,8 @@ class TestUserDataController(BaseTestCase):
             "/api/v1/usersitedata",
             method="POST",
             data=json.dumps(data),
-            content_type="application/json")
+            content_type="application/json",
+            headers=self.headers)
 
         response_data = json.loads(response.data)
 
@@ -385,7 +399,8 @@ class TestUserDataController(BaseTestCase):
             '/api/v1/usersitedata/{user_id}/{site_id}'.format(
                 user_id=model.user_id,
                 site_id=model.site_id
-            ), method='DELETE')
+            ), method='DELETE',
+            headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -410,7 +425,8 @@ class TestUserDataController(BaseTestCase):
         response = self.client.open(
             '/api/v1/usersitedata',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 5)
@@ -425,7 +441,8 @@ class TestUserDataController(BaseTestCase):
                 user_id=self.usersitedata_model.user_id,
                 site_id=self.usersitedata_model.site_id
             ),
-            method='GET')
+            method='GET',
+            headers=self.headers)
 
         response_data = json.loads(response.data)
         self.assertEquals(
@@ -464,7 +481,8 @@ class TestUserDataController(BaseTestCase):
                 site_id=model.site_id),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         response_data = json.loads(response.data)
 
         updated_entry = db_actions.crud(
