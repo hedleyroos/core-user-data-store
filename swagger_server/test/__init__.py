@@ -8,10 +8,10 @@ from sqlalchemy.exc import SQLAlchemyError
 from swagger_server import exception_handlers
 from swagger_server.encoder import JSONEncoder
 
-from user_data_store import models
+import project.app
+
 
 DB = SQLAlchemy()
-
 
 class BaseTestCase(TestCase):
 
@@ -19,7 +19,7 @@ class BaseTestCase(TestCase):
         #logging.getLogger('connexion.operation').setLevel('ERROR')
         app = connexion.App(__name__, specification_dir='../swagger/')
         app.app.json_encoder = JSONEncoder
-        app.app.config = models.app.config
+        app.app.config = project.app.APP.config
         app.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
         DB.init_app(app.app)
         app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
