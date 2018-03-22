@@ -3,23 +3,15 @@
 from __future__ import absolute_import
 
 import random
-import uuid
-from datetime import datetime
 
 from flask import json
 from ge_core_shared import db_actions
-from swagger_server.models import AdminNoteCreate
+
+from swagger_server.models import SiteDataSchema
 from swagger_server.models import SiteDataSchemaCreate
-from swagger_server.models import UserSiteDataCreate
-from swagger_server.models.admin_note import AdminNote
-from swagger_server.models.admin_note_update import AdminNoteUpdate
-from swagger_server.models.site_data_schema import SiteDataSchema
-from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate
-from swagger_server.models.user_site_data import UserSiteData
-from swagger_server.models.user_site_data_update import UserSiteDataUpdate
-import werkzeug
 
 from . import BaseTestCase
+from project.settings import API_KEY_HEADER
 
 
 class TestExceptions(BaseTestCase):
@@ -36,6 +28,8 @@ class TestExceptions(BaseTestCase):
             action="create"
         )
 
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+
     def test_response(self):
         """
         Test case for adminnote_create
@@ -46,7 +40,9 @@ class TestExceptions(BaseTestCase):
             "/api/v1/sitedataschemas",
             method="POST",
             data=json.dumps(data),
-            content_type="application/json")
+            content_type="application/json",
+            headers=self.headers
+        )
         r_data = json.loads(response.data)
         self.assertEqual(response.status_code, 500)
         self.assertEqual(

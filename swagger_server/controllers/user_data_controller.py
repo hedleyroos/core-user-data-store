@@ -17,10 +17,6 @@ from ge_core_shared import db_actions
 
 from user_data_store.models import AdminNote as SQLA_AdminNote
 
-from project.app import APP as app
-
-db = SQLAlchemy(app)
-
 
 def adminnote_create(data=None):
     """adminnote_create

@@ -1,3 +1,4 @@
+from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import types
@@ -6,6 +7,7 @@ from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import expression
 
 import project.app
+from project import settings
 
 DB = project.app.DB
 
