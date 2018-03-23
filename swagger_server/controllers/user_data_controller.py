@@ -13,7 +13,7 @@ from swagger_server.models.user_site_data import UserSiteData  # noqa: E501
 from swagger_server.models.user_site_data_create import UserSiteDataCreate  # noqa: E501
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
 from swagger_server import util
-from user_data_store import db_actions
+from ge_core_shared import db_actions
 
 from user_data_store.models import AdminNote as SQLA_AdminNote
 

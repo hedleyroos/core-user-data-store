@@ -6,6 +6,8 @@ import random
 import uuid
 from datetime import datetime
 
+from flask import json
+from ge_core_shared import db_actions
 import werkzeug
 
 from swagger_server.models import AdminNoteCreate
@@ -17,10 +19,9 @@ from swagger_server.models.site_data_schema import SiteDataSchema
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate
 from swagger_server.models.user_site_data import UserSiteData
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate
-from user_data_store import db_actions
-from user_data_store.settings import API_KEY_HEADER
+
 from . import BaseTestCase
-from flask import json
+from project.settings import API_KEY_HEADER
 
 
 class TestUserDataController(BaseTestCase):

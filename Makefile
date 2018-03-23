@@ -110,8 +110,8 @@ database:
 
 makemigrations: $(VENV)
 	@echo "$(CYAN)Creating migrating...$(CLEAR)"
-	FLASK_APP=user_data_store/models.py $(FLASK) db migrate -d user_data_store/migrations
+	$(VENV)/bin/python manage.py db migrate -d user_data_store/migrations
 
 migrate: $(VENV)
 	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
-	FLASK_APP=user_data_store/models.py $(FLASK) db upgrade -d user_data_store/migrations
+	$(VENV)/bin/python manage.py db upgrade -d user_data_store/migrations

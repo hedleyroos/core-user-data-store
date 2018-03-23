@@ -1,11 +1,12 @@
 import random
 
+from ge_core_shared import db_actions
 from werkzeug.test import Client
 
 from swagger_server.models.site_data_schema import SiteDataSchema
 from swagger_server.test import BaseTestCase
-from user_data_store import db_actions
-from user_data_store.settings import API_KEY_HEADER
+
+from project.settings import API_KEY_HEADER
 
 
 class TestAuthMiddleware(BaseTestCase):

@@ -4,12 +4,14 @@ from __future__ import absolute_import
 
 import random
 
+from flask import json
+from ge_core_shared import db_actions
+
 from swagger_server.models import SiteDataSchema
 from swagger_server.models import SiteDataSchemaCreate
-from user_data_store import db_actions
-from user_data_store.settings import API_KEY_HEADER
+
 from . import BaseTestCase
-from flask import json
+from project.settings import API_KEY_HEADER
 
 
 class TestExceptions(BaseTestCase):
