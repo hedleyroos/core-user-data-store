@@ -1,6 +1,6 @@
 FROM praekeltfoundation/python-base:3.6-stretch
 
-RUN apt-get update && apt-get install -y netcat
+RUN apt-get update && apt-get install -y netcat git
 
 WORKDIR /app/
 
