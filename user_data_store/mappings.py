@@ -1,4 +1,4 @@
-from user_data_store.transformation import Transformation, Mapping
+from ge_core_shared.transformation import Transformation, Mapping
 from werkzeug.http import http_date
 
 
