@@ -1,13 +1,6 @@
 user\_data\_store package
 =========================
 
-Subpackages
------------
-
-.. toctree::
-
-    user_data_store.test
-
 Submodules
 ----------
 
