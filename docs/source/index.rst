@@ -1,15 +1,16 @@
-.. Girl Effect: Core user data store documentation master file, created by
-   sphinx-quickstart on Mon Dec  4 15:50:21 2017.
+.. user_data_store documentation master file, created by
+   sphinx-quickstart on Wed Mar 28 09:13:03 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Girl Effect: Core user data store's documentation!
-==============================================================
+Welcome to user_data_store's documentation!
+===========================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
+   user_data_store
 
 
 Indices and tables
