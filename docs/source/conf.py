@@ -14,7 +14,7 @@
 #
 import os
 import sys
-sys.path.insert(0, '/Users/ruan/projects/girl-effect/core-user-data-store')
+sys.path.insert(0, '../..')
 
 os.environ["ALLOWED_API_KEYS"] = "document_api_key"
 
