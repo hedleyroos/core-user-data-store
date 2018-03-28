@@ -68,6 +68,10 @@ docs-build:  $(VENV)
 	@echo "$(CYAN)Generating sphinx docs...$(CLEAR)"
 	$(MAKE) -C docs/source clean html SPHINXBUILD=../../$(VENV)/bin/sphinx-build
 	@echo "$(GREEN)DONE$(CLEAR)"
+	@echo "$(CYAN)Moving build files to docs/ root...$(CLEAR)"
+	cp -r docs/_build/html/. docs/
+	rm -rf docs/_build/
+	@echo "$(GREEN)DONE$(CLEAR)"
 
 swagger-codegen-cli-$(CODEGEN_VERSION).jar:
 	wget https://oss.sonatype.org/content/repositories/releases/io/swagger/swagger-codegen-cli/$(CODEGEN_VERSION)/swagger-codegen-cli-$(CODEGEN_VERSION).jar
