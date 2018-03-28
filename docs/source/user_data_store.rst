@@ -8,7 +8,6 @@ Submodules
 
    user_data_store.mappings
    user_data_store.models
-   user_data_store.transformation
 
 Module contents
 ---------------
