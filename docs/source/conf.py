@@ -22,8 +22,8 @@ os.environ["ALLOWED_API_KEYS"] = "document_api_key"
 # -- Project information -----------------------------------------------------
 
 project = 'user_data_store'
-copyright = '2018, Author'
-author = 'Author'
+copyright = '2018, Girl Effect'
+author = 'Praekelt'
 
 # The short X.Y version
 version = ''
