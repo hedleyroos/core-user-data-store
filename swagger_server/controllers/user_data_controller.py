@@ -300,25 +300,19 @@ def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # n
 
     :rtype: List[UserSiteData]
     """
-
-    query = {
-        "order_by": ["site_id", "user_id"],
-    }
-
-    if offset:
-        query["offset"] = offset
-    if limit:
-        query["limit"] = limit
-    if user_id:
-        query["ids"] = user_id
-    if site_id:
-        query["ids"] = site_id
-
     return db_actions.crud(
         model="UserSiteData",
         api_model=UserSiteData,
         action="list",
-        query=query
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "user_id": user_id,
+                "site_id": site_id
+            },
+            "order_by": ["user_id", "site_id"]
+        }
     )
 
 
