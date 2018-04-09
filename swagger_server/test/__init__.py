@@ -8,7 +8,7 @@ os.environ.update(orig_environ)
 from flask_sqlalchemy import SQLAlchemy
 from flask_testing import TestCase
 from sqlalchemy.exc import SQLAlchemyError
-from ge_core_shared import exception_handlers, middleware, handlers
+from ge_core_shared import exception_handlers, middleware
 
 from swagger_server.encoder import JSONEncoder
 
@@ -29,5 +29,4 @@ class BaseTestCase(TestCase):
         app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
         app.app.wsgi_app = middleware.AuthMiddleware(app.app.wsgi_app)
         app.add_api('swagger.yaml', arguments={'title': 'Test User Data API'})
-        app.app.after_request(handlers.add_total_count)
         return app.app
