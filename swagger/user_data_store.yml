@@ -252,6 +252,16 @@ paths:
           required: false
           type: string
           format: uuid
+        - name: admin_note_ids
+          description: An optional list of adminnote ids
+          in: query
+          type: array
+          items:
+            type: integer
+          required: false
+          minItems: 0
+          collectionFormat: multi
+          uniqueItems: true
       produces:
         - application/json
       responses:
