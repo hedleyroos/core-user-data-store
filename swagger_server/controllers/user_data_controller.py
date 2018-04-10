@@ -71,20 +71,11 @@ def adminnote_list(offset=None, limit=None, admin_note_ids=None):  # noqa: E501
 
     :rtype: List[AdminNote]
     """
-    query = {
-        "ids": admin_note_ids,
-        "order_by": ["id"]
-    }
-    if offset:
-        query["offset"] = offset
-    if limit:
-        query["limit"] = limit
-
     return db_actions.crud(
         model="AdminNote",
         api_model=AdminNote,
         action="list",
-        query=query
+        query={"offset": offset, "limit": limit, "ids": admin_note_ids, "order_by": ["id"]}
     )
 
 

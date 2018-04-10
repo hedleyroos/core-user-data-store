@@ -134,7 +134,7 @@ class TestUserDataController(BaseTestCase):
             data = {
                 "user_id": "%s" % uuid.uuid1(),
                 "creator_id": "%s" % uuid.uuid1(),
-                "note": "List notes"
+                "note": "List notes %s" % index
             }
             objects.append(db_actions.crud(
                 model="AdminNote",
@@ -142,6 +142,18 @@ class TestUserDataController(BaseTestCase):
                 data=data,
                 action="create"
             ))
+        query_string = [
+            ("admin_note_ids", ",".join(map(str, [adminnote.id for adminnote in objects])))
+        ]
+        response = self.client.open(
+            '/api/v1/adminnotes',
+            method='GET',
+            query_string=query_string,
+            headers=self.headers)
+        response_data = json.loads(response.data)
+
+        self.assertEqual(len(response_data), len(objects))
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
         query_string = [
             ("limit", 2),
             ("admin_note_ids", ",".join(map(str, [adminnote.id for adminnote in objects])))
@@ -154,6 +166,7 @@ class TestUserDataController(BaseTestCase):
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 2)
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
     def test_adminnote_read(self):
         """
@@ -286,6 +299,7 @@ class TestUserDataController(BaseTestCase):
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 5)
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
     def test_sitedataschema_read(self):
         """
@@ -431,6 +445,7 @@ class TestUserDataController(BaseTestCase):
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 5)
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
     def test_usersitedata_read(self):
         """
