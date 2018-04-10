@@ -56,6 +56,7 @@ def adminnote_delete(admin_note_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def adminnote_list(offset=None, limit=None, admin_note_ids=None):  # noqa: E501
     """adminnote_list
 
@@ -171,6 +172,7 @@ def sitedataschema_delete(site_id):  # noqa: E501
 
 
 
+@decorators.list_response
 def sitedataschema_list(offset=None, limit=None):  # noqa: E501
     """sitedataschema_list
 
@@ -284,6 +286,7 @@ def usersitedata_delete(user_id, site_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # noqa: E501
     """usersitedata_list
 
