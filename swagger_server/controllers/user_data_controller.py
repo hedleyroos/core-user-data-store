@@ -56,7 +56,7 @@ def adminnote_delete(admin_note_id):  # noqa: E501
     )
 
 
-def adminnote_list(offset=None, limit=None, admin_note_ids=None):  # noqa: E501
+def adminnote_list(offset=None, limit=None, user_id=None, creator_id=None, admin_note_ids=None):  # noqa: E501
     """adminnote_list
 
      # noqa: E501
@@ -65,19 +65,28 @@ def adminnote_list(offset=None, limit=None, admin_note_ids=None):  # noqa: E501
     :type offset: int
     :param limit: An optional query parameter to limit the number of results returned.
     :type limit: int
+    :param user_id: An optional query parameter to filter by user_id
+    :type user_id: dict | bytes
+    :param creator_id: An optional query parameter to filter by creator (a user_id)
+    :type creator_id: dict | bytes
     :param admin_note_ids: An optional list of adminnote ids
     :type admin_note_ids: List[int]
 
     :rtype: List[AdminNote]
     """
     query = {
-        "ids": admin_note_ids,
         "order_by": ["id"]
     }
-    if offset:
+    if admin_note_ids is not None:
+        query["ids"] = admin_note_ids
+    if offset is not None:
         query["offset"] = offset
-    if limit:
+    if limit is not None:
         query["limit"] = limit
+    if user_id is not None:
+        query["user_id"] = user_id
+    if creator_id is not None:
+        query["creator_id"] = creator_id
 
     return db_actions.crud(
         model="AdminNote",
