@@ -65,6 +65,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/admin_note"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
@@ -185,6 +189,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/site_data_schema"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
     post:
       tags:
@@ -306,6 +314,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/user_site_data"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
     post:
       tags:
