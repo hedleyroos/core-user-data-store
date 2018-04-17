@@ -264,6 +264,12 @@ def usersitedata_create(data=None):  # noqa: E501
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
+    # Get site data schema
+    schema = sitedataschema_read(data["site_id"]).schema
+
+    # Check data schema first
+    util.validate_schema(data["data"], schema)
+
     return db_actions.crud(
         model="UserSiteData",
         api_model=UserSiteData,
@@ -367,6 +373,12 @@ def usersitedata_update(user_id, site_id, data=None):  # noqa: E501
     """
     if connexion.request.is_json:
         data = connexion.request.get_json()
+
+    # Get site data schema
+    schema = sitedataschema_read(site_id).schema
+
+    # Check data schema first
+    util.validate_schema(data["data"], schema)
 
     return db_actions.crud(
         model="UserSiteData",

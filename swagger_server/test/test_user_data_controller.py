@@ -42,7 +42,14 @@ class TestUserDataController(BaseTestCase):
 
         self.sitedataschema_data = {
             "site_id": random.randint(2, 2000000),
-            "schema": {"test": "data"}
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "item_1": {"type": "number"},
+                    "item_2": {"type": "string"}
+                },
+                "required": ["item_1", "item_2"]
+            }
         }
         self.sitedataschema_model = db_actions.crud(
             model="SiteDataSchema",
@@ -370,9 +377,27 @@ class TestUserDataController(BaseTestCase):
         """
         data = UserSiteDataCreate(**{
             # TODO: not what I did here
-            "site_id": random.randint(2, 2000000),
+            "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
-            "data": {"test": "data"},
+            "data": {"item_1": 1, "item_2": 2},
+            "consented_at": datetime.utcnow(),
+            "blocked": False
+        })
+        response = self.client.open(
+            "/api/v1/usersitedata",
+            method="POST",
+            data=json.dumps(data),
+            content_type="application/json",
+            headers=self.headers)
+
+        # Response should contain bad request
+        self.assertEquals(response.status_code, 400)
+
+        data = UserSiteDataCreate(**{
+            # TODO: not what I did here
+            "site_id": self.sitedataschema_data["site_id"],
+            "user_id": "%s" % uuid.uuid1(),
+            "data": {"item_1": 1, "item_2": "a string"},
             "consented_at": datetime.utcnow(),
             "blocked": False
         })
@@ -473,7 +498,7 @@ class TestUserDataController(BaseTestCase):
         """
         data = {
             # TODO: not what I did here
-            "site_id": random.randint(2, 2000000),
+            "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "data"},
             "consented_at": datetime.utcnow(),
@@ -499,6 +524,25 @@ class TestUserDataController(BaseTestCase):
             data=json.dumps(data),
             content_type='application/json',
             headers=self.headers)
+
+        # Check for bad request
+        self.assertEqual(response.status_code, 400)
+
+        # Retry with correct data
+
+        data = {"data": {"item_1": 1, "item_2": "another string"}}
+
+        data = UserSiteDataUpdate(**data)
+
+        response = self.client.open(
+            '/api/v1/usersitedata/{user_id}/{site_id}'.format(
+                user_id=model.user_id,
+                site_id=model.site_id),
+            method='PUT',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+
         response_data = json.loads(response.data)
 
         updated_entry = db_actions.crud(

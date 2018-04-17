@@ -3,6 +3,9 @@ import datetime
 import six
 import typing
 
+from jsonschema import validate
+from werkzeug.exceptions import BadRequest
+
 
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.
@@ -139,3 +142,10 @@ def _deserialize_dict(data, boxed_type):
     """
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
+
+
+def validate_schema(data, schema):
+    try:
+        validate(data, schema)
+    except Exception:
+        raise BadRequest()
