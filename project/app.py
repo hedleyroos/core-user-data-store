@@ -6,7 +6,6 @@ from raven.contrib.flask import Sentry
 
 from project import settings
 
-
 APP = Flask(__name__)
 SENTRY = Sentry(dsn=settings.SENTRY_DSN)
 
