@@ -59,7 +59,6 @@ class TestUserDataController(BaseTestCase):
         )
 
         self.usersitedata_data = {
-            # TODO: not what I did here
             "site_id": random.randint(2, 2000000),
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "data"},
@@ -241,7 +240,6 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = SiteDataSchemaCreate(**{
-            # TODO: not what I did here
             "site_id": random.randint(2, 2000000),
             "schema": {"test": "data"}
         })
@@ -376,7 +374,6 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = UserSiteDataCreate(**{
-            # TODO: not what I did here
             "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
             "data": {"item_1": 1, "item_2": 2},
@@ -394,7 +391,6 @@ class TestUserDataController(BaseTestCase):
         self.assertEquals(response.status_code, 400)
 
         data = UserSiteDataCreate(**{
-            # TODO: not what I did here
             "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
             "data": {"item_1": 1, "item_2": "a string"},
@@ -421,7 +417,6 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = {
-            # TODO: not what I did here
             "site_id": random.randint(2, 2000000),
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "delete this data"},
@@ -497,7 +492,6 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = {
-            # TODO: not what I did here
             "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "data"},

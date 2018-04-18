@@ -145,7 +145,13 @@ def _deserialize_dict(data, boxed_type):
 
 
 def validate_schema(data, schema):
+    """This function validates the data from a UserSiteData object against the
+    schema from a SiteDataSchema object.
+    :param data: dict from UserSiteData object's data field.
+    :param schema: dict from SiteDataSchema object's schema field.
+    """
     try:
         validate(data, schema)
     except Exception:
-        raise BadRequest()
+        raise BadRequest(
+            "Data does not match expected schema:{}".format(schema))
