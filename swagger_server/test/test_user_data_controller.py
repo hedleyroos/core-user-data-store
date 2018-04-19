@@ -48,7 +48,7 @@ class TestUserDataController(BaseTestCase):
                     "item_1": {"type": "number"},
                     "item_2": {"type": "string"}
                 },
-                "required": ["item_1", "item_2"]
+                "additionalProperties": False
             }
         }
         self.sitedataschema_model = db_actions.crud(
@@ -389,6 +389,10 @@ class TestUserDataController(BaseTestCase):
 
         # Response should contain bad request
         self.assertEquals(response.status_code, 400)
+        json_data = json.loads(response.data)
+        self.assertIn(
+            "Data does not match expected schema:2 is not of type 'string'",
+            json_data["detail"])
 
         data = UserSiteDataCreate(**{
             "site_id": self.sitedataschema_data["site_id"],
@@ -521,9 +525,12 @@ class TestUserDataController(BaseTestCase):
 
         # Check for bad request
         self.assertEqual(response.status_code, 400)
+        json_data = json.loads(response.data)
+        self.assertIn(
+            "Data does not match expected schema:Additional properties are not "
+            "allowed ('test' was unexpected)", json_data["detail"])
 
         # Retry with correct data
-
         data = {"data": {"item_1": 1, "item_2": "another string"}}
 
         data = UserSiteDataUpdate(**data)

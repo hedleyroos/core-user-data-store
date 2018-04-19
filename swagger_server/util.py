@@ -3,7 +3,7 @@ import datetime
 import six
 import typing
 
-from jsonschema import validate
+from jsonschema import validate, ValidationError
 from werkzeug.exceptions import BadRequest
 
 
@@ -152,6 +152,6 @@ def validate_schema(data, schema):
     """
     try:
         validate(data, schema)
-    except Exception:
+    except ValidationError as e:
         raise BadRequest(
-            "Data does not match expected schema:{}".format(schema))
+            f"Data does not match expected schema:{e.message}")
