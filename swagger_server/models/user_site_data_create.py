@@ -15,40 +15,30 @@ class UserSiteDataCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, user_id: str=None, site_id: int=None, consented_at: datetime=None, blocked: bool=None, data: object=None):  # noqa: E501
+    def __init__(self, user_id: str=None, site_id: int=None, data: object=None):  # noqa: E501
         """UserSiteDataCreate - a model defined in Swagger
 
         :param user_id: The user_id of this UserSiteDataCreate.  # noqa: E501
         :type user_id: str
         :param site_id: The site_id of this UserSiteDataCreate.  # noqa: E501
         :type site_id: int
-        :param consented_at: The consented_at of this UserSiteDataCreate.  # noqa: E501
-        :type consented_at: datetime
-        :param blocked: The blocked of this UserSiteDataCreate.  # noqa: E501
-        :type blocked: bool
         :param data: The data of this UserSiteDataCreate.  # noqa: E501
         :type data: object
         """
         self.swagger_types = {
             'user_id': str,
             'site_id': int,
-            'consented_at': datetime,
-            'blocked': bool,
             'data': object
         }
 
         self.attribute_map = {
             'user_id': 'user_id',
             'site_id': 'site_id',
-            'consented_at': 'consented_at',
-            'blocked': 'blocked',
             'data': 'data'
         }
 
         self._user_id = user_id
         self._site_id = site_id
-        self._consented_at = consented_at
-        self._blocked = blocked
         self._data = data
 
     @classmethod
@@ -107,48 +97,6 @@ class UserSiteDataCreate(Model):
             raise ValueError("Invalid value for `site_id`, must not be `None`")  # noqa: E501
 
         self._site_id = site_id
-
-    @property
-    def consented_at(self) -> datetime:
-        """Gets the consented_at of this UserSiteDataCreate.
-
-
-        :return: The consented_at of this UserSiteDataCreate.
-        :rtype: datetime
-        """
-        return self._consented_at
-
-    @consented_at.setter
-    def consented_at(self, consented_at: datetime):
-        """Sets the consented_at of this UserSiteDataCreate.
-
-
-        :param consented_at: The consented_at of this UserSiteDataCreate.
-        :type consented_at: datetime
-        """
-
-        self._consented_at = consented_at
-
-    @property
-    def blocked(self) -> bool:
-        """Gets the blocked of this UserSiteDataCreate.
-
-
-        :return: The blocked of this UserSiteDataCreate.
-        :rtype: bool
-        """
-        return self._blocked
-
-    @blocked.setter
-    def blocked(self, blocked: bool):
-        """Sets the blocked of this UserSiteDataCreate.
-
-
-        :param blocked: The blocked of this UserSiteDataCreate.
-        :type blocked: bool
-        """
-
-        self._blocked = blocked
 
     @property
     def data(self) -> object:

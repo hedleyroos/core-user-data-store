@@ -62,8 +62,6 @@ class TestUserDataController(BaseTestCase):
             "site_id": random.randint(2, 2000000),
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "data"},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
         }
         self.usersitedata_model = db_actions.crud(
             model="UserSiteData",
@@ -377,8 +375,6 @@ class TestUserDataController(BaseTestCase):
             "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
             "data": {"item_1": 1, "item_2": 2},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
         })
         response = self.client.open(
             "/api/v1/usersitedata",
@@ -398,8 +394,6 @@ class TestUserDataController(BaseTestCase):
             "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
             "data": {"item_1": 1, "item_2": "a string"},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
         })
         response = self.client.open(
             "/api/v1/usersitedata",
@@ -413,7 +407,6 @@ class TestUserDataController(BaseTestCase):
         self.assertEqual(response_data["site_id"], data.site_id)
         self.assertEqual(response_data["user_id"], data.user_id)
         self.assertEqual(response_data["data"], data.data)
-        self.assertEqual(response_data["blocked"], data.blocked)
 
     def test_usersitedata_delete(self):
         """
@@ -424,8 +417,6 @@ class TestUserDataController(BaseTestCase):
             "site_id": random.randint(2, 2000000),
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "delete this data"},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
         }
         model = db_actions.crud(
             model="UserSiteData",
@@ -499,8 +490,6 @@ class TestUserDataController(BaseTestCase):
             "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "data"},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
         }
         model = db_actions.crud(
             model="UserSiteData",
