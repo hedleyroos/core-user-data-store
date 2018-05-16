@@ -37,8 +37,6 @@ class UserSiteData(DB.Model):
     user_id = DB.Column(UUID, primary_key=True)
     site_id = DB.Column(DB.Integer, primary_key=True)
     data = DB.Column(DB.JSON, default={})
-    consented_at = DB.Column(DB.DateTime, default=utcnow())
-    blocked = DB.Column(DB.Boolean, default=False)
     created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime, default=utcnow(), onupdate=utcnow())

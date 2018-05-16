@@ -523,8 +523,6 @@ definitions:
   user_site_data:
     type: "object"
     required:
-    - "blocked"
-    - "consented_at"
     - "created_at"
     - "data"
     - "site_id"
@@ -536,14 +534,9 @@ definitions:
         format: "uuid"
       site_id:
         type: "integer"
-      consented_at:
-        type: "string"
-        format: "date-time"
       data:
         type: "object"
         properties: {}
-      blocked:
-        type: "boolean"
       created_at:
         type: "string"
         format: "date-time"
@@ -553,9 +546,7 @@ definitions:
         format: "date-time"
         readOnly: true
     example:
-      consented_at: "2000-01-23T04:56:07.000+00:00"
       data: "{}"
-      blocked: true
       updated_at: "2000-01-23T04:56:07.000+00:00"
       user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       site_id: 0
