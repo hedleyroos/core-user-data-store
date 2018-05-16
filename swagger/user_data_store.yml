@@ -207,11 +207,6 @@ definitions:
         format: uuid
       site_id:
         type: integer
-      consented_at:
-        type: string
-        format: 'date-time'
-      blocked:
-        type: boolean
       data:
         type: object
     required:
@@ -222,11 +217,6 @@ definitions:
   user_site_data_update:
     type: object
     properties:
-      consented_at:
-        type: string
-        format: 'date-time'
-      blocked:
-        type: boolean
       data:
         type: object
     minProperties: 1

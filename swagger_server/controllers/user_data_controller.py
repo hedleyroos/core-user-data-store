@@ -41,7 +41,7 @@ def adminnote_delete(admin_note_id):  # noqa: E501
 
      # noqa: E501
 
-    :param admin_note_id: Parameter to filter by id
+    :param admin_note_id: A unique integer value identifying the admin note.
     :type admin_note_id: int
 
     :rtype: None
@@ -102,7 +102,7 @@ def adminnote_read(admin_note_id):  # noqa: E501
 
      # noqa: E501
 
-    :param admin_note_id: A unique integer value identifying the adminnote.
+    :param admin_note_id: A unique integer value identifying the admin note.
     :type admin_note_id: int
 
     :rtype: AdminNote
@@ -120,9 +120,9 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param admin_note_id: A unique integer value identifying the adminote.
+    :param admin_note_id: A unique integer value identifying the admin note.
     :type admin_note_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: AdminNote
@@ -144,7 +144,7 @@ def sitedataschema_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: SiteDataSchema
@@ -234,7 +234,7 @@ def sitedataschema_update(site_id, data=None):  # noqa: E501
 
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: SiteDataSchema
@@ -256,7 +256,7 @@ def usersitedata_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: UserSiteData
@@ -366,7 +366,7 @@ def usersitedata_update(user_id, site_id, data=None):  # noqa: E501
     :type user_id: dict | bytes
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: UserSiteData
