@@ -22,8 +22,8 @@ os.environ["ALLOWED_API_KEYS"] = "document_api_key"
 # -- Project information -----------------------------------------------------
 
 project = 'user_data_store'
-copyright = '2018, Author'
-author = 'Author'
+copyright = '2018, Girl Effect'
+author = 'Praekelt'
 
 # The short X.Y version
 version = ''
@@ -47,7 +47,7 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ['../_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
