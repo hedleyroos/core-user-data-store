@@ -42,7 +42,14 @@ class TestUserDataController(BaseTestCase):
 
         self.sitedataschema_data = {
             "site_id": random.randint(2, 2000000),
-            "schema": {"test": "data"}
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "item_1": {"type": "number"},
+                    "item_2": {"type": "string"}
+                },
+                "additionalProperties": False
+            }
         }
         self.sitedataschema_model = db_actions.crud(
             model="SiteDataSchema",
@@ -52,12 +59,9 @@ class TestUserDataController(BaseTestCase):
         )
 
         self.usersitedata_data = {
-            # TODO: not what I did here
             "site_id": random.randint(2, 2000000),
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "data"},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
         }
         self.usersitedata_model = db_actions.crud(
             model="UserSiteData",
@@ -130,11 +134,11 @@ class TestUserDataController(BaseTestCase):
 
         """
         objects = []
-        for index in range(1, random.randint(2, 20)):
+        for index in range(2, random.randint(2, 20)):
             data = {
                 "user_id": "%s" % uuid.uuid1(),
                 "creator_id": "%s" % uuid.uuid1(),
-                "note": "List notes"
+                "note": "List notes %s" % index
             }
             objects.append(db_actions.crud(
                 model="AdminNote",
@@ -142,6 +146,18 @@ class TestUserDataController(BaseTestCase):
                 data=data,
                 action="create"
             ))
+        query_string = [
+            ("admin_note_ids", ",".join(map(str, [adminnote.id for adminnote in objects])))
+        ]
+        response = self.client.open(
+            '/api/v1/adminnotes',
+            method='GET',
+            query_string=query_string,
+            headers=self.headers)
+        response_data = json.loads(response.data)
+
+        self.assertEqual(len(response_data), len(objects))
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
         query_string = [
             ("limit", 2),
             ("admin_note_ids", ",".join(map(str, [adminnote.id for adminnote in objects])))
@@ -154,6 +170,7 @@ class TestUserDataController(BaseTestCase):
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 2)
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
     def test_adminnote_read(self):
         """
@@ -221,7 +238,6 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = SiteDataSchemaCreate(**{
-            # TODO: not what I did here
             "site_id": random.randint(2, 2000000),
             "schema": {"test": "data"}
         })
@@ -286,6 +302,7 @@ class TestUserDataController(BaseTestCase):
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 5)
+        self.assertIn("X-Total-Count", response.headers)
 
     def test_sitedataschema_read(self):
         """
@@ -355,12 +372,28 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = UserSiteDataCreate(**{
-            # TODO: not what I did here
-            "site_id": random.randint(2, 2000000),
+            "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
-            "data": {"test": "data"},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
+            "data": {"item_1": 1, "item_2": 2},
+        })
+        response = self.client.open(
+            "/api/v1/usersitedata",
+            method="POST",
+            data=json.dumps(data),
+            content_type="application/json",
+            headers=self.headers)
+
+        # Response should contain bad request
+        self.assertEquals(response.status_code, 400)
+        json_data = json.loads(response.data)
+        self.assertIn(
+            "Data does not match expected schema:2 is not of type 'string'",
+            json_data["detail"])
+
+        data = UserSiteDataCreate(**{
+            "site_id": self.sitedataschema_data["site_id"],
+            "user_id": "%s" % uuid.uuid1(),
+            "data": {"item_1": 1, "item_2": "a string"},
         })
         response = self.client.open(
             "/api/v1/usersitedata",
@@ -374,7 +407,6 @@ class TestUserDataController(BaseTestCase):
         self.assertEqual(response_data["site_id"], data.site_id)
         self.assertEqual(response_data["user_id"], data.user_id)
         self.assertEqual(response_data["data"], data.data)
-        self.assertEqual(response_data["blocked"], data.blocked)
 
     def test_usersitedata_delete(self):
         """
@@ -382,12 +414,9 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = {
-            # TODO: not what I did here
             "site_id": random.randint(2, 2000000),
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "delete this data"},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
         }
         model = db_actions.crud(
             model="UserSiteData",
@@ -431,6 +460,7 @@ class TestUserDataController(BaseTestCase):
         response_data = json.loads(response.data)
 
         self.assertEqual(len(response_data), 5)
+        self.assertIn("X-Total-Count", response.headers)
 
     def test_usersitedata_read(self):
         """
@@ -457,12 +487,9 @@ class TestUserDataController(BaseTestCase):
 
         """
         data = {
-            # TODO: not what I did here
-            "site_id": random.randint(2, 2000000),
+            "site_id": self.sitedataschema_data["site_id"],
             "user_id": "%s" % uuid.uuid1(),
             "data": {"test": "data"},
-            "consented_at": datetime.utcnow(),
-            "blocked": False
         }
         model = db_actions.crud(
             model="UserSiteData",
@@ -484,6 +511,28 @@ class TestUserDataController(BaseTestCase):
             data=json.dumps(data),
             content_type='application/json',
             headers=self.headers)
+
+        # Check for bad request
+        self.assertEqual(response.status_code, 400)
+        json_data = json.loads(response.data)
+        self.assertIn(
+            "Data does not match expected schema:Additional properties are not "
+            "allowed ('test' was unexpected)", json_data["detail"])
+
+        # Retry with correct data
+        data = {"data": {"item_1": 1, "item_2": "another string"}}
+
+        data = UserSiteDataUpdate(**data)
+
+        response = self.client.open(
+            '/api/v1/usersitedata/{user_id}/{site_id}'.format(
+                user_id=model.user_id,
+                site_id=model.site_id),
+            method='PUT',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+
         response_data = json.loads(response.data)
 
         updated_entry = db_actions.crud(

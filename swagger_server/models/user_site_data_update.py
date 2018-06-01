@@ -15,30 +15,20 @@ class UserSiteDataUpdate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, consented_at: datetime=None, blocked: bool=None, data: object=None):  # noqa: E501
+    def __init__(self, data: object=None):  # noqa: E501
         """UserSiteDataUpdate - a model defined in Swagger
 
-        :param consented_at: The consented_at of this UserSiteDataUpdate.  # noqa: E501
-        :type consented_at: datetime
-        :param blocked: The blocked of this UserSiteDataUpdate.  # noqa: E501
-        :type blocked: bool
         :param data: The data of this UserSiteDataUpdate.  # noqa: E501
         :type data: object
         """
         self.swagger_types = {
-            'consented_at': datetime,
-            'blocked': bool,
             'data': object
         }
 
         self.attribute_map = {
-            'consented_at': 'consented_at',
-            'blocked': 'blocked',
             'data': 'data'
         }
 
-        self._consented_at = consented_at
-        self._blocked = blocked
         self._data = data
 
     @classmethod
@@ -51,48 +41,6 @@ class UserSiteDataUpdate(Model):
         :rtype: UserSiteDataUpdate
         """
         return util.deserialize_model(dikt, cls)
-
-    @property
-    def consented_at(self) -> datetime:
-        """Gets the consented_at of this UserSiteDataUpdate.
-
-
-        :return: The consented_at of this UserSiteDataUpdate.
-        :rtype: datetime
-        """
-        return self._consented_at
-
-    @consented_at.setter
-    def consented_at(self, consented_at: datetime):
-        """Sets the consented_at of this UserSiteDataUpdate.
-
-
-        :param consented_at: The consented_at of this UserSiteDataUpdate.
-        :type consented_at: datetime
-        """
-
-        self._consented_at = consented_at
-
-    @property
-    def blocked(self) -> bool:
-        """Gets the blocked of this UserSiteDataUpdate.
-
-
-        :return: The blocked of this UserSiteDataUpdate.
-        :rtype: bool
-        """
-        return self._blocked
-
-    @blocked.setter
-    def blocked(self, blocked: bool):
-        """Sets the blocked of this UserSiteDataUpdate.
-
-
-        :param blocked: The blocked of this UserSiteDataUpdate.
-        :type blocked: bool
-        """
-
-        self._blocked = blocked
 
     @property
     def data(self) -> object:

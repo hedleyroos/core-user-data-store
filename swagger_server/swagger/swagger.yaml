@@ -48,6 +48,16 @@ paths:
         required: false
         type: "string"
         format: "uuid"
+      - name: "admin_note_ids"
+        in: "query"
+        description: "An optional list of adminnote ids"
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "multi"
+        minItems: 0
+        uniqueItems: true
       responses:
         200:
           description: ""
@@ -55,6 +65,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/admin_note"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
@@ -175,6 +189,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/site_data_schema"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
     post:
       tags:
@@ -296,6 +314,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/user_site_data"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
     post:
       tags:
@@ -501,8 +523,6 @@ definitions:
   user_site_data:
     type: "object"
     required:
-    - "blocked"
-    - "consented_at"
     - "created_at"
     - "data"
     - "site_id"
@@ -514,14 +534,9 @@ definitions:
         format: "uuid"
       site_id:
         type: "integer"
-      consented_at:
-        type: "string"
-        format: "date-time"
       data:
         type: "object"
         properties: {}
-      blocked:
-        type: "boolean"
       created_at:
         type: "string"
         format: "date-time"
@@ -531,9 +546,7 @@ definitions:
         format: "date-time"
         readOnly: true
     example:
-      consented_at: "2000-01-23T04:56:07.000+00:00"
       data: "{}"
-      blocked: true
       updated_at: "2000-01-23T04:56:07.000+00:00"
       user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       site_id: 0
@@ -550,22 +563,12 @@ definitions:
         format: "uuid"
       site_id:
         type: "integer"
-      consented_at:
-        type: "string"
-        format: "date-time"
-      blocked:
-        type: "boolean"
       data:
         type: "object"
         properties: {}
   user_site_data_update:
     type: "object"
     properties:
-      consented_at:
-        type: "string"
-        format: "date-time"
-      blocked:
-        type: "boolean"
       data:
         type: "object"
         properties: {}

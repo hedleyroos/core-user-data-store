@@ -3,6 +3,8 @@ import datetime
 import six
 import typing
 
+from jsonschema import validate, ValidationError
+from werkzeug.exceptions import BadRequest
 
 def _deserialize(data, klass):
     """Deserializes dict, list, str into an object.
@@ -139,3 +141,15 @@ def _deserialize_dict(data, boxed_type):
     """
     return {k: _deserialize(v, boxed_type)
             for k, v in six.iteritems(data)}
+
+def validate_schema(data, schema):
+    """This function validates the data from a UserSiteData object against the
+    schema from a SiteDataSchema object.
+    :param data: dict from UserSiteData object's data field.
+    :param schema: dict from SiteDataSchema object's schema field.
+    """
+    try:
+        validate(data, schema)
+    except ValidationError as e:
+        raise BadRequest(
+            f"Data does not match expected schema:{e.message}")

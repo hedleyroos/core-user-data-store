@@ -30,7 +30,7 @@ help:
 
 $(VENV):
 	@echo "$(CYAN)Initialise base ve...$(CLEAR)"
-	virtualenv $(VENV) -p python3
+	virtualenv $(VENV) -p python3.6
 	@echo "$(GREEN)DONE$(CLEAR)"
 
 # Creates the virtual environment.
@@ -113,8 +113,8 @@ database:
 
 makemigrations: $(VENV)
 	@echo "$(CYAN)Creating migrating...$(CLEAR)"
-	$(VENV)/bin/python manage.py db migrate -d user_data_store/migrations
+	ALLOWED_API_KEYS="unused" $(VENV)/bin/python manage.py db migrate -d user_data_store/migrations
 
 migrate: $(VENV)
 	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
-	$(VENV)/bin/python manage.py db upgrade -d user_data_store/migrations
+	ALLOWED_API_KEYS="unused" $(VENV)/bin/python manage.py db upgrade -d user_data_store/migrations
