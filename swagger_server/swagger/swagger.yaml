@@ -12,6 +12,22 @@ schemes:
 security:
 - APIKeyHeader: []
 paths:
+  /healthcheck:
+    get:
+      tags:
+      - "user_data"
+      description: "Get the status of the service."
+      operationId: "healthcheck"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "The service is operating normally."
+          schema:
+            $ref: "#/definitions/health_info"
+      security: []
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
   /adminnotes:
     get:
       tags:
@@ -572,6 +588,30 @@ definitions:
       data:
         type: "object"
         properties: {}
+  health_info:
+    type: "object"
+    required:
+    - "db_timestamp"
+    - "host"
+    - "server_timestamp"
+    - "version"
+    properties:
+      host:
+        type: "string"
+      server_timestamp:
+        type: "string"
+        format: "date-time"
+      version:
+        type: "string"
+      db_timestamp:
+        type: "string"
+        format: "date-time"
+    description: "Health check response"
+    example:
+      server_timestamp: "2000-01-23T04:56:07.000+00:00"
+      host: "host"
+      version: "version"
+      db_timestamp: "2000-01-23T04:56:07.000+00:00"
 parameters:
   optional_limit:
     name: "limit"
