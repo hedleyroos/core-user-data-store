@@ -134,7 +134,7 @@ class TestUserDataController(BaseTestCase):
 
         """
         objects = []
-        for index in range(2, random.randint(2, 20)):
+        for index in range(2, 2+random.randint(2, 20)):
             data = {
                 "user_id": "%s" % uuid.uuid1(),
                 "creator_id": "%s" % uuid.uuid1(),
