@@ -1,11 +1,17 @@
+import datetime
+import socket
+
 import connexion
+import pkg_resources
 import six
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+from project.app import DB
 from swagger_server.models.admin_note import AdminNote  # noqa: E501
 from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E501
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
+from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.site_data_schema import SiteDataSchema  # noqa: E501
 from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate  # noqa: E501
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate  # noqa: E501
@@ -122,7 +128,7 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
 
     :param admin_note_id: A unique integer value identifying the admin note.
     :type admin_note_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: AdminNote
@@ -139,12 +145,32 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
     )
 
 
+def healthcheck():  # noqa: E501
+    """healthcheck
+
+    Get the status of the service. # noqa: E501
+
+
+    :rtype: HealthInfo
+    """
+    result = DB.engine.execute("SELECT LOCALTIMESTAMP")
+    db_timestamp = result.fetchone()[0]
+
+    result = HealthInfo(
+        host=socket.getfqdn(),
+        server_timestamp=datetime.datetime.now(),
+        version=pkg_resources.require("core-user-data-store")[0].version,
+        db_timestamp=db_timestamp
+    )
+    return result
+
+
 def sitedataschema_create(data=None):  # noqa: E501
     """sitedataschema_create
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: SiteDataSchema
@@ -234,7 +260,7 @@ def sitedataschema_update(site_id, data=None):  # noqa: E501
 
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: SiteDataSchema
@@ -256,7 +282,7 @@ def usersitedata_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: UserSiteData
@@ -366,7 +392,7 @@ def usersitedata_update(user_id, site_id, data=None):  # noqa: E501
     :type user_id: dict | bytes
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: UserSiteData
