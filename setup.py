@@ -1,10 +1,11 @@
 from setuptools import setup, find_packages
+from user_data_store import __version__
 
 LONG_DESCRIPTION_FILES = ["README.rst", "AUTHORS.rst", "CHANGELOG.rst"]
 
 setup(
     name="core-user-data-store",
-    version="1.0.0",
+    version=__version__,
     description="Girl Effect Core User Data Store",
     long_description="".join(open(filename, "r").read() for filename in LONG_DESCRIPTION_FILES),
     author="Praekelt Consulting",

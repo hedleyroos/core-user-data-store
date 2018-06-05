@@ -2,12 +2,12 @@ import datetime
 import socket
 
 import connexion
-import pkg_resources
 import six
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from project.app import DB
+from user_data_store import __version__
 from swagger_server.models.admin_note import AdminNote  # noqa: E501
 from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E501
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
@@ -159,7 +159,7 @@ def healthcheck():  # noqa: E501
     result = HealthInfo(
         host=socket.getfqdn(),
         server_timestamp=datetime.datetime.now(),
-        version=pkg_resources.require("core-user-data-store")[0].version,
+        version=__version__,
         db_timestamp=db_timestamp
     )
     return result
