@@ -1,8 +1,8 @@
 Changelog
 =========
 
-next
-----
+1.1.3
+-----
 - Update Sentry config
 
 1.1.2
