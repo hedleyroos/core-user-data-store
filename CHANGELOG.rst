@@ -1,18 +1,23 @@
 Changelog
 =========
 
+1.1.3
+-----
+- Update Sentry config
+
 1.1.2
 -----
-Serve app using uWSGI
+- Serve app using uWSGI
 
 1.1.1
 -----
-Remove use of pkg_resources
+- Remove use of pkg_resources
 
 1.1.0
 -----
-Added healthcheck end-point
+- Added healthcheck end-point
 
 1.0.0
 -----
-Initial release
+- Initial release
+
