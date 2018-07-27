@@ -380,26 +380,6 @@ definitions:
       deletion_confirmed_via:
         type: string
 
-  health_info:
-    description: 'Health check response'
-    type: object
-    properties:
-      host:
-        type: string
-      server_timestamp:
-        type: string
-        format: 'date-time'
-      version:
-        type: string
-      db_timestamp:
-        type: string
-        format: 'date-time'
-    required:
-    - host
-    - server_timestamp
-    - version
-    - db_timestamp
-
 paths:
   /healthcheck:
     get:
