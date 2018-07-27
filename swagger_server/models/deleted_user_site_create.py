@@ -15,31 +15,26 @@ class DeletedUserSiteCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, deleted_user_id: str=None, site_id: int=None, deletion_request_via: str=None):  # noqa: E501
+    def __init__(self, deleted_user_id: str=None, site_id: int=None):  # noqa: E501
         """DeletedUserSiteCreate - a model defined in Swagger
 
         :param deleted_user_id: The deleted_user_id of this DeletedUserSiteCreate.  # noqa: E501
         :type deleted_user_id: str
         :param site_id: The site_id of this DeletedUserSiteCreate.  # noqa: E501
         :type site_id: int
-        :param deletion_request_via: The deletion_request_via of this DeletedUserSiteCreate.  # noqa: E501
-        :type deletion_request_via: str
         """
         self.swagger_types = {
             'deleted_user_id': str,
-            'site_id': int,
-            'deletion_request_via': str
+            'site_id': int
         }
 
         self.attribute_map = {
             'deleted_user_id': 'deleted_user_id',
-            'site_id': 'site_id',
-            'deletion_request_via': 'deletion_request_via'
+            'site_id': 'site_id'
         }
 
         self._deleted_user_id = deleted_user_id
         self._site_id = site_id
-        self._deletion_request_via = deletion_request_via
 
     @classmethod
     def from_dict(cls, dikt) -> 'DeletedUserSiteCreate':
@@ -97,26 +92,3 @@ class DeletedUserSiteCreate(Model):
             raise ValueError("Invalid value for `site_id`, must not be `None`")  # noqa: E501
 
         self._site_id = site_id
-
-    @property
-    def deletion_request_via(self) -> str:
-        """Gets the deletion_request_via of this DeletedUserSiteCreate.
-
-
-        :return: The deletion_request_via of this DeletedUserSiteCreate.
-        :rtype: str
-        """
-        return self._deletion_request_via
-
-    @deletion_request_via.setter
-    def deletion_request_via(self, deletion_request_via: str):
-        """Sets the deletion_request_via of this DeletedUserSiteCreate.
-
-
-        :param deletion_request_via: The deletion_request_via of this DeletedUserSiteCreate.
-        :type deletion_request_via: str
-        """
-        if deletion_request_via is None:
-            raise ValueError("Invalid value for `deletion_request_via`, must not be `None`")  # noqa: E501
-
-        self._deletion_request_via = deletion_request_via

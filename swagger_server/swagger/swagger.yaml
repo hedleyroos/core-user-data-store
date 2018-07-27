@@ -878,6 +878,7 @@ definitions:
         type: "string"
       email:
         type: "string"
+        format: "email"
       msisdn:
         type: "string"
       reason:
@@ -921,6 +922,7 @@ definitions:
         type: "string"
       email:
         type: "string"
+        format: "email"
       msisdn:
         type: "string"
       reason:
@@ -937,6 +939,7 @@ definitions:
         type: "string"
       email:
         type: "string"
+        format: "email"
       msisdn:
         type: "string"
       reason:
@@ -971,13 +974,11 @@ definitions:
       deletion_request_at:
         type: "string"
         format: "date-time"
-        readOnly: true
       deletion_request_via:
         type: "string"
       deletion_confirmed_at:
         type: "string"
         format: "date-time"
-        readOnly: true
       deletion_confirmed_via:
         type: "string"
     example:
@@ -993,7 +994,6 @@ definitions:
     type: "object"
     required:
     - "deleted_user_id"
-    - "deletion_request_via"
     - "site_id"
     properties:
       deleted_user_id:
@@ -1001,16 +1001,17 @@ definitions:
         format: "uuid"
       site_id:
         type: "integer"
-      deletion_request_via:
-        type: "string"
   deleted_user_site_update:
     type: "object"
     properties:
-      deleted_user_id:
+      deletion_request_at:
         type: "string"
-        format: "uuid"
-      site_id:
-        type: "integer"
+        format: "date-time"
+      deletion_request_via:
+        type: "string"
+      deletion_confirmed_at:
+        type: "string"
+        format: "date-time"
       deletion_confirmed_via:
         type: "string"
 parameters:
