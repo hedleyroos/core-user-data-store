@@ -241,7 +241,7 @@ definitions:
     - version
     - db_timestamp
 
-  delete_user:
+  deleted_user:
     type: object
     properties:
       id:
@@ -266,7 +266,6 @@ definitions:
       deleted_at:
         type: string
         format: date-time
-        readOnly: true
       deleter_id:
         type: string
         format: uuid
@@ -277,7 +276,7 @@ definitions:
       - updated_at
       - deleter_id
 
-  delete_user_create:
+  deleted_user_create:
     type: object
     properties:
       id:
@@ -299,7 +298,7 @@ definitions:
       - username
       - deleter_id
 
-  delete_user_update:
+  deleted_user_update:
     type: object
     properties:
       username:
@@ -313,12 +312,41 @@ definitions:
       deleted_at:
         type: string
         format: date-time
-        readOnly: true
       deleter_id:
         type: string
         format: uuid
     required:
       - deleter_id
+
+  deleted_user_site:
+    type: object
+    properties:
+      deleted_user_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      created_at:
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        readOnly: true
+      deletion_request_at:
+        type: string
+        format: date-time
+      deletion_request_via:
+        type: string
+      deletion_confirmed_at:
+        type: string
+        format: date-time
+    required:
+      - deleted_user_id
+      - site_id
+      - created_at
+      - updated_at
 
   health_info:
     description: 'Health check response'
@@ -626,9 +654,9 @@ paths:
       tags:
         - user_data
 
-  /deleteuser:
+  /deleteduser:
     get:
-      operationId: deleteuser_list
+      operationId: deleteduser_list
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
@@ -644,16 +672,16 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/delete_user'
+              $ref: '#/definitions/deleted_user'
       tags:
         - user_data
     post:
-      operationId: deleteuser_create
+      operationId: deleteduser_create
       parameters:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/delete_user_create'
+            $ref: '#/definitions/deleted_user_create'
       consumes:
         - application/json
       produces:
@@ -662,38 +690,38 @@ paths:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/delete_user'
+            $ref: '#/definitions/deleted_user'
       tags:
         - user_data
 
-  /deleteuser/{user_id}:
+  /deleteduser/{user_id}:
     parameters:
       - $ref: '#/parameters/user_id'
     delete:
-      operationId: deleteuser_delete
+      operationId: deleteduser_delete
       responses:
         '204':
           description: ''
       tags:
         - user_data
     get:
-      operationId: deleteuser_read
+      operationId: deleteduser_read
       produces:
         - application/json
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/delete_user'
+            $ref: '#/definitions/deleted_user'
       tags:
         - user_data
     put:
-      operationId: delete_user_update
+      operationId: deleted_user_update
       parameters:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/delete_user_update'
+            $ref: '#/definitions/deleted_user_update'
       consumes:
         - application/json
       produces:
@@ -702,6 +730,6 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/delete_user'
+            $ref: '#/definitions/deleted_user'
       tags:
         - user_data

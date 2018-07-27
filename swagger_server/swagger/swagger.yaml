@@ -431,11 +431,11 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /deleteuser:
+  /deleteduser:
     get:
       tags:
       - "user_data"
-      operationId: "deleteuser_list"
+      operationId: "deleteduser_list"
       produces:
       - "application/json"
       parameters:
@@ -461,7 +461,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/delete_user"
+              $ref: "#/definitions/deleted_user"
           headers:
             X-Total-Count:
               type: "integer"
@@ -470,7 +470,7 @@ paths:
     post:
       tags:
       - "user_data"
-      operationId: "deleteuser_create"
+      operationId: "deleteduser_create"
       consumes:
       - "application/json"
       produces:
@@ -480,18 +480,18 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/delete_user_create"
+          $ref: "#/definitions/deleted_user_create"
       responses:
         201:
           description: ""
           schema:
-            $ref: "#/definitions/delete_user"
+            $ref: "#/definitions/deleted_user"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /deleteuser/{user_id}:
+  /deleteduser/{user_id}:
     get:
       tags:
       - "user_data"
-      operationId: "deleteuser_read"
+      operationId: "deleteduser_read"
       produces:
       - "application/json"
       parameters:
@@ -505,12 +505,12 @@ paths:
         200:
           description: ""
           schema:
-            $ref: "#/definitions/delete_user"
+            $ref: "#/definitions/deleted_user"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
     put:
       tags:
       - "user_data"
-      operationId: "delete_user_update"
+      operationId: "deleted_user_update"
       consumes:
       - "application/json"
       produces:
@@ -526,17 +526,17 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/delete_user_update"
+          $ref: "#/definitions/deleted_user_update"
       responses:
         200:
           description: ""
           schema:
-            $ref: "#/definitions/delete_user"
+            $ref: "#/definitions/deleted_user"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
     delete:
       tags:
       - "user_data"
-      operationId: "deleteuser_delete"
+      operationId: "deleteduser_delete"
       parameters:
       - name: "user_id"
         in: "path"
@@ -729,7 +729,7 @@ definitions:
       host: "host"
       version: "version"
       db_timestamp: "2000-01-23T04:56:07.000+00:00"
-  delete_user:
+  deleted_user:
     type: "object"
     required:
     - "created_at"
@@ -760,7 +760,6 @@ definitions:
       deleted_at:
         type: "string"
         format: "date-time"
-        readOnly: true
       deleter_id:
         type: "string"
         format: "uuid"
@@ -774,7 +773,7 @@ definitions:
       deleted_at: "2000-01-23T04:56:07.000+00:00"
       email: "email"
       username: "username"
-  delete_user_create:
+  deleted_user_create:
     type: "object"
     required:
     - "deleter_id"
@@ -795,7 +794,7 @@ definitions:
       deleter_id:
         type: "string"
         format: "uuid"
-  delete_user_update:
+  deleted_user_update:
     type: "object"
     required:
     - "deleter_id"
@@ -811,10 +810,38 @@ definitions:
       deleted_at:
         type: "string"
         format: "date-time"
-        readOnly: true
       deleter_id:
         type: "string"
         format: "uuid"
+  deleted_user_site:
+    type: "object"
+    required:
+    - "created_at"
+    - "deleted_user_id"
+    - "site_id"
+    - "updated_at"
+    properties:
+      deleted_user_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      deletion_request_at:
+        type: "string"
+        format: "date-time"
+      deletion_request_via:
+        type: "string"
+      deletion_confirmed_at:
+        type: "string"
+        format: "date-time"
 parameters:
   optional_limit:
     name: "limit"

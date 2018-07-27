@@ -6,9 +6,10 @@ from __future__ import absolute_import
 from swagger_server.models.admin_note import AdminNote
 from swagger_server.models.admin_note_create import AdminNoteCreate
 from swagger_server.models.admin_note_update import AdminNoteUpdate
-from swagger_server.models.delete_user import DeleteUser
-from swagger_server.models.delete_user_create import DeleteUserCreate
-from swagger_server.models.delete_user_update import DeleteUserUpdate
+from swagger_server.models.deleted_user import DeletedUser
+from swagger_server.models.deleted_user_create import DeletedUserCreate
+from swagger_server.models.deleted_user_site import DeletedUserSite
+from swagger_server.models.deleted_user_update import DeletedUserUpdate
 from swagger_server.models.health_info import HealthInfo
 from swagger_server.models.site_data_schema import SiteDataSchema
 from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate
