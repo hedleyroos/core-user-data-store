@@ -148,8 +148,8 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
     )
 
 
-def delete_user_update(user_id, data=None):  # noqa: E501
-    """delete_user_update
+def deleted_user_update(user_id, data=None):  # noqa: E501
+    """deleted_user_update
 
      # noqa: E501
 
@@ -158,32 +158,32 @@ def delete_user_update(user_id, data=None):  # noqa: E501
     :param data: 
     :type data: dict | bytes
 
-    :rtype: DeleteUser
+    :rtype: DeletedUser
     """
     if connexion.request.is_json:
         user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
-        data = DeleteUserUpdate.from_dict(connexion.request.get_json())  # noqa: E501
+        data = DeletedUserUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
-def deleteuser_create(data=None):  # noqa: E501
-    """deleteuser_create
+def deleteduser_create(data=None):  # noqa: E501
+    """deleteduser_create
 
      # noqa: E501
 
     :param data: 
     :type data: dict | bytes
 
-    :rtype: DeleteUser
+    :rtype: DeletedUser
     """
     if connexion.request.is_json:
-        data = DeleteUserCreate.from_dict(connexion.request.get_json())  # noqa: E501
+        data = DeletedUserCreate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
-def deleteuser_delete(user_id):  # noqa: E501
-    """deleteuser_delete
+def deleteduser_delete(user_id):  # noqa: E501
+    """deleteduser_delete
 
      # noqa: E501
 
@@ -197,8 +197,8 @@ def deleteuser_delete(user_id):  # noqa: E501
     return 'do some magic!'
 
 
-def deleteuser_list(offset=None, limit=None):  # noqa: E501
-    """deleteuser_list
+def deleteduser_list(offset=None, limit=None):  # noqa: E501
+    """deleteduser_list
 
      # noqa: E501
 
@@ -207,20 +207,20 @@ def deleteuser_list(offset=None, limit=None):  # noqa: E501
     :param limit: An optional query parameter to limit the number of results returned.
     :type limit: int
 
-    :rtype: List[DeleteUser]
+    :rtype: List[DeletedUser]
     """
     return 'do some magic!'
 
 
-def deleteuser_read(user_id):  # noqa: E501
-    """deleteuser_read
+def deleteduser_read(user_id):  # noqa: E501
+    """deleteduser_read
 
      # noqa: E501
 
     :param user_id: A UUID value identifying the user.
     :type user_id: dict | bytes
 
-    :rtype: DeleteUser
+    :rtype: DeletedUser
     """
     if connexion.request.is_json:
         user_id = .from_dict(connexion.request.get_json())  # noqa: E501
