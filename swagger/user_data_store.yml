@@ -81,6 +81,15 @@ parameters:
     type: string
     format: uuid
 
+  optional_deleter_id_filter:
+    description: An optional query parameter to filter by deleter_id
+    in: query
+    name: deleter_id
+    required: false
+    type: string
+    format: uuid
+
+
 definitions:
   admin_note:
     type: object
@@ -683,6 +692,7 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_deleter_id_filter'
       produces:
         - application/json
       responses:
@@ -763,6 +773,7 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_user_filter'
       produces:
         - application/json
       responses:

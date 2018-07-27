@@ -455,6 +455,12 @@ paths:
         default: 20
         maximum: 100
         minimum: 1
+      - name: "deleter_id"
+        in: "query"
+        description: "An optional query parameter to filter by deleter_id"
+        required: false
+        type: "string"
+        format: "uuid"
       responses:
         200:
           description: ""
@@ -572,6 +578,12 @@ paths:
         default: 20
         maximum: 100
         minimum: 1
+      - name: "user_id"
+        in: "query"
+        description: "An optional query parameter to filter by user_id"
+        required: false
+        type: "string"
+        format: "uuid"
       responses:
         200:
           description: ""
@@ -1071,5 +1083,12 @@ parameters:
     in: "path"
     description: "A UUID value identifying the user."
     required: true
+    type: "string"
+    format: "uuid"
+  optional_deleter_id_filter:
+    name: "deleter_id"
+    in: "query"
+    description: "An optional query parameter to filter by deleter_id"
+    required: false
     type: "string"
     format: "uuid"
