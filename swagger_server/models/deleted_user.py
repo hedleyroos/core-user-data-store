@@ -188,6 +188,8 @@ class DeletedUser(Model):
         :param reason: The reason of this DeletedUser.
         :type reason: str
         """
+        if reason is None:
+            raise ValueError("Invalid value for `reason`, must not be `None`")  # noqa: E501
 
         self._reason = reason
 

@@ -272,6 +272,7 @@ definitions:
     required:
       - id
       - username
+      - reason
       - created_at
       - updated_at
       - deleter_id
@@ -296,6 +297,7 @@ definitions:
     required:
       - id
       - username
+      - reason
       - deleter_id
 
   deleted_user_update:
