@@ -510,7 +510,7 @@ paths:
     put:
       tags:
       - "user_data"
-      operationId: "deleted_user_update"
+      operationId: "deleteduser_update"
       consumes:
       - "application/json"
       produces:
@@ -842,6 +842,8 @@ definitions:
       deletion_confirmed_at:
         type: "string"
         format: "date-time"
+      deletion_confirmed_via:
+        type: "string"
 parameters:
   optional_limit:
     name: "limit"

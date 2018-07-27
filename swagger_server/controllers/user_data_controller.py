@@ -11,9 +11,9 @@ from user_data_store import __version__
 from swagger_server.models.admin_note import AdminNote  # noqa: E501
 from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E501
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
-from swagger_server.models.delete_user import DeleteUser  # noqa: E501
-from swagger_server.models.delete_user_create import DeleteUserCreate  # noqa: E501
-from swagger_server.models.delete_user_update import DeleteUserUpdate  # noqa: E501
+from swagger_server.models.deleted_user import DeletedUser  # noqa: E501
+from swagger_server.models.deleted_user_create import DeletedUserCreate  # noqa: E501
+from swagger_server.models.deleted_user_update import DeletedUserUpdate  # noqa: E501
 from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.site_data_schema import SiteDataSchema  # noqa: E501
 from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate  # noqa: E501
@@ -148,25 +148,6 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
     )
 
 
-def deleted_user_update(user_id, data=None):  # noqa: E501
-    """deleted_user_update
-
-     # noqa: E501
-
-    :param user_id: A UUID value identifying the user.
-    :type user_id: dict | bytes
-    :param data: 
-    :type data: dict | bytes
-
-    :rtype: DeletedUser
-    """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        data = DeletedUserUpdate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
-
-
 def deleteduser_create(data=None):  # noqa: E501
     """deleteduser_create
 
@@ -224,6 +205,25 @@ def deleteduser_read(user_id):  # noqa: E501
     """
     if connexion.request.is_json:
         user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def deleteduser_update(user_id, data=None):  # noqa: E501
+    """deleteduser_update
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param data: 
+    :type data: dict | bytes
+
+    :rtype: DeletedUser
+    """
+    if connexion.request.is_json:
+        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+    if connexion.request.is_json:
+        data = DeletedUserUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
