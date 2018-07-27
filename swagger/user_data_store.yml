@@ -320,8 +320,7 @@ definitions:
       deleter_id:
         type: string
         format: uuid
-    required:
-      - deleter_id
+    minProperties: 1
 
   deleted_user_site:
     type: object

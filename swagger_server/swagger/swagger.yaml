@@ -932,8 +932,6 @@ definitions:
         format: "uuid"
   deleted_user_update:
     type: "object"
-    required:
-    - "deleter_id"
     properties:
       username:
         type: "string"

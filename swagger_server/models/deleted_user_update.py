@@ -190,7 +190,5 @@ class DeletedUserUpdate(Model):
         :param deleter_id: The deleter_id of this DeletedUserUpdate.
         :type deleter_id: str
         """
-        if deleter_id is None:
-            raise ValueError("Invalid value for `deleter_id`, must not be `None`")  # noqa: E501
 
         self._deleter_id = deleter_id
