@@ -11,6 +11,9 @@ from user_data_store import __version__
 from swagger_server.models.admin_note import AdminNote  # noqa: E501
 from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E501
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
+from swagger_server.models.delete_user import DeleteUser  # noqa: E501
+from swagger_server.models.delete_user_create import DeleteUserCreate  # noqa: E501
+from swagger_server.models.delete_user_update import DeleteUserUpdate  # noqa: E501
 from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.site_data_schema import SiteDataSchema  # noqa: E501
 from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate  # noqa: E501
@@ -143,6 +146,85 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
         data=data,
         query={"id": admin_note_id},
     )
+
+
+def delete_user_update(user_id, data=None):  # noqa: E501
+    """delete_user_update
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param data: 
+    :type data: dict | bytes
+
+    :rtype: DeleteUser
+    """
+    if connexion.request.is_json:
+        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+    if connexion.request.is_json:
+        data = DeleteUserUpdate.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def deleteuser_create(data=None):  # noqa: E501
+    """deleteuser_create
+
+     # noqa: E501
+
+    :param data: 
+    :type data: dict | bytes
+
+    :rtype: DeleteUser
+    """
+    if connexion.request.is_json:
+        data = DeleteUserCreate.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def deleteuser_delete(user_id):  # noqa: E501
+    """deleteuser_delete
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def deleteuser_list(offset=None, limit=None):  # noqa: E501
+    """deleteuser_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+
+    :rtype: List[DeleteUser]
+    """
+    return 'do some magic!'
+
+
+def deleteuser_read(user_id):  # noqa: E501
+    """deleteuser_read
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: DeleteUser
+    """
+    if connexion.request.is_json:
+        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
 
 
 def healthcheck():  # noqa: E501

@@ -431,6 +431,123 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+  /deleteuser:
+    get:
+      tags:
+      - "user_data"
+      operationId: "deleteuser_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/delete_user"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+    post:
+      tags:
+      - "user_data"
+      operationId: "deleteuser_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/delete_user_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/delete_user"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+  /deleteuser/{user_id}:
+    get:
+      tags:
+      - "user_data"
+      operationId: "deleteuser_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/delete_user"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+    put:
+      tags:
+      - "user_data"
+      operationId: "delete_user_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/delete_user_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/delete_user"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+    delete:
+      tags:
+      - "user_data"
+      operationId: "deleteuser_delete"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
 securityDefinitions:
   APIKeyHeader:
     type: "apiKey"
@@ -612,6 +729,92 @@ definitions:
       host: "host"
       version: "version"
       db_timestamp: "2000-01-23T04:56:07.000+00:00"
+  delete_user:
+    type: "object"
+    required:
+    - "created_at"
+    - "deleter_id"
+    - "id"
+    - "updated_at"
+    - "username"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      username:
+        type: "string"
+      email:
+        type: "string"
+      msisdn:
+        type: "string"
+      reason:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      deleted_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      deleter_id:
+        type: "string"
+        format: "uuid"
+    example:
+      reason: "reason"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      deleter_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      msisdn: "msisdn"
+      deleted_at: "2000-01-23T04:56:07.000+00:00"
+      email: "email"
+      username: "username"
+  delete_user_create:
+    type: "object"
+    required:
+    - "deleter_id"
+    - "id"
+    - "username"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      username:
+        type: "string"
+      email:
+        type: "string"
+      msisdn:
+        type: "string"
+      reason:
+        type: "string"
+      deleter_id:
+        type: "string"
+        format: "uuid"
+  delete_user_update:
+    type: "object"
+    required:
+    - "deleter_id"
+    properties:
+      username:
+        type: "string"
+      email:
+        type: "string"
+      msisdn:
+        type: "string"
+      reason:
+        type: "string"
+      deleted_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      deleter_id:
+        type: "string"
+        format: "uuid"
 parameters:
   optional_limit:
     name: "limit"

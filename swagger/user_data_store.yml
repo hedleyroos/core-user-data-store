@@ -241,6 +241,105 @@ definitions:
     - version
     - db_timestamp
 
+  delete_user:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      username:
+        type: string
+      email:
+        type: string
+      msisdn:
+        type: string
+      reason:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        type: string
+        format: date-time
+        readOnly: true
+      deleted_at:
+        type: string
+        format: date-time
+        readOnly: true
+      deleter_id:
+        type: string
+        format: uuid
+    required:
+      - id
+      - username
+      - created_at
+      - updated_at
+      - deleter_id
+
+  delete_user_create:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      username:
+        type: string
+      email:
+        type: string
+      msisdn:
+        type: string
+      reason:
+        type: string
+      deleter_id:
+        type: string
+        format: uuid
+    required:
+      - id
+      - username
+      - deleter_id
+
+  delete_user_update:
+    type: object
+    properties:
+      username:
+        type: string
+      email:
+        type: string
+      msisdn:
+        type: string
+      reason:
+        type: string
+      deleted_at:
+        type: string
+        format: date-time
+        readOnly: true
+      deleter_id:
+        type: string
+        format: uuid
+    required:
+      - deleter_id
+
+  health_info:
+    description: 'Health check response'
+    type: object
+    properties:
+      host:
+        type: string
+      server_timestamp:
+        type: string
+        format: 'date-time'
+      version:
+        type: string
+      db_timestamp:
+        type: string
+        format: 'date-time'
+    required:
+    - host
+    - server_timestamp
+    - version
+    - db_timestamp
+
 paths:
   /healthcheck:
     get:
@@ -524,5 +623,85 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/user_site_data'
+      tags:
+        - user_data
+
+  /deleteuser:
+    get:
+      operationId: deleteuser_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/delete_user'
+      tags:
+        - user_data
+    post:
+      operationId: deleteuser_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: '#/definitions/delete_user_create'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/delete_user'
+      tags:
+        - user_data
+
+  /deleteuser/{user_id}:
+    parameters:
+      - $ref: '#/parameters/user_id'
+    delete:
+      operationId: deleteuser_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - user_data
+    get:
+      operationId: deleteuser_read
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/delete_user'
+      tags:
+        - user_data
+    put:
+      operationId: delete_user_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: '#/definitions/delete_user_update'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/delete_user'
       tags:
         - user_data
