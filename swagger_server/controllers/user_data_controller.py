@@ -177,7 +177,7 @@ def deleteduser_delete(user_id):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+        user_id = DeletedUser.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -207,7 +207,7 @@ def deleteduser_read(user_id):  # noqa: E501
     :rtype: DeletedUser
     """
     if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+        user_id = DeletedUser.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -224,7 +224,7 @@ def deleteduser_update(user_id, data=None):  # noqa: E501
     :rtype: DeletedUser
     """
     if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+        user_id = DeletedUser.from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
         data = DeletedUserUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
@@ -258,7 +258,7 @@ def deletedusersite_delete(user_id, site_id):  # noqa: E501
     :rtype: None
     """
     if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+        user_id = DeletedUserSite.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -290,7 +290,7 @@ def deletedusersite_read(user_id, site_id):  # noqa: E501
     :rtype: DeletedUserSite
     """
     if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+        user_id = DeletedUserSite.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -309,7 +309,7 @@ def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
     :rtype: DeletedUserSite
     """
     if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+        user_id = DeletedUserSite.from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
         data = DeletedUserSiteUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
