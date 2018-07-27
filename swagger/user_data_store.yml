@@ -362,6 +362,16 @@ definitions:
         format: uuid
       site_id:
         type: integer
+      deletion_request_at:
+        type: string
+        format: date-time
+      deletion_request_via:
+        type: string
+      deletion_confirmed_at:
+        type: string
+        format: date-time
+      deletion_confirmed_via:
+        type: string
     required:
       - deleted_user_id
       - site_id

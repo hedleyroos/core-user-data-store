@@ -15,26 +15,46 @@ class DeletedUserSiteCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, deleted_user_id: str=None, site_id: int=None):  # noqa: E501
+    def __init__(self, deleted_user_id: str=None, site_id: int=None, deletion_request_at: datetime=None, deletion_request_via: str=None, deletion_confirmed_at: datetime=None, deletion_confirmed_via: str=None):  # noqa: E501
         """DeletedUserSiteCreate - a model defined in Swagger
 
         :param deleted_user_id: The deleted_user_id of this DeletedUserSiteCreate.  # noqa: E501
         :type deleted_user_id: str
         :param site_id: The site_id of this DeletedUserSiteCreate.  # noqa: E501
         :type site_id: int
+        :param deletion_request_at: The deletion_request_at of this DeletedUserSiteCreate.  # noqa: E501
+        :type deletion_request_at: datetime
+        :param deletion_request_via: The deletion_request_via of this DeletedUserSiteCreate.  # noqa: E501
+        :type deletion_request_via: str
+        :param deletion_confirmed_at: The deletion_confirmed_at of this DeletedUserSiteCreate.  # noqa: E501
+        :type deletion_confirmed_at: datetime
+        :param deletion_confirmed_via: The deletion_confirmed_via of this DeletedUserSiteCreate.  # noqa: E501
+        :type deletion_confirmed_via: str
         """
         self.swagger_types = {
             'deleted_user_id': str,
-            'site_id': int
+            'site_id': int,
+            'deletion_request_at': datetime,
+            'deletion_request_via': str,
+            'deletion_confirmed_at': datetime,
+            'deletion_confirmed_via': str
         }
 
         self.attribute_map = {
             'deleted_user_id': 'deleted_user_id',
-            'site_id': 'site_id'
+            'site_id': 'site_id',
+            'deletion_request_at': 'deletion_request_at',
+            'deletion_request_via': 'deletion_request_via',
+            'deletion_confirmed_at': 'deletion_confirmed_at',
+            'deletion_confirmed_via': 'deletion_confirmed_via'
         }
 
         self._deleted_user_id = deleted_user_id
         self._site_id = site_id
+        self._deletion_request_at = deletion_request_at
+        self._deletion_request_via = deletion_request_via
+        self._deletion_confirmed_at = deletion_confirmed_at
+        self._deletion_confirmed_via = deletion_confirmed_via
 
     @classmethod
     def from_dict(cls, dikt) -> 'DeletedUserSiteCreate':
@@ -92,3 +112,87 @@ class DeletedUserSiteCreate(Model):
             raise ValueError("Invalid value for `site_id`, must not be `None`")  # noqa: E501
 
         self._site_id = site_id
+
+    @property
+    def deletion_request_at(self) -> datetime:
+        """Gets the deletion_request_at of this DeletedUserSiteCreate.
+
+
+        :return: The deletion_request_at of this DeletedUserSiteCreate.
+        :rtype: datetime
+        """
+        return self._deletion_request_at
+
+    @deletion_request_at.setter
+    def deletion_request_at(self, deletion_request_at: datetime):
+        """Sets the deletion_request_at of this DeletedUserSiteCreate.
+
+
+        :param deletion_request_at: The deletion_request_at of this DeletedUserSiteCreate.
+        :type deletion_request_at: datetime
+        """
+
+        self._deletion_request_at = deletion_request_at
+
+    @property
+    def deletion_request_via(self) -> str:
+        """Gets the deletion_request_via of this DeletedUserSiteCreate.
+
+
+        :return: The deletion_request_via of this DeletedUserSiteCreate.
+        :rtype: str
+        """
+        return self._deletion_request_via
+
+    @deletion_request_via.setter
+    def deletion_request_via(self, deletion_request_via: str):
+        """Sets the deletion_request_via of this DeletedUserSiteCreate.
+
+
+        :param deletion_request_via: The deletion_request_via of this DeletedUserSiteCreate.
+        :type deletion_request_via: str
+        """
+
+        self._deletion_request_via = deletion_request_via
+
+    @property
+    def deletion_confirmed_at(self) -> datetime:
+        """Gets the deletion_confirmed_at of this DeletedUserSiteCreate.
+
+
+        :return: The deletion_confirmed_at of this DeletedUserSiteCreate.
+        :rtype: datetime
+        """
+        return self._deletion_confirmed_at
+
+    @deletion_confirmed_at.setter
+    def deletion_confirmed_at(self, deletion_confirmed_at: datetime):
+        """Sets the deletion_confirmed_at of this DeletedUserSiteCreate.
+
+
+        :param deletion_confirmed_at: The deletion_confirmed_at of this DeletedUserSiteCreate.
+        :type deletion_confirmed_at: datetime
+        """
+
+        self._deletion_confirmed_at = deletion_confirmed_at
+
+    @property
+    def deletion_confirmed_via(self) -> str:
+        """Gets the deletion_confirmed_via of this DeletedUserSiteCreate.
+
+
+        :return: The deletion_confirmed_via of this DeletedUserSiteCreate.
+        :rtype: str
+        """
+        return self._deletion_confirmed_via
+
+    @deletion_confirmed_via.setter
+    def deletion_confirmed_via(self, deletion_confirmed_via: str):
+        """Sets the deletion_confirmed_via of this DeletedUserSiteCreate.
+
+
+        :param deletion_confirmed_via: The deletion_confirmed_via of this DeletedUserSiteCreate.
+        :type deletion_confirmed_via: str
+        """
+
+        self._deletion_confirmed_via = deletion_confirmed_via
