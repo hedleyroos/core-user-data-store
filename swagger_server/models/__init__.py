@@ -9,6 +9,8 @@ from swagger_server.models.admin_note_update import AdminNoteUpdate
 from swagger_server.models.deleted_user import DeletedUser
 from swagger_server.models.deleted_user_create import DeletedUserCreate
 from swagger_server.models.deleted_user_site import DeletedUserSite
+from swagger_server.models.deleted_user_site_create import DeletedUserSiteCreate
+from swagger_server.models.deleted_user_site_update import DeletedUserSiteUpdate
 from swagger_server.models.deleted_user_update import DeletedUserUpdate
 from swagger_server.models.health_info import HealthInfo
 from swagger_server.models.site_data_schema import SiteDataSchema

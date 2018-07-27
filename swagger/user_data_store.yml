@@ -337,11 +337,13 @@ definitions:
       deletion_request_at:
         type: string
         format: date-time
+        readOnly: true
       deletion_request_via:
         type: string
       deletion_confirmed_at:
         type: string
         format: date-time
+        readOnly: true
       deletion_confirmed_via:
         type: string
     required:
@@ -349,6 +351,32 @@ definitions:
       - site_id
       - created_at
       - updated_at
+
+  deleted_user_site_create:
+    type: object
+    properties:
+      deleted_user_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      deletion_request_via:
+        type: string
+    required:
+      - deleted_user_id
+      - site_id
+      - deletion_request_via
+
+  deleted_user_site_update:
+    type: object
+    properties:
+      deleted_user_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      deletion_confirmed_via:
+        type: string
 
   health_info:
     description: 'Health check response'
@@ -735,3 +763,84 @@ paths:
             $ref: '#/definitions/deleted_user'
       tags:
         - user_data
+
+  /deletedusersite:
+    get:
+      operationId: deletedusersite_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/deleted_user_site'
+      tags:
+        - user_data
+    post:
+      operationId: deletedusersite_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: '#/definitions/deleted_user_site_create'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/deleted_user_site'
+      tags:
+        - user_data
+
+  /deletedusersite/{user_id}/{site_id}:
+    parameters:
+      - $ref: '#/parameters/user_id'
+      - $ref: '#/parameters/site_id'
+    delete:
+      operationId: deletedusersite_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - user_data
+    get:
+      operationId: deletedusersite_read
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/deleted_user_site'
+      tags:
+        - user_data
+    put:
+      operationId: deletedusersite_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: '#/definitions/deleted_user_site_update'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/deleted_user_site'
+      tags:
+        - user_datad

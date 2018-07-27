@@ -13,6 +13,8 @@ from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E50
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
 from swagger_server.models.deleted_user import DeletedUser  # noqa: E501
 from swagger_server.models.deleted_user_create import DeletedUserCreate  # noqa: E501
+from swagger_server.models.deleted_user_site import DeletedUserSite  # noqa: E501
+from swagger_server.models.deleted_user_site_create import DeletedUserSiteCreate  # noqa: E501
 from swagger_server.models.deleted_user_update import DeletedUserUpdate  # noqa: E501
 from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.site_data_schema import SiteDataSchema  # noqa: E501
@@ -224,6 +226,70 @@ def deleteduser_update(user_id, data=None):  # noqa: E501
         user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     if connexion.request.is_json:
         data = DeletedUserUpdate.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def deletedusersite_create(data=None):  # noqa: E501
+    """deletedusersite_create
+
+     # noqa: E501
+
+    :param data: 
+    :type data: dict | bytes
+
+    :rtype: DeletedUserSite
+    """
+    if connexion.request.is_json:
+        data = DeletedUserSiteCreate.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def deletedusersite_delete(user_id, site_id):  # noqa: E501
+    """deletedusersite_delete
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param site_id: A unique integer value identifying the site.
+    :type site_id: int
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
+def deletedusersite_list(offset=None, limit=None):  # noqa: E501
+    """deletedusersite_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+
+    :rtype: List[DeletedUserSite]
+    """
+    return 'do some magic!'
+
+
+def deletedusersite_read(user_id, site_id):  # noqa: E501
+    """deletedusersite_read
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param site_id: A unique integer value identifying the site.
+    :type site_id: int
+
+    :rtype: DeletedUserSite
+    """
+    if connexion.request.is_json:
+        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 

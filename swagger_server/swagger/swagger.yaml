@@ -548,6 +548,138 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+  /deletedusersite:
+    get:
+      tags:
+      - "user_data"
+      operationId: "deletedusersite_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/deleted_user_site"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+    post:
+      tags:
+      - "user_data"
+      operationId: "deletedusersite_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/deleted_user_site_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/deleted_user_site"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+  /deletedusersite/{user_id}/{site_id}:
+    get:
+      tags:
+      - "user_data"
+      operationId: "deletedusersite_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/deleted_user_site"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+    put:
+      tags:
+      - "user_datad"
+      operationId: "deletedusersite_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/deleted_user_site_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/deleted_user_site"
+      x-swagger-router-controller: "swagger_server.controllers.user_datad_controller"
+    delete:
+      tags:
+      - "user_data"
+      operationId: "deletedusersite_delete"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
 securityDefinitions:
   APIKeyHeader:
     type: "apiKey"
@@ -837,11 +969,46 @@ definitions:
       deletion_request_at:
         type: "string"
         format: "date-time"
+        readOnly: true
       deletion_request_via:
         type: "string"
       deletion_confirmed_at:
         type: "string"
         format: "date-time"
+        readOnly: true
+      deletion_confirmed_via:
+        type: "string"
+    example:
+      deletion_request_via: "deletion_request_via"
+      deletion_confirmed_at: "2000-01-23T04:56:07.000+00:00"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      site_id: 0
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      deleted_user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      deletion_request_at: "2000-01-23T04:56:07.000+00:00"
+      deletion_confirmed_via: "deletion_confirmed_via"
+  deleted_user_site_create:
+    type: "object"
+    required:
+    - "deleted_user_id"
+    - "deletion_request_via"
+    - "site_id"
+    properties:
+      deleted_user_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      deletion_request_via:
+        type: "string"
+  deleted_user_site_update:
+    type: "object"
+    properties:
+      deleted_user_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
       deletion_confirmed_via:
         type: "string"
 parameters:
