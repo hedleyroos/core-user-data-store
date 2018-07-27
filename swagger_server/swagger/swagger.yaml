@@ -631,7 +631,7 @@ paths:
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
     put:
       tags:
-      - "user_datad"
+      - "user_data"
       operationId: "deletedusersite_update"
       consumes:
       - "application/json"
@@ -659,7 +659,7 @@ paths:
           description: ""
           schema:
             $ref: "#/definitions/deleted_user_site"
-      x-swagger-router-controller: "swagger_server.controllers.user_datad_controller"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
     delete:
       tags:
       - "user_data"

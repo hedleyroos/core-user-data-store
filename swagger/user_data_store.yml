@@ -843,4 +843,4 @@ paths:
           schema:
             $ref: '#/definitions/deleted_user_site'
       tags:
-        - user_datad
+        - user_data
