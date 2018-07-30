@@ -182,9 +182,14 @@ def deleteduser_delete(user_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        user_id = DeletedUser.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="delete",
+        query={
+            "id": user_id
+        }
+    )
 
 
 def deleteduser_list(offset=None, limit=None):  # noqa: E501

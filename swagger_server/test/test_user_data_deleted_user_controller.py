@@ -17,17 +17,12 @@ from . import BaseTestCase
 from project.settings import API_KEY_HEADER
 
 
-class TestUserDataController(BaseTestCase):
-    """ UserDataController integration test stubs """
+class TestUserDataDeletedUserController(BaseTestCase):
 
     def setUp(self):
         self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_deleted_user_create(self):
-        """
-        Test case for adminnote_create
-
-        """
         data_dict = {
             "id": "%s" % uuid.uuid1(),
             "username": "UseryName",
@@ -48,38 +43,37 @@ class TestUserDataController(BaseTestCase):
         for key, val in data_dict.items():
             self.assertEqual(response_data[key], getattr(data, key))
 
-    #def test_adminnote_delete(self):
-    #    """
-    #    Test case for adminnote_delete
+    def test_deleted_user_delete(self):
+        data = {
+            "id": "%s" % uuid.uuid1(),
+            "username": "UseryName",
+            "email": "asdasd@asd.com",
+            "msisdn": "0865456321",
+            "reason": "Like I need one",
+            "deleter_id": "%s" % uuid.uuid1(),
+        }
+        model = db_actions.crud(
+            model="DeletedUser",
+            api_model=DeletedUserCreate,
+            data=data,
+            action="create"
+        )
 
-    #    """
-    #    data = {
-    #        "creator_id": "%s" % uuid.uuid1(),
-    #        "note": "This is text",
-    #        "user_id": "%s" % uuid.uuid1(),
-    #    }
-    #    model = db_actions.crud(
-    #        model="AdminNote",
-    #        api_model=AdminNote,
-    #        data=data,
-    #        action="create"
-    #    )
+        response = self.client.open(
+            '/api/v1/deleteduser/{user_id}'.format(
+                user_id=model.id
+            ), method='DELETE',
+            headers=self.headers)
 
-    #    response = self.client.open(
-    #        '/api/v1/adminnotes/{id}'.format(
-    #            id=model.id
-    #        ), method='DELETE',
-    #        headers=self.headers)
-
-    #    with self.assertRaises(werkzeug.exceptions.NotFound):
-    #        db_actions.crud(
-    #            model="AdminNote",
-    #            api_model=AdminNote,
-    #            action="read",
-    #            query={
-    #                "id": model.id
-    #            }
-    #        )
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            db_actions.crud(
+                model="DeletedUser",
+                api_model=DeletedUser,
+                action="read",
+                query={
+                    "id": model.id
+                }
+            )
 
     #def test_adminnote_list(self):
     #    """
