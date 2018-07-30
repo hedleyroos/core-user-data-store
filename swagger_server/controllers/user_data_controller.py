@@ -156,14 +156,20 @@ def deleteduser_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DeletedUser
     """
     if connexion.request.is_json:
-        data = DeletedUserCreate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUserCreate,
+        action="create",
+        data=data,
+    )
 
 
 def deleteduser_delete(user_id):  # noqa: E501
