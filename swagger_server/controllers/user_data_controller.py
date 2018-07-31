@@ -386,6 +386,21 @@ def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
     )
 
 
+def deleteuserdata(user_id):  # noqa: E501
+    """deleteuserdata
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
+
+
 def healthcheck():  # noqa: E501
     """healthcheck
 

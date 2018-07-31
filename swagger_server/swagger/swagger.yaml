@@ -692,6 +692,22 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+  /deleteuserdata/{user_id}:
+    delete:
+      tags:
+      - "user_data"
+      operationId: "deleteuserdata"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
 securityDefinitions:
   APIKeyHeader:
     type: "apiKey"

@@ -848,3 +848,14 @@ paths:
             $ref: '#/definitions/deleted_user_site'
       tags:
         - user_data
+
+  /deleteuserdata/{user_id}:
+    parameters:
+      - $ref: '#/parameters/user_id'
+    delete:
+      operationId: deleteuserdata
+      responses:
+        '204':
+          description: ''
+      tags:
+        - user_data
