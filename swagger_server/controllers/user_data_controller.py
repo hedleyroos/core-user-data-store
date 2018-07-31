@@ -5,6 +5,7 @@ import connexion
 import six
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 from project.app import DB
 from user_data_store import __version__
@@ -28,6 +29,22 @@ from swagger_server import util
 from ge_core_shared import db_actions, decorators
 
 from user_data_store.models import AdminNote as SQLA_AdminNote
+
+
+SQL_DELETE_USER_DATA = """
+-- Given a user id (:user_id),
+-- delete AdminNote and UserSiteData tied to user id
+
+BEGIN;
+
+DELETE FROM adminnote
+ WHERE user_id = :user_id;
+
+DELETE FROM usersitedata
+ WHERE user_id = :user_id;
+
+COMMIT;
+"""
 
 
 def adminnote_create(data=None):
@@ -396,9 +413,13 @@ def deleteuserdata(user_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    # TODO: Confirm if deleted user and deleted user site need to be populated.
+    # Confirm what needs to be returned.
+    DB.session.get_bind().execute(
+        text(SQL_DELETE_USER_DATA),
+        **{"user_id": user_id}
+    )
+    return None
 
 
 def healthcheck():  # noqa: E501

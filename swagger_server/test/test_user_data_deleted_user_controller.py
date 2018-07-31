@@ -11,6 +11,8 @@ from flask import json
 from ge_core_shared import db_actions
 import werkzeug
 
+from swagger_server.models import AdminNoteCreate
+from swagger_server.models.admin_note import AdminNote
 from swagger_server.models.deleted_user import DeletedUser
 from swagger_server.models.deleted_user_create import DeletedUserCreate
 from swagger_server.models.deleted_user_update import DeletedUserUpdate
@@ -20,6 +22,51 @@ from swagger_server.models.deleted_user_site_update import DeletedUserSiteUpdate
 
 from . import BaseTestCase
 from project.settings import API_KEY_HEADER
+
+
+class TestUserDataMiscController(BaseTestCase):
+
+    def test_delete_user_data(self):
+        headers = {API_KEY_HEADER: "test-api-key"}
+        user_id = "%s" % uuid.uuid1()
+
+        for index in range(1, random.randint(5, 20)):
+            adminnote_data = {
+                "creator_id": "%s" % uuid.uuid1(),
+                "note": "This is text %s" % index,
+                "user_id": user_id,
+            }
+            adminnote_model = db_actions.crud(
+                model="AdminNote",
+                api_model=AdminNoteCreate,
+                data=adminnote_data,
+                action="create"
+            )
+
+        response = self.client.open(
+            '/api/v1/deleteuserdata/{user_id}'.format(
+                user_id=user_id,
+            ), method='DELETE',
+            headers=headers)
+
+        note_list = db_actions.crud(
+            model="AdminNote",
+            api_model=AdminNote,
+            action="list",
+            query={
+                "user_id": user_id,
+                "order_by": ["user_id"]
+            }
+        )
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            note_list = db_actions.crud(
+                model="AdminNote",
+                api_model=AdminNote,
+                action="read",
+                query={
+                    "user_id": user_id,
+                }
+            )
 
 
 class TestUserDataDeletedUserController(BaseTestCase):
