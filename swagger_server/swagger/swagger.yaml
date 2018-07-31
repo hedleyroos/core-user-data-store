@@ -981,10 +981,10 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
-      deletion_request_at:
+      deletion_requested_at:
         type: "string"
         format: "date-time"
-      deletion_request_via:
+      deletion_requested_via:
         type: "string"
       deletion_confirmed_at:
         type: "string"
@@ -992,13 +992,13 @@ definitions:
       deletion_confirmed_via:
         type: "string"
     example:
-      deletion_request_via: "deletion_request_via"
       deletion_confirmed_at: "2000-01-23T04:56:07.000+00:00"
       updated_at: "2000-01-23T04:56:07.000+00:00"
+      deletion_requested_at: "2000-01-23T04:56:07.000+00:00"
       site_id: 0
+      deletion_requested_via: "deletion_requested_via"
       created_at: "2000-01-23T04:56:07.000+00:00"
       deleted_user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
-      deletion_request_at: "2000-01-23T04:56:07.000+00:00"
       deletion_confirmed_via: "deletion_confirmed_via"
   deleted_user_site_create:
     type: "object"
@@ -1011,10 +1011,10 @@ definitions:
         format: "uuid"
       site_id:
         type: "integer"
-      deletion_request_at:
+      deletion_requested_at:
         type: "string"
         format: "date-time"
-      deletion_request_via:
+      deletion_requested_via:
         type: "string"
       deletion_confirmed_at:
         type: "string"
@@ -1024,10 +1024,10 @@ definitions:
   deleted_user_site_update:
     type: "object"
     properties:
-      deletion_request_at:
+      deletion_requested_at:
         type: "string"
         format: "date-time"
-      deletion_request_via:
+      deletion_requested_via:
         type: "string"
       deletion_confirmed_at:
         type: "string"

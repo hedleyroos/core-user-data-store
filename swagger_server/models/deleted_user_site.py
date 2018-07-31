@@ -15,7 +15,7 @@ class DeletedUserSite(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, deleted_user_id: str=None, site_id: int=None, created_at: datetime=None, updated_at: datetime=None, deletion_request_at: datetime=None, deletion_request_via: str=None, deletion_confirmed_at: datetime=None, deletion_confirmed_via: str=None):  # noqa: E501
+    def __init__(self, deleted_user_id: str=None, site_id: int=None, created_at: datetime=None, updated_at: datetime=None, deletion_requested_at: datetime=None, deletion_requested_via: str=None, deletion_confirmed_at: datetime=None, deletion_confirmed_via: str=None):  # noqa: E501
         """DeletedUserSite - a model defined in Swagger
 
         :param deleted_user_id: The deleted_user_id of this DeletedUserSite.  # noqa: E501
@@ -26,10 +26,10 @@ class DeletedUserSite(Model):
         :type created_at: datetime
         :param updated_at: The updated_at of this DeletedUserSite.  # noqa: E501
         :type updated_at: datetime
-        :param deletion_request_at: The deletion_request_at of this DeletedUserSite.  # noqa: E501
-        :type deletion_request_at: datetime
-        :param deletion_request_via: The deletion_request_via of this DeletedUserSite.  # noqa: E501
-        :type deletion_request_via: str
+        :param deletion_requested_at: The deletion_requested_at of this DeletedUserSite.  # noqa: E501
+        :type deletion_requested_at: datetime
+        :param deletion_requested_via: The deletion_requested_via of this DeletedUserSite.  # noqa: E501
+        :type deletion_requested_via: str
         :param deletion_confirmed_at: The deletion_confirmed_at of this DeletedUserSite.  # noqa: E501
         :type deletion_confirmed_at: datetime
         :param deletion_confirmed_via: The deletion_confirmed_via of this DeletedUserSite.  # noqa: E501
@@ -40,8 +40,8 @@ class DeletedUserSite(Model):
             'site_id': int,
             'created_at': datetime,
             'updated_at': datetime,
-            'deletion_request_at': datetime,
-            'deletion_request_via': str,
+            'deletion_requested_at': datetime,
+            'deletion_requested_via': str,
             'deletion_confirmed_at': datetime,
             'deletion_confirmed_via': str
         }
@@ -51,8 +51,8 @@ class DeletedUserSite(Model):
             'site_id': 'site_id',
             'created_at': 'created_at',
             'updated_at': 'updated_at',
-            'deletion_request_at': 'deletion_request_at',
-            'deletion_request_via': 'deletion_request_via',
+            'deletion_requested_at': 'deletion_requested_at',
+            'deletion_requested_via': 'deletion_requested_via',
             'deletion_confirmed_at': 'deletion_confirmed_at',
             'deletion_confirmed_via': 'deletion_confirmed_via'
         }
@@ -61,8 +61,8 @@ class DeletedUserSite(Model):
         self._site_id = site_id
         self._created_at = created_at
         self._updated_at = updated_at
-        self._deletion_request_at = deletion_request_at
-        self._deletion_request_via = deletion_request_via
+        self._deletion_requested_at = deletion_requested_at
+        self._deletion_requested_via = deletion_requested_via
         self._deletion_confirmed_at = deletion_confirmed_at
         self._deletion_confirmed_via = deletion_confirmed_via
 
@@ -170,46 +170,46 @@ class DeletedUserSite(Model):
         self._updated_at = updated_at
 
     @property
-    def deletion_request_at(self) -> datetime:
-        """Gets the deletion_request_at of this DeletedUserSite.
+    def deletion_requested_at(self) -> datetime:
+        """Gets the deletion_requested_at of this DeletedUserSite.
 
 
-        :return: The deletion_request_at of this DeletedUserSite.
+        :return: The deletion_requested_at of this DeletedUserSite.
         :rtype: datetime
         """
-        return self._deletion_request_at
+        return self._deletion_requested_at
 
-    @deletion_request_at.setter
-    def deletion_request_at(self, deletion_request_at: datetime):
-        """Sets the deletion_request_at of this DeletedUserSite.
+    @deletion_requested_at.setter
+    def deletion_requested_at(self, deletion_requested_at: datetime):
+        """Sets the deletion_requested_at of this DeletedUserSite.
 
 
-        :param deletion_request_at: The deletion_request_at of this DeletedUserSite.
-        :type deletion_request_at: datetime
+        :param deletion_requested_at: The deletion_requested_at of this DeletedUserSite.
+        :type deletion_requested_at: datetime
         """
 
-        self._deletion_request_at = deletion_request_at
+        self._deletion_requested_at = deletion_requested_at
 
     @property
-    def deletion_request_via(self) -> str:
-        """Gets the deletion_request_via of this DeletedUserSite.
+    def deletion_requested_via(self) -> str:
+        """Gets the deletion_requested_via of this DeletedUserSite.
 
 
-        :return: The deletion_request_via of this DeletedUserSite.
+        :return: The deletion_requested_via of this DeletedUserSite.
         :rtype: str
         """
-        return self._deletion_request_via
+        return self._deletion_requested_via
 
-    @deletion_request_via.setter
-    def deletion_request_via(self, deletion_request_via: str):
-        """Sets the deletion_request_via of this DeletedUserSite.
+    @deletion_requested_via.setter
+    def deletion_requested_via(self, deletion_requested_via: str):
+        """Sets the deletion_requested_via of this DeletedUserSite.
 
 
-        :param deletion_request_via: The deletion_request_via of this DeletedUserSite.
-        :type deletion_request_via: str
+        :param deletion_requested_via: The deletion_requested_via of this DeletedUserSite.
+        :type deletion_requested_via: str
         """
 
-        self._deletion_request_via = deletion_request_via
+        self._deletion_requested_via = deletion_requested_via
 
     @property
     def deletion_confirmed_at(self) -> datetime:

@@ -50,3 +50,15 @@ DB_TO_API_DELETEDUSER_TRANSFORMATION = Transformation(
         "id", "username", "email", "msisdn", "reason", "deleter_id"
     ]
 )
+
+DB_TO_API_DELETEDUSERSITE_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="deletion_requested_at", conversion=datetime_to_string),
+        Mapping(input_field="deletion_confirmed_at", conversion=datetime_to_string),
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string),
+    ],
+    copy_fields=[
+        "deleted_user_id", "site_id", "deletion_requested_via", "deletion_confirmed_via"
+    ]
+)

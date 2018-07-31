@@ -347,10 +347,10 @@ definitions:
         type: string
         format: date-time
         readOnly: true
-      deletion_request_at:
+      deletion_requested_at:
         type: string
         format: date-time
-      deletion_request_via:
+      deletion_requested_via:
         type: string
       deletion_confirmed_at:
         type: string
@@ -371,10 +371,10 @@ definitions:
         format: uuid
       site_id:
         type: integer
-      deletion_request_at:
+      deletion_requested_at:
         type: string
         format: date-time
-      deletion_request_via:
+      deletion_requested_via:
         type: string
       deletion_confirmed_at:
         type: string
@@ -388,10 +388,10 @@ definitions:
   deleted_user_site_update:
     type: object
     properties:
-      deletion_request_at:
+      deletion_requested_at:
         type: string
         format: date-time
-      deletion_request_via:
+      deletion_requested_via:
         type: string
       deletion_confirmed_at:
         type: string
