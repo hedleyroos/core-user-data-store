@@ -156,14 +156,20 @@ def deleteduser_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DeletedUser
     """
     if connexion.request.is_json:
-        data = DeletedUserCreate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUserCreate,
+        action="create",
+        data=data,
+    )
 
 
 def deleteduser_delete(user_id):  # noqa: E501
@@ -176,12 +182,18 @@ def deleteduser_delete(user_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        user_id = DeletedUser.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="delete",
+        query={
+            "id": user_id
+        }
+    )
 
 
-def deleteduser_list(offset=None, limit=None):  # noqa: E501
+@decorators.list_response
+def deleteduser_list(offset=None, limit=None, deleter_id=None):  # noqa: E501
     """deleteduser_list
 
      # noqa: E501
@@ -193,7 +205,19 @@ def deleteduser_list(offset=None, limit=None):  # noqa: E501
 
     :rtype: List[DeletedUser]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "deleter_id": deleter_id
+            },
+            "order_by": ["id"],
+        }
+    )
 
 
 def deleteduser_read(user_id):  # noqa: E501
@@ -206,9 +230,12 @@ def deleteduser_read(user_id):  # noqa: E501
 
     :rtype: DeletedUser
     """
-    if connexion.request.is_json:
-        user_id = DeletedUser.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="read",
+        query={"id": user_id}
+    )
 
 
 def deleteduser_update(user_id, data=None):  # noqa: E501
@@ -224,10 +251,15 @@ def deleteduser_update(user_id, data=None):  # noqa: E501
     :rtype: DeletedUser
     """
     if connexion.request.is_json:
-        user_id = DeletedUser.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        data = DeletedUserUpdate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUserUpdate,
+        action="update",
+        data=data,
+        query={"id": user_id},
+    )
 
 
 def deletedusersite_create(data=None):  # noqa: E501
@@ -241,8 +273,14 @@ def deletedusersite_create(data=None):  # noqa: E501
     :rtype: DeletedUserSite
     """
     if connexion.request.is_json:
-        data = DeletedUserSiteCreate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSiteCreate,
+        action="create",
+        data=data,
+    )
 
 
 def deletedusersite_delete(user_id, site_id):  # noqa: E501
@@ -257,12 +295,19 @@ def deletedusersite_delete(user_id, site_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        user_id = DeletedUserSite.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSite,
+        action="delete",
+        query={
+            "deleted_user_id": user_id,
+            "site_id": site_id
+        }
+    )
 
 
-def deletedusersite_list(offset=None, limit=None):  # noqa: E501
+@decorators.list_response
+def deletedusersite_list(offset=None, limit=None, user_id=None):  # noqa: E501
     """deletedusersite_list
 
      # noqa: E501
@@ -274,7 +319,19 @@ def deletedusersite_list(offset=None, limit=None):  # noqa: E501
 
     :rtype: List[DeletedUserSite]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSite,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "deleted_user_id": user_id
+            },
+            "order_by": ["deleted_user_id"],
+        }
+    )
 
 
 def deletedusersite_read(user_id, site_id):  # noqa: E501
@@ -289,9 +346,15 @@ def deletedusersite_read(user_id, site_id):  # noqa: E501
 
     :rtype: DeletedUserSite
     """
-    if connexion.request.is_json:
-        user_id = DeletedUserSite.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSite,
+        action="read",
+        query={
+            "deleted_user_id": user_id,
+            "site_id": site_id
+        }
+    )
 
 
 def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
@@ -309,10 +372,18 @@ def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
     :rtype: DeletedUserSite
     """
     if connexion.request.is_json:
-        user_id = DeletedUserSite.from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        data = DeletedUserSiteUpdate.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSiteUpdate,
+        action="update",
+        data=data,
+        query={
+            "deleted_user_id": user_id,
+            "site_id": site_id
+        },
+    )
 
 
 def healthcheck():  # noqa: E501

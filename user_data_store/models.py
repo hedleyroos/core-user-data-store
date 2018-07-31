@@ -51,3 +51,30 @@ class AdminNote(DB.Model):
     note = DB.Column(DB.Text)
     updated_at = DB.Column(
         DB.DateTime, default=utcnow(), onupdate=utcnow())
+
+
+class DeletedUser(DB.Model):
+    __tablename__ = "deleteduser"
+    id = DB.Column(UUID, primary_key=True)
+    username = DB.Column(DB.VARCHAR(150), nullable=False)
+    email = DB.Column(DB.VARCHAR(254))
+    msisdn = DB.Column(DB.VARCHAR(16))
+    reason = DB.Column(DB.Text, nullable=False)
+    deleter_id = DB.Column(UUID, nullable=False)
+    deleted_at = DB.Column(DB.DateTime)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime, default=utcnow(), onupdate=utcnow(), nullable=False)
+
+
+class DeletedUserSite(DB.Model):
+    __tablename__ = "deletedusersite"
+    deleted_user_id = DB.Column(UUID, primary_key=True)
+    site_id = DB.Column(DB.Integer, primary_key=True)
+    deletion_requested_at = DB.Column(DB.DateTime)
+    deletion_requested_via = DB.Column(DB.VARCHAR(255))
+    deletion_confirmed_at = DB.Column(DB.DateTime)
+    deletion_confirmed_via = DB.Column(DB.VARCHAR(255))
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime, default=utcnow(), onupdate=utcnow(), nullable=False)
