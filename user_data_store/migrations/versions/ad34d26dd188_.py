@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('email', sa.VARCHAR(length=254), nullable=True),
     sa.Column('msisdn', sa.VARCHAR(length=16), nullable=True),
     sa.Column('reason', sa.Text(), nullable=False),
-    sa.Column('deleter_id', postgresql.UUID(), nullable=True),
+    sa.Column('deleter_id', postgresql.UUID(), nullable=False),
     sa.Column('deleted_at', sa.DateTime(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),

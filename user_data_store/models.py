@@ -60,7 +60,7 @@ class DeletedUser(DB.Model):
     email = DB.Column(DB.VARCHAR(254))
     msisdn = DB.Column(DB.VARCHAR(16))
     reason = DB.Column(DB.Text, nullable=False)
-    deleter_id = DB.Column(UUID)
+    deleter_id = DB.Column(UUID, nullable=False)
     deleted_at = DB.Column(DB.DateTime)
     created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
