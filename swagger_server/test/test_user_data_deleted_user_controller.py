@@ -9,7 +9,7 @@ from dateutil.tz import tzutc
 
 from flask import json
 from ge_core_shared import db_actions
-from sqlalchemy import text
+from unittest import mock
 import werkzeug
 
 from swagger_server.models import AdminNoteCreate
@@ -27,16 +27,16 @@ from swagger_server.models.user_site_data import UserSiteData
 
 from . import BaseTestCase
 from project.settings import API_KEY_HEADER
-from project.app import DB
 
 
 class TestUserDataMiscController(BaseTestCase):
 
-    def setUp(self):
-        super().setUp()
-        self.headers = {API_KEY_HEADER: "test-api-key"}
-        self.sitedataschema_data = {
-            "site_id": random.randint(2, 2000000),
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.headers = {API_KEY_HEADER: "test-api-key"}
+        cls.sitedataschema_data = {
+            "site_id": 214748364,
             "schema": {
                 "type": "object",
                 "properties": {
@@ -46,12 +46,24 @@ class TestUserDataMiscController(BaseTestCase):
                 "additionalProperties": False
             }
         }
-        self.sitedataschema_model = db_actions.crud(
+        cls.sitedataschema_model = db_actions.crud(
             model="SiteDataSchema",
             api_model=SiteDataSchema,
-            data=self.sitedataschema_data,
+            data=cls.sitedataschema_data,
             action="create"
         )
+
+    def list_of_siteschema_site_ids(self):
+        schemas = db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            action="list",
+            query={"order_by": ["site_id"], }
+        )
+        ids = []
+        for schema in schemas[0]:
+            ids.append(schema.site_id)
+        return ids
 
     def test_delete_user_data_adminnote(self):
         user_id = "%s" % uuid.uuid1()
@@ -90,16 +102,13 @@ class TestUserDataMiscController(BaseTestCase):
         user_id = "%s" % uuid.uuid1()
 
         # TODO: remove once unit tests clear out db properly.
-        schemas = db_actions.crud(
-            model="SiteDataSchema",
-            api_model=SiteDataSchema,
-            action="list",
-            query={"order_by": ["site_id"],}
-        )
-        index_offset = schemas[0][-1].site_id
+        used_ids = self.list_of_siteschema_site_ids()
         for index in range(1, 24):
+            while index in used_ids:
+                index += 1
+            used_ids.append(index)
             sitedataschema_data = {
-                "site_id": index + index_offset,
+                "site_id": index,
                 "schema": {
                     "type": "object",
                     "properties": {
@@ -109,7 +118,7 @@ class TestUserDataMiscController(BaseTestCase):
                     "additionalProperties": False
                 }
             }
-            sitedataschema_model = db_actions.crud(
+            db_actions.crud(
                 model="SiteDataSchema",
                 api_model=SiteDataSchemaCreate,
                 data=sitedataschema_data,
@@ -161,16 +170,13 @@ class TestUserDataMiscController(BaseTestCase):
             )
 
         # TODO: remove once unit tests clear out db properly.
-        schemas = db_actions.crud(
-            model="SiteDataSchema",
-            api_model=SiteDataSchema,
-            action="list",
-            query={"order_by": ["site_id"],}
-        )
-        index_offset = schemas[0][-1].site_id
+        used_ids = self.list_of_siteschema_site_ids()
         for index in range(1, 24):
+            while index in used_ids:
+                index += 1
+            used_ids.append(index)
             sitedataschema_data = {
-                "site_id": index + index_offset,
+                "site_id": index,
                 "schema": {
                     "type": "object",
                     "properties": {
@@ -180,7 +186,7 @@ class TestUserDataMiscController(BaseTestCase):
                     "additionalProperties": False
                 }
             }
-            sitedataschema_model = db_actions.crud(
+            db_actions.crud(
                 model="SiteDataSchema",
                 api_model=SiteDataSchemaCreate,
                 data=sitedataschema_data,
@@ -225,6 +231,116 @@ class TestUserDataMiscController(BaseTestCase):
         response_data = json.loads(response.data)
         self.assertEqual(response_data["amount"], 52)
 
+    def test_sql_atomic_nature(self):
+        user_id = "%s" % uuid.uuid1()
+        for index in range(1, 30):
+            adminnote_data = {
+                "creator_id": "%s" % uuid.uuid1(),
+                "note": "This is text %s" % index,
+                "user_id": user_id,
+            }
+            db_actions.crud(
+                model="AdminNote",
+                api_model=AdminNoteCreate,
+                data=adminnote_data,
+                action="create"
+            )
+
+        # TODO: remove once unit tests clear out db properly.
+        used_ids = self.list_of_siteschema_site_ids()
+        for index in range(1, 24):
+            while index in used_ids:
+                index += 1
+            used_ids.append(index)
+            sitedataschema_data = {
+                "site_id": index,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "item_1": {"type": "number"},
+                        "item_2": {"type": "string"}
+                    },
+                    "additionalProperties": False
+                }
+            }
+            db_actions.crud(
+                model="SiteDataSchema",
+                api_model=SiteDataSchemaCreate,
+                data=sitedataschema_data,
+                action="create"
+            )
+            data = {
+                "site_id": sitedataschema_data["site_id"],
+                "user_id": user_id,
+                "data": {"item_1": 1, "item_2": "a string"},
+            }
+            db_actions.crud(
+                model="UserSiteData",
+                api_model=UserSiteDataCreate,
+                data=data,
+                action="create"
+            )
+        mocked_sql = """
+        -- Given a user id (:user_id),
+        -- delete AdminNote and UserSiteData tied to user id
+
+        WITH deleted_admin_notes AS (
+            DELETE FROM adminnote
+                WHERE user_id = :user_id
+            RETURNING user_id
+        ),
+        deleted_site_data AS (
+            DELETE FROM fooooooo
+                WHERE none_valid = :user_id
+            RETURNING user_id
+        ),
+        deleted_rows AS (
+           SELECT * FROM deleted_admin_notes
+           UNION ALL  -- ALL is required so that duplicates are not dropped
+           SELECT * FROM deleted_site_data
+        )
+
+        SELECT COUNT(*) AS amount
+          FROM deleted_rows
+        """
+        with mock.patch(
+                "swagger_server.controllers.user_data_controller.SQL_DELETE_USER_DATA",
+                new_callable=lambda: mocked_sql):
+            response = self.client.open(
+                '/api/v1/deleteuserdata/{user_id}'.format(
+                    user_id=user_id,
+                ), method='GET',
+                headers=self.headers)
+
+        notes = db_actions.crud(
+            model="AdminNote",
+            api_model=AdminNote,
+            action="list",
+            query={
+                "order_by": ["user_id"],
+                "ids": {
+                    "user_id": user_id
+                }
+            }
+        )
+        site_data = db_actions.crud(
+            model="UserSiteData",
+            api_model=UserSiteData,
+            action="list",
+            query={
+                "order_by": ["site_id"],
+                "ids": {
+                    "user_id": user_id
+                }
+            }
+        )
+        response_data = json.loads(response.data)
+        self.assertIn(
+            'relation "fooooooo" does not e',
+            response_data["error"]
+        )
+        self.assertEqual(len(notes[0]), 29)
+        self.assertEqual(len(site_data[0]), 23)
 
 
 class TestUserDataDeletedUserController(BaseTestCase):
@@ -284,7 +400,7 @@ class TestUserDataDeletedUserController(BaseTestCase):
             action="create"
         )
 
-        response = self.client.open(
+        self.client.open(
             '/api/v1/deleteduser/{user_id}'.format(
                 user_id=model.id
             ), method='DELETE',
@@ -441,7 +557,7 @@ class TestUserDataDeletedUserSiteController(BaseTestCase):
             action="create"
         )
 
-        response = self.client.open(
+        self.client.open(
             '/api/v1/deletedusersite/{user_id}/{site_id}'.format(
                 user_id=model.deleted_user_id,
                 site_id=model.site_id
