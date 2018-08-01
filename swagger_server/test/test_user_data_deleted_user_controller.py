@@ -75,7 +75,7 @@ class TestUserDataMiscController(BaseTestCase):
             headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
-            note_list = db_actions.crud(
+            db_actions.crud(
                 model="AdminNote",
                 api_model=AdminNote,
                 action="read",
@@ -88,9 +88,18 @@ class TestUserDataMiscController(BaseTestCase):
 
     def test_delete_user_data_site_data(self):
         user_id = "%s" % uuid.uuid1()
+
+        # TODO: remove once unit tests clear out db properly.
+        schemas = db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            action="list",
+            query={"order_by": ["site_id"],}
+        )
+        index_offset = schemas[0][-1].site_id
         for index in range(1, 24):
             sitedataschema_data = {
-                "site_id": index,
+                "site_id": index + index_offset,
                 "schema": {
                     "type": "object",
                     "properties": {
@@ -125,7 +134,7 @@ class TestUserDataMiscController(BaseTestCase):
             headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
-            note_list = db_actions.crud(
+            db_actions.crud(
                 model="UserSiteData",
                 api_model=UserSiteData,
                 action="read",
@@ -150,9 +159,18 @@ class TestUserDataMiscController(BaseTestCase):
                 data=adminnote_data,
                 action="create"
             )
+
+        # TODO: remove once unit tests clear out db properly.
+        schemas = db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            action="list",
+            query={"order_by": ["site_id"],}
+        )
+        index_offset = schemas[0][-1].site_id
         for index in range(1, 24):
             sitedataschema_data = {
-                "site_id": index,
+                "site_id": index + index_offset,
                 "schema": {
                     "type": "object",
                     "properties": {
@@ -187,7 +205,7 @@ class TestUserDataMiscController(BaseTestCase):
             headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
-            note_list = db_actions.crud(
+            db_actions.crud(
                 model="AdminNote",
                 api_model=AdminNote,
                 action="read",
@@ -196,7 +214,7 @@ class TestUserDataMiscController(BaseTestCase):
                 }
             )
         with self.assertRaises(werkzeug.exceptions.NotFound):
-            note_list = db_actions.crud(
+            db_actions.crud(
                 model="UserSiteData",
                 api_model=UserSiteData,
                 action="read",
