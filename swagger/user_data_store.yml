@@ -400,7 +400,7 @@ definitions:
         type: string
     minProperties: 1
 
-  deleted_user_data:
+  user_deletion_data:
     type: object
     properties:
       amount:
@@ -857,7 +857,7 @@ paths:
       tags:
         - user_data
 
-  /deleteuserdata/{user_id}:
+  /user/{user_id}/delete:
     parameters:
       - $ref: '#/parameters/user_id'
     get:
@@ -868,7 +868,7 @@ paths:
         200:
           description: 'Delete all user data on UDS'
           schema:
-            $ref: '#/definitions/deleted_user_data'
+            $ref: '#/definitions/user_deletion_data'
         403:
           description: 'Forbidden'
       tags:

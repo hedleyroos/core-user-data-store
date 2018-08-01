@@ -692,7 +692,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /deleteuserdata/{user_id}:
+  /user/{user_id}/delete:
     get:
       tags:
       - "user_data"
@@ -710,7 +710,7 @@ paths:
         200:
           description: "Delete all user data on UDS"
           schema:
-            $ref: "#/definitions/deleted_user_data"
+            $ref: "#/definitions/user_deletion_data"
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
@@ -1056,7 +1056,7 @@ definitions:
         format: "date-time"
       deletion_confirmed_via:
         type: "string"
-  deleted_user_data:
+  user_deletion_data:
     type: "object"
     required:
     - "amount"

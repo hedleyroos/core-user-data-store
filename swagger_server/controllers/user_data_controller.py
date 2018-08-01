@@ -14,7 +14,6 @@ from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E50
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
 from swagger_server.models.deleted_user import DeletedUser  # noqa: E501
 from swagger_server.models.deleted_user_create import DeletedUserCreate  # noqa: E501
-from swagger_server.models.deleted_user_data import DeletedUserData  # noqa: E501
 from swagger_server.models.deleted_user_site import DeletedUserSite  # noqa: E501
 from swagger_server.models.deleted_user_site_create import DeletedUserSiteCreate  # noqa: E501
 from swagger_server.models.deleted_user_site_update import DeletedUserSiteUpdate  # noqa: E501
@@ -23,6 +22,7 @@ from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.site_data_schema import SiteDataSchema  # noqa: E501
 from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate  # noqa: E501
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate  # noqa: E501
+from swagger_server.models.user_deletion_data import UserDeletionData  # noqa: E501
 from swagger_server.models.user_site_data import UserSiteData  # noqa: E501
 from swagger_server.models.user_site_data_create import UserSiteDataCreate  # noqa: E501
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
@@ -432,7 +432,7 @@ def delete_user_data(user_id):  # noqa: E501
         )
 
     amount = result.fetchone()["amount"]
-    return DeletedUserData(amount=amount)
+    return UserDeletionData(amount=amount)
 
 
 def healthcheck():  # noqa: E501
