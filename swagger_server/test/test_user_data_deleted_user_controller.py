@@ -136,6 +136,77 @@ class TestUserDataMiscController(BaseTestCase):
         response_data = json.loads(response.data)
         self.assertEqual(response_data["amount"], 23)
 
+    def test_delete_user_data_site_and_admin_note_data(self):
+        user_id = "%s" % uuid.uuid1()
+        for index in range(1, 30):
+            adminnote_data = {
+                "creator_id": "%s" % uuid.uuid1(),
+                "note": "This is text %s" % index,
+                "user_id": user_id,
+            }
+            db_actions.crud(
+                model="AdminNote",
+                api_model=AdminNoteCreate,
+                data=adminnote_data,
+                action="create"
+            )
+        for index in range(1, 24):
+            sitedataschema_data = {
+                "site_id": index,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "item_1": {"type": "number"},
+                        "item_2": {"type": "string"}
+                    },
+                    "additionalProperties": False
+                }
+            }
+            sitedataschema_model = db_actions.crud(
+                model="SiteDataSchema",
+                api_model=SiteDataSchemaCreate,
+                data=sitedataschema_data,
+                action="create"
+            )
+            data = {
+                "site_id": sitedataschema_data["site_id"],
+                "user_id": user_id,
+                "data": {"item_1": 1, "item_2": "a string"},
+            }
+            db_actions.crud(
+                model="UserSiteData",
+                api_model=UserSiteDataCreate,
+                data=data,
+                action="create"
+            )
+
+        response = self.client.open(
+            '/api/v1/deleteuserdata/{user_id}'.format(
+                user_id=user_id,
+            ), method='GET',
+            headers=self.headers)
+
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            note_list = db_actions.crud(
+                model="AdminNote",
+                api_model=AdminNote,
+                action="read",
+                query={
+                    "user_id": user_id,
+                }
+            )
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            note_list = db_actions.crud(
+                model="UserSiteData",
+                api_model=UserSiteData,
+                action="read",
+                query={
+                    "user_id": user_id,
+                }
+            )
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["amount"], 52)
+
 
 
 class TestUserDataDeletedUserController(BaseTestCase):
