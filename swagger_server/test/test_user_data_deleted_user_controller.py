@@ -9,34 +9,65 @@ from dateutil.tz import tzutc
 
 from flask import json
 from ge_core_shared import db_actions
+from sqlalchemy import text
 import werkzeug
 
 from swagger_server.models import AdminNoteCreate
+from swagger_server.models import SiteDataSchemaCreate
+from swagger_server.models import UserSiteDataCreate
 from swagger_server.models.admin_note import AdminNote
 from swagger_server.models.deleted_user import DeletedUser
 from swagger_server.models.deleted_user_create import DeletedUserCreate
-from swagger_server.models.deleted_user_update import DeletedUserUpdate
 from swagger_server.models.deleted_user_site import DeletedUserSite
 from swagger_server.models.deleted_user_site_create import DeletedUserSiteCreate
 from swagger_server.models.deleted_user_site_update import DeletedUserSiteUpdate
+from swagger_server.models.deleted_user_update import DeletedUserUpdate
+from swagger_server.models.site_data_schema import SiteDataSchema
+from swagger_server.models.user_site_data import UserSiteData
 
 from . import BaseTestCase
 from project.settings import API_KEY_HEADER
+from project.app import DB
 
 
 class TestUserDataMiscController(BaseTestCase):
 
-    def test_delete_user_data(self):
-        headers = {API_KEY_HEADER: "test-api-key"}
-        user_id = "%s" % uuid.uuid1()
+    def setUp(self):
+        super().setUp()
+        #DB.session.get_bind().execute(
+        #    text("""
+        #        DELETE FROM sitedataschema
+        #    """),
+        #)
 
-        for index in range(1, random.randint(5, 20)):
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+        self.sitedataschema_data = {
+            "site_id": random.randint(2, 2000000),
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "item_1": {"type": "number"},
+                    "item_2": {"type": "string"}
+                },
+                "additionalProperties": False
+            }
+        }
+        self.sitedataschema_model = db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            data=self.sitedataschema_data,
+            action="create"
+        )
+
+    def test_delete_user_data_adminnote(self):
+        user_id = "%s" % uuid.uuid1()
+        for index in range(1, 30):
             adminnote_data = {
                 "creator_id": "%s" % uuid.uuid1(),
                 "note": "This is text %s" % index,
                 "user_id": user_id,
             }
-            adminnote_model = db_actions.crud(
+            db_actions.crud(
                 model="AdminNote",
                 api_model=AdminNoteCreate,
                 data=adminnote_data,
@@ -46,18 +77,9 @@ class TestUserDataMiscController(BaseTestCase):
         response = self.client.open(
             '/api/v1/deleteuserdata/{user_id}'.format(
                 user_id=user_id,
-            ), method='DELETE',
-            headers=headers)
+            ), method='GET',
+            headers=self.headers)
 
-        note_list = db_actions.crud(
-            model="AdminNote",
-            api_model=AdminNote,
-            action="list",
-            query={
-                "user_id": user_id,
-                "order_by": ["user_id"]
-            }
-        )
         with self.assertRaises(werkzeug.exceptions.NotFound):
             note_list = db_actions.crud(
                 model="AdminNote",
@@ -67,11 +89,65 @@ class TestUserDataMiscController(BaseTestCase):
                     "user_id": user_id,
                 }
             )
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["amount"], 29)
+
+    def test_delete_user_data_site_data(self):
+        user_id = "%s" % uuid.uuid1()
+        for index in range(1, 24):
+            sitedataschema_data = {
+                "site_id": index,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "item_1": {"type": "number"},
+                        "item_2": {"type": "string"}
+                    },
+                    "additionalProperties": False
+                }
+            }
+            sitedataschema_model = db_actions.crud(
+                model="SiteDataSchema",
+                api_model=SiteDataSchemaCreate,
+                data=self.sitedataschema_data,
+                action="create"
+            )
+            data = {
+                "site_id": sitedataschema_model.site_id,
+                "user_id": user_id,
+                "data": {"item_1": 1, "item_2": "a string"},
+            }
+            db_actions.crud(
+                model="UserSiteData",
+                api_model=UserSiteDataCreate,
+                data=data,
+                action="create"
+            )
+
+        response = self.client.open(
+            '/api/v1/deleteuserdata/{user_id}'.format(
+                user_id=user_id,
+            ), method='GET',
+            headers=self.headers)
+
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            note_list = db_actions.crud(
+                model="UserSiteData",
+                api_model=UserSiteData,
+                action="read",
+                query={
+                    "user_id": user_id,
+                }
+            )
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["amount"], 23)
+
 
 
 class TestUserDataDeletedUserController(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.deleteduser_data = {
             "id": "%s" % uuid.uuid1(),
             "username": "SetupUseryName",
@@ -240,6 +316,7 @@ class TestUserDataDeletedUserController(BaseTestCase):
 class TestUserDataDeletedUserSiteController(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.deletedusersite_data = {
             "deleted_user_id": "%s" % uuid.uuid1(),
             "site_id": 999999,

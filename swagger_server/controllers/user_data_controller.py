@@ -14,6 +14,7 @@ from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E50
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
 from swagger_server.models.deleted_user import DeletedUser  # noqa: E501
 from swagger_server.models.deleted_user_create import DeletedUserCreate  # noqa: E501
+from swagger_server.models.deleted_user_data import DeletedUserData  # noqa: E501
 from swagger_server.models.deleted_user_site import DeletedUserSite  # noqa: E501
 from swagger_server.models.deleted_user_site_create import DeletedUserSiteCreate  # noqa: E501
 from swagger_server.models.deleted_user_site_update import DeletedUserSiteUpdate  # noqa: E501
@@ -35,15 +36,24 @@ SQL_DELETE_USER_DATA = """
 -- Given a user id (:user_id),
 -- delete AdminNote and UserSiteData tied to user id
 
-BEGIN;
+WITH deleted_admin_notes AS (
+    DELETE FROM adminnote
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_site_data AS (
+    DELETE FROM usersitedata
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_rows AS (
+   SELECT * FROM deleted_admin_notes
+   UNION ALL  -- ALL is required so that duplicates are not dropped
+   SELECT * FROM deleted_site_data
+)
 
-DELETE FROM adminnote
- WHERE user_id = :user_id;
-
-DELETE FROM usersitedata
- WHERE user_id = :user_id;
-
-COMMIT;
+SELECT COUNT(*) AS amount
+  FROM deleted_rows;
 """
 
 
@@ -403,7 +413,7 @@ def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
     )
 
 
-def deleteuserdata(user_id):  # noqa: E501
+def delete_user_data(user_id):  # noqa: E501
     """deleteuserdata
 
      # noqa: E501
@@ -415,11 +425,14 @@ def deleteuserdata(user_id):  # noqa: E501
     """
     # TODO: Confirm if deleted user and deleted user site need to be populated.
     # Confirm what needs to be returned.
-    DB.session.get_bind().execute(
-        text(SQL_DELETE_USER_DATA),
-        **{"user_id": user_id}
-    )
-    return None
+    with DB.session.get_bind().begin() as connection:
+        result = connection.execute(
+            text(SQL_DELETE_USER_DATA),
+            **{"user_id": user_id}
+        )
+
+    amount = result.fetchone()["amount"]
+    return DeletedUserData(amount=amount)
 
 
 def healthcheck():  # noqa: E501

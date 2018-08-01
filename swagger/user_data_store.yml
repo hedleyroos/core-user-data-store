@@ -400,6 +400,14 @@ definitions:
         type: string
     minProperties: 1
 
+  deleted_user_data:
+    type: object
+    properties:
+      amount:
+        type: integer
+    required:
+      - amount
+
 paths:
   /healthcheck:
     get:
@@ -852,10 +860,16 @@ paths:
   /deleteuserdata/{user_id}:
     parameters:
       - $ref: '#/parameters/user_id'
-    delete:
-      operationId: deleteuserdata
+    get:
+      operationId: delete_user_data
+      produces:
+        - application/json
       responses:
-        '204':
-          description: ''
+        200:
+          description: 'Delete all user data on UDS'
+          schema:
+            $ref: '#/definitions/deleted_user_data'
+        403:
+          description: 'Forbidden'
       tags:
         - user_data
