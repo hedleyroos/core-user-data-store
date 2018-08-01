@@ -13,7 +13,7 @@ from sqlalchemy import text
 import werkzeug
 
 from swagger_server.models import AdminNoteCreate
-from swagger_server.models import SiteDataSchemaCreate
+from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate
 from swagger_server.models import UserSiteDataCreate
 from swagger_server.models.admin_note import AdminNote
 from swagger_server.models.deleted_user import DeletedUser
@@ -34,12 +34,6 @@ class TestUserDataMiscController(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        #DB.session.get_bind().execute(
-        #    text("""
-        #        DELETE FROM sitedataschema
-        #    """),
-        #)
-
         self.headers = {API_KEY_HEADER: "test-api-key"}
         self.sitedataschema_data = {
             "site_id": random.randint(2, 2000000),
@@ -109,11 +103,11 @@ class TestUserDataMiscController(BaseTestCase):
             sitedataschema_model = db_actions.crud(
                 model="SiteDataSchema",
                 api_model=SiteDataSchemaCreate,
-                data=self.sitedataschema_data,
+                data=sitedataschema_data,
                 action="create"
             )
             data = {
-                "site_id": sitedataschema_model.site_id,
+                "site_id": sitedataschema_data["site_id"],
                 "user_id": user_id,
                 "data": {"item_1": 1, "item_2": "a string"},
             }

@@ -33,9 +33,6 @@ class BaseTestCase(TestCase):
         self.flask_app = flask_app
         return flask_app
 
-    def setUp(self):
-        super().setUp()
-
     def tearDown(self):
         super().tearDown()
         # Closes all active connections between tests. Prevents session errors
