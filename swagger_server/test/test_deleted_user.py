@@ -22,7 +22,7 @@ from . import BaseTestCase
 from project.settings import API_KEY_HEADER
 
 
-class TestUserDataDeletedUserController(BaseTestCase):
+class TestDeletedUser(BaseTestCase):
 
     def setUp(self):
         self.deleteduser_data = {
@@ -52,7 +52,7 @@ class TestUserDataDeletedUserController(BaseTestCase):
         }
         data = DeletedUserCreate(**data_dict)
         response = self.client.open(
-            "/api/v1/deleteduser",
+            "/api/v1/deletedusers",
             method="POST",
             data=json.dumps(data),
             content_type="application/json",
@@ -79,7 +79,7 @@ class TestUserDataDeletedUserController(BaseTestCase):
         )
 
         response = self.client.open(
-            '/api/v1/deleteduser/{user_id}'.format(
+            '/api/v1/deletedusers/{user_id}'.format(
                 user_id=model.id
             ), method='DELETE',
             headers=self.headers)
@@ -116,7 +116,7 @@ class TestUserDataDeletedUserController(BaseTestCase):
             ("deleter_id", deleter_id)
         ]
         response = self.client.open(
-            '/api/v1/deleteduser',
+            '/api/v1/deletedusers',
             method='GET',
             query_string=query_string,
             headers=self.headers)
@@ -128,7 +128,7 @@ class TestUserDataDeletedUserController(BaseTestCase):
             ("limit", 2),
         ]
         response = self.client.open(
-            '/api/v1/deleteduser',
+            '/api/v1/deletedusers',
             method='GET',
             query_string=query_string,
             headers=self.headers)
@@ -139,7 +139,7 @@ class TestUserDataDeletedUserController(BaseTestCase):
 
     def test_deleted_user_read(self):
         response = self.client.open(
-            '/api/v1/deleteduser/{user_id}'.format(
+            '/api/v1/deletedusers/{user_id}'.format(
                 user_id=self.deleteduser_model.id
             ),
             method='GET',
@@ -171,7 +171,7 @@ class TestUserDataDeletedUserController(BaseTestCase):
         updated_data = DeletedUserUpdate(**data)
 
         response = self.client.open(
-            '/api/v1/deleteduser/{user_id}'.format(
+            '/api/v1/deletedusers/{user_id}'.format(
                 user_id=model.id),
             method='PUT',
             data=json.dumps(updated_data),
@@ -212,7 +212,7 @@ class TestUserDataDeletedUserSiteController(BaseTestCase):
         }
         data = DeletedUserSiteCreate(**data_dict)
         response = self.client.open(
-            "/api/v1/deletedusersite",
+            "/api/v1/deletedusersites",
             method="POST",
             data=json.dumps(data),
             content_type="application/json",
@@ -235,7 +235,7 @@ class TestUserDataDeletedUserSiteController(BaseTestCase):
         )
 
         response = self.client.open(
-            '/api/v1/deletedusersite/{user_id}/{site_id}'.format(
+            '/api/v1/deletedusersites/{user_id}/{site_id}'.format(
                 user_id=model.deleted_user_id,
                 site_id=model.site_id
             ), method='DELETE',
@@ -270,7 +270,7 @@ class TestUserDataDeletedUserSiteController(BaseTestCase):
             ("user_id", user_id)
         ]
         response = self.client.open(
-            '/api/v1/deletedusersite',
+            '/api/v1/deletedusersites',
             method='GET',
             query_string=query_string,
             headers=self.headers)
@@ -282,7 +282,7 @@ class TestUserDataDeletedUserSiteController(BaseTestCase):
             ("limit", 2),
         ]
         response = self.client.open(
-            '/api/v1/deletedusersite',
+            '/api/v1/deletedusersites',
             method='GET',
             query_string=query_string,
             headers=self.headers)
@@ -293,7 +293,7 @@ class TestUserDataDeletedUserSiteController(BaseTestCase):
 
     def test_deleted_user_site_read(self):
         response = self.client.open(
-            '/api/v1/deletedusersite/{user_id}/{site_id}'.format(
+            '/api/v1/deletedusersites/{user_id}/{site_id}'.format(
                 user_id=self.deletedusersite_model.deleted_user_id,
                 site_id=self.deletedusersite_model.site_id,
             ),
@@ -323,7 +323,7 @@ class TestUserDataDeletedUserSiteController(BaseTestCase):
         updated_data = DeletedUserSiteUpdate(**data)
 
         response = self.client.open(
-            '/api/v1/deletedusersite/{user_id}/{site_id}'.format(
+            '/api/v1/deletedusersites/{user_id}/{site_id}'.format(
                 user_id=model.deleted_user_id,
                 site_id=model.site_id,
             ),
