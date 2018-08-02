@@ -423,8 +423,6 @@ def delete_user_data(user_id):  # noqa: E501
 
     :rtype: None
     """
-    # TODO: Confirm if deleted user and deleted user site need to be populated.
-    # Confirm what needs to be returned.
     with DB.session.get_bind().begin() as connection:
         result = connection.execute(
             text(SQL_DELETE_USER_DATA),
