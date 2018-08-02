@@ -92,7 +92,7 @@ $(FLAKE8): $(VENV)
 # Generate the flask server code for the User Data Store
 user-data-store-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
 	@echo "$(CYAN)Generating flask server for the User Data Store API...$(CLEAR)"
-	$(CODEGEN) -i swagger/user_data_store.yml -l python-flask -o generated
+	$(CODEGEN) -i swagger/user_data_store.yml -l python-flask -o .
 
 runserver: $(VENV)
 	@echo "$(CYAN)Firing up server...$(CLEAR)"

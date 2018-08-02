@@ -431,7 +431,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /deleteduser:
+  /deletedusers:
     get:
       tags:
       - "user_data"
@@ -493,7 +493,7 @@ paths:
           schema:
             $ref: "#/definitions/deleted_user"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /deleteduser/{user_id}:
+  /deletedusers/{user_id}:
     get:
       tags:
       - "user_data"
@@ -554,7 +554,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /deletedusersite:
+  /deletedusersites:
     get:
       tags:
       - "user_data"
@@ -616,7 +616,7 @@ paths:
           schema:
             $ref: "#/definitions/deleted_user_site"
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /deletedusersite/{user_id}/{site_id}:
+  /deletedusersites/{user_id}/{site_id}:
     get:
       tags:
       - "user_data"
