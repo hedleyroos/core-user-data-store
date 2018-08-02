@@ -14,6 +14,8 @@ from swagger_server.encoder import JSONEncoder
 
 import project.app
 
+from user_data_store import models
+
 
 DB = SQLAlchemy()
 
@@ -32,6 +34,20 @@ class BaseTestCase(TestCase):
         app.add_api('swagger.yaml', arguments={'title': 'Test User Data API'})
         self.flask_app = flask_app
         return flask_app
+
+    def setUp(self):
+        super().setUp()
+
+        # TODO: Look into creating a db snapshot and restoring to that.
+        # Grab all the SQLAlchemy models from the models module and run a
+        # delete query for all data.
+        model_list = [
+            cls
+            for name, cls in models.__dict__.items()
+            if isinstance(cls, type) and hasattr(cls, "query")
+        ]
+        for model in model_list:
+            model.query.delete()
 
     def tearDown(self):
         super().tearDown()

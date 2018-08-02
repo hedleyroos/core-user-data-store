@@ -25,7 +25,7 @@ from swagger_server.models.deleted_user_update import DeletedUserUpdate
 from swagger_server.models.site_data_schema import SiteDataSchema
 from swagger_server.models.user_site_data import UserSiteData
 
-from . import BaseTestCase
+from swagger_server.test import BaseTestCase
 from project.settings import API_KEY_HEADER
 
 
@@ -52,18 +52,6 @@ class TestUserDataMiscController(BaseTestCase):
             data=cls.sitedataschema_data,
             action="create"
         )
-
-    def list_of_siteschema_site_ids(self):
-        schemas = db_actions.crud(
-            model="SiteDataSchema",
-            api_model=SiteDataSchema,
-            action="list",
-            query={"order_by": ["site_id"], }
-        )
-        ids = []
-        for schema in schemas[0]:
-            ids.append(schema.site_id)
-        return ids
 
     def test_delete_user_data_adminnote(self):
         user_id = "%s" % uuid.uuid1()
@@ -101,12 +89,7 @@ class TestUserDataMiscController(BaseTestCase):
     def test_delete_user_data_site_data(self):
         user_id = "%s" % uuid.uuid1()
 
-        # TODO: remove once unit tests clear out db properly.
-        used_ids = self.list_of_siteschema_site_ids()
         for index in range(1, 24):
-            while index in used_ids:
-                index += 1
-            used_ids.append(index)
             sitedataschema_data = {
                 "site_id": index,
                 "schema": {
@@ -169,12 +152,7 @@ class TestUserDataMiscController(BaseTestCase):
                 action="create"
             )
 
-        # TODO: remove once unit tests clear out db properly.
-        used_ids = self.list_of_siteschema_site_ids()
         for index in range(1, 24):
-            while index in used_ids:
-                index += 1
-            used_ids.append(index)
             sitedataschema_data = {
                 "site_id": index,
                 "schema": {
@@ -246,12 +224,7 @@ class TestUserDataMiscController(BaseTestCase):
                 action="create"
             )
 
-        # TODO: remove once unit tests clear out db properly.
-        used_ids = self.list_of_siteschema_site_ids()
         for index in range(1, 24):
-            while index in used_ids:
-                index += 1
-            used_ids.append(index)
             sitedataschema_data = {
                 "site_id": index,
                 "schema": {
