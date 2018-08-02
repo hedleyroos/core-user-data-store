@@ -692,7 +692,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
-  /user/{user_id}/delete:
+  /users/{user_id}/delete:
     get:
       tags:
       - "user_data"

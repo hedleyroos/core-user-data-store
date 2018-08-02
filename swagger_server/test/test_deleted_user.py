@@ -81,7 +81,7 @@ class TestUserDataMiscController(BaseTestCase):
             )
 
         response = self.client.open(
-            '/api/v1/user/{user_id}/delete'.format(
+            '/api/v1/users/{user_id}/delete'.format(
                 user_id=user_id,
             ), method='GET',
             headers=self.headers)
@@ -137,7 +137,7 @@ class TestUserDataMiscController(BaseTestCase):
             )
 
         response = self.client.open(
-            '/api/v1/user/{user_id}/delete'.format(
+            '/api/v1/users/{user_id}/delete'.format(
                 user_id=user_id,
             ), method='GET',
             headers=self.headers)
@@ -205,7 +205,7 @@ class TestUserDataMiscController(BaseTestCase):
             )
 
         response = self.client.open(
-            '/api/v1/user/{user_id}/delete'.format(
+            '/api/v1/users/{user_id}/delete'.format(
                 user_id=user_id,
             ), method='GET',
             headers=self.headers)
@@ -309,7 +309,7 @@ class TestUserDataMiscController(BaseTestCase):
                 "swagger_server.controllers.user_data_controller.SQL_DELETE_USER_DATA",
                 new_callable=lambda: mocked_sql):
             response = self.client.open(
-                '/api/v1/user/{user_id}/delete'.format(
+                '/api/v1/users/{user_id}/delete'.format(
                     user_id=user_id,
                 ), method='GET',
                 headers=self.headers)

@@ -857,7 +857,7 @@ paths:
       tags:
         - user_data
 
-  /user/{user_id}/delete:
+  /users/{user_id}/delete:
     parameters:
       - $ref: '#/parameters/user_id'
     get:
