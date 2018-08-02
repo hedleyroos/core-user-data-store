@@ -38,16 +38,16 @@ class BaseTestCase(TestCase):
     def setUp(self):
         super().setUp()
 
-        # TODO: Look into creating a db snapshot and restoring to that.
-        # Grab all the SQLAlchemy models from the models module and run a
-        # delete query for all data.
-        model_list = [
-            cls
-            for name, cls in models.__dict__.items()
-            if isinstance(cls, type) and hasattr(cls, "query")
-        ]
-        for model in model_list:
-            model.query.delete()
+        # NOTE: TestUserDataController.test_usersitedata_list will fail once
+        # super is called. Test makes assumption that there is already data in
+        # the db.
+        meta = DB.metadata
+        meta.reflect(DB.engine)
+
+        # By reversing the tables, children shuold get deleted before parents.
+        for table in reversed(meta.sorted_tables):
+            DB.session.execute(table.delete())
+        DB.session.commit()
 
     def tearDown(self):
         super().tearDown()
