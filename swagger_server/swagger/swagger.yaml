@@ -692,6 +692,28 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
+  /users/{user_id}/delete:
+    get:
+      tags:
+      - "user_data"
+      operationId: "delete_user_data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Delete all user data on UDS"
+          schema:
+            $ref: "#/definitions/user_deletion_data"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.user_data_controller"
 securityDefinitions:
   APIKeyHeader:
     type: "apiKey"
@@ -1034,6 +1056,15 @@ definitions:
         format: "date-time"
       deletion_confirmed_via:
         type: "string"
+  user_deletion_data:
+    type: "object"
+    required:
+    - "amount"
+    properties:
+      amount:
+        type: "integer"
+    example:
+      amount: 0
 parameters:
   optional_limit:
     name: "limit"

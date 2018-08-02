@@ -5,6 +5,7 @@ import connexion
 import six
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 from project.app import DB
 from user_data_store import __version__
@@ -21,6 +22,7 @@ from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.site_data_schema import SiteDataSchema  # noqa: E501
 from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate  # noqa: E501
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate  # noqa: E501
+from swagger_server.models.user_deletion_data import UserDeletionData  # noqa: E501
 from swagger_server.models.user_site_data import UserSiteData  # noqa: E501
 from swagger_server.models.user_site_data_create import UserSiteDataCreate  # noqa: E501
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
@@ -28,6 +30,31 @@ from swagger_server import util
 from ge_core_shared import db_actions, decorators
 
 from user_data_store.models import AdminNote as SQLA_AdminNote
+
+
+SQL_DELETE_USER_DATA = """
+-- Given a user id (:user_id),
+-- delete AdminNote and UserSiteData tied to user id
+
+WITH deleted_admin_notes AS (
+    DELETE FROM adminnote
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_site_data AS (
+    DELETE FROM usersitedata
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_rows AS (
+   SELECT * FROM deleted_admin_notes
+   UNION ALL  -- ALL is required so that duplicates are not dropped
+   SELECT * FROM deleted_site_data
+)
+
+SELECT COUNT(*) AS amount
+  FROM deleted_rows;
+"""
 
 
 def adminnote_create(data=None):
@@ -384,6 +411,26 @@ def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
             "site_id": site_id
         },
     )
+
+
+def delete_user_data(user_id):  # noqa: E501
+    """deleteuserdata
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: None
+    """
+    with DB.session.get_bind().begin() as connection:
+        result = connection.execute(
+            text(SQL_DELETE_USER_DATA),
+            **{"user_id": user_id}
+        )
+
+    amount = result.fetchone()["amount"]
+    return UserDeletionData(amount=amount)
 
 
 def healthcheck():  # noqa: E501
