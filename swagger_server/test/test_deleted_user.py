@@ -280,6 +280,8 @@ class TestUserDataMiscController(BaseTestCase):
                 data=data,
                 action="create"
             )
+        # SQL being mocked needs to break, to ensure nothing is committed
+        # unless the entire query is successful
         mocked_sql = """
         -- Given a user id (:user_id),
         -- delete AdminNote and UserSiteData tied to user id
@@ -290,7 +292,7 @@ class TestUserDataMiscController(BaseTestCase):
             RETURNING user_id
         ),
         deleted_site_data AS (
-            DELETE FROM fooooooo
+            DELETE FROM fooooooo -- This is meant to break
                 WHERE none_valid = :user_id
             RETURNING user_id
         ),
