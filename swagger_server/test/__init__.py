@@ -44,7 +44,7 @@ class BaseTestCase(TestCase):
         meta = DB.metadata
         meta.reflect(DB.engine)
 
-        # By reversing the tables, children shuold get deleted before parents.
+        # By reversing the tables, children should get deleted before parents.
         for table in reversed(meta.sorted_tables):
             DB.session.execute(table.delete())
         DB.session.commit()
