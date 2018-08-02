@@ -314,6 +314,11 @@ class TestUserDataMiscController(BaseTestCase):
                 ), method='GET',
                 headers=self.headers)
 
+        response_data = json.loads(response.data)
+        self.assertIn(
+            'relation "fooooooo" does not e',
+            response_data["error"]
+        )
         notes = db_actions.crud(
             model="AdminNote",
             api_model=AdminNote,
@@ -325,6 +330,7 @@ class TestUserDataMiscController(BaseTestCase):
                 }
             }
         )
+        self.assertEqual(len(notes[0]), 29)
         site_data = db_actions.crud(
             model="UserSiteData",
             api_model=UserSiteData,
@@ -336,12 +342,6 @@ class TestUserDataMiscController(BaseTestCase):
                 }
             }
         )
-        response_data = json.loads(response.data)
-        self.assertIn(
-            'relation "fooooooo" does not e',
-            response_data["error"]
-        )
-        self.assertEqual(len(notes[0]), 29)
         self.assertEqual(len(site_data[0]), 23)
 
 
