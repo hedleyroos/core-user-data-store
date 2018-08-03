@@ -193,7 +193,7 @@ def deleteduser_create(data=None):  # noqa: E501
 
     return db_actions.crud(
         model="DeletedUser",
-        api_model=DeletedUserCreate,
+        api_model=DeletedUser,
         action="create",
         data=data,
     )
@@ -272,7 +272,7 @@ def deleteduser_update(user_id, data=None):  # noqa: E501
 
     :param user_id: A UUID value identifying the user.
     :type user_id: dict | bytes
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DeletedUser
@@ -282,7 +282,7 @@ def deleteduser_update(user_id, data=None):  # noqa: E501
 
     return db_actions.crud(
         model="DeletedUser",
-        api_model=DeletedUserUpdate,
+        api_model=DeletedUser,
         action="update",
         data=data,
         query={"id": user_id},
@@ -294,7 +294,7 @@ def deletedusersite_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DeletedUserSite
@@ -304,7 +304,7 @@ def deletedusersite_create(data=None):  # noqa: E501
 
     return db_actions.crud(
         model="DeletedUserSite",
-        api_model=DeletedUserSiteCreate,
+        api_model=DeletedUserSite,
         action="create",
         data=data,
     )
@@ -393,7 +393,7 @@ def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
     :type user_id: dict | bytes
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DeletedUserSite
@@ -403,7 +403,7 @@ def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
 
     return db_actions.crud(
         model="DeletedUserSite",
-        api_model=DeletedUserSiteUpdate,
+        api_model=DeletedUserSite,
         action="update",
         data=data,
         query={
