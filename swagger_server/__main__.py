@@ -16,7 +16,7 @@ DB = SQLAlchemy()
 # We create and set up the app variable in the global context as it is used by uwsgi.
 app = connexion.App(__name__, specification_dir='./swagger/')
 app.app.json_encoder = encoder.JSONEncoder
-app.add_api('swagger.yaml', arguments={'title': 'User Data API'})
+app.add_api('swagger.yaml', arguments={'title': 'User Data API'}, strict_validation=True)
 
 app.app.config["SQLALCHEMY_DATABASE_URI"] = settings.SQLALCHEMY_DATABASE_URI
 app.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
