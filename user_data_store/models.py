@@ -1,5 +1,3 @@
-import uuid
-
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.compiler import compiles

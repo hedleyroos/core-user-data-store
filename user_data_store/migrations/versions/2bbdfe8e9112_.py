@@ -25,7 +25,7 @@ def upgrade():
     now = datetime.datetime.now().isoformat()
     empty_uuid = '00000000-0000-0000-0000-000000000000'
     # EDITED MIGRATION: Updates on existing fields where null are populated.
-    sql = "UPDATE {TABLE} SET {COLUMN} = {VALUE} WHERE {COLUMN} IS NULL;"
+    sql = "UPDATE {table} SET {column} = {value} WHERE {column} IS NULL;"
     session.execute(sql.format(table="adminnote", column="created_at", value="'%s'" % now))
     session.execute(sql.format(table="adminnote", column="creator_id", value="'%s'" % empty_uuid))
     session.execute(sql.format(table="adminnote", column="note", value="'Empty Note'"))
