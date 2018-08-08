@@ -1,13 +1,9 @@
-from flask import Flask
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import expression
 
 import project.app
-from project import settings
 
 DB = project.app.DB
 
@@ -26,31 +22,31 @@ def pg_utcnow(element, compiler, **kw):
 class SiteDataSchema(DB.Model):
     __tablename__ = "sitedataschema"
     site_id = DB.Column(DB.Integer, primary_key=True)
-    schema = DB.Column(DB.JSON)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    schema = DB.Column(DB.JSON, default={}, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
-        DB.DateTime, default=utcnow(), onupdate=utcnow())
+        DB.DateTime, default=utcnow(), onupdate=utcnow(), nullable=False)
 
 
 class UserSiteData(DB.Model):
     __tablename__ = "usersitedata"
     user_id = DB.Column(UUID, primary_key=True)
     site_id = DB.Column(DB.Integer, primary_key=True)
-    data = DB.Column(DB.JSON, default={})
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    data = DB.Column(DB.JSON, default={}, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
-        DB.DateTime, default=utcnow(), onupdate=utcnow())
+        DB.DateTime, default=utcnow(), onupdate=utcnow(), nullable=False)
 
 
 class AdminNote(DB.Model):
     __tablename__ = "adminnote"
     id = DB.Column(DB.Integer, primary_key=True)
-    user_id = DB.Column(UUID)
-    creator_id = DB.Column(UUID)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
-    note = DB.Column(DB.Text)
+    user_id = DB.Column(UUID, nullable=False)
+    creator_id = DB.Column(UUID, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    note = DB.Column(DB.Text, nullable=False)
     updated_at = DB.Column(
-        DB.DateTime, default=utcnow(), onupdate=utcnow())
+        DB.DateTime, default=utcnow(), onupdate=utcnow(), nullable=False)
 
 
 class DeletedUser(DB.Model):
