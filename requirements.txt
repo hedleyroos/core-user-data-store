@@ -13,6 +13,7 @@ psycopg2==2.7.3.2
 Flask-Migrate==2.1.1
 Flask-Script==2.0.6
 raven[flask]==6.6.0
+prometheus-client==0.3.1
 
 # The following requirements are required by jsonschema
 # in order to do proper validation of certain formats.
