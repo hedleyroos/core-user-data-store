@@ -6,19 +6,22 @@ from flask_sqlalchemy import SQLAlchemy
 from raven import Client
 from raven.contrib.flask import Sentry
 from sqlalchemy.exc import SQLAlchemyError
-from ge_core_shared import exception_handlers, middleware
+from ge_core_shared import exception_handlers, middleware, decorators
 from prometheus_client import make_wsgi_app
 from werkzeug.wsgi import DispatcherMiddleware
 
 from project import settings
-from project.middleware import setup_metrics
 from swagger_server import encoder
+from swagger_server.controllers import user_data_controller
 
 DB = SQLAlchemy()
 
+metrics = decorators.Decorators(user_data_controller, "core_user_data_store")
+metrics.decorate_all_in_module()
+
 # We create and set up the app variable in the global context as it is used by uwsgi.
 app = connexion.App(__name__, specification_dir='./swagger/')
-setup_metrics(app.app)
+middleware.metric_middleware(app.app, "core_user_data_store")
 app.app.json_encoder = encoder.JSONEncoder
 app.add_api('swagger.yaml', arguments={'title': 'User Data API'}, strict_validation=True)
 
