@@ -27,7 +27,7 @@ from swagger_server.models.user_site_data import UserSiteData  # noqa: E501
 from swagger_server.models.user_site_data_create import UserSiteDataCreate  # noqa: E501
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
 from swagger_server import util
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 from user_data_store.models import AdminNote as SQLA_AdminNote
 
@@ -95,6 +95,7 @@ def adminnote_delete(admin_note_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def adminnote_list(offset=None, limit=None, user_id=None, creator_id=None, admin_note_ids=None):  # noqa: E501
     """adminnote_list
 
@@ -218,6 +219,7 @@ def deleteduser_delete(user_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def deleteduser_list(offset=None, limit=None, deleter_id=None):  # noqa: E501
     """deleteduser_list
 
@@ -331,6 +333,7 @@ def deletedusersite_delete(user_id, site_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def deletedusersite_list(offset=None, limit=None, user_id=None):  # noqa: E501
     """deletedusersite_list
 
@@ -492,6 +495,7 @@ def sitedataschema_delete(site_id):  # noqa: E501
 
 
 
+@decorators.list_response
 def sitedataschema_list(offset=None, limit=None):  # noqa: E501
     """sitedataschema_list
 
@@ -611,6 +615,7 @@ def usersitedata_delete(user_id, site_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def usersitedata_list(offset=None, limit=None, user_id=None, site_id=None):  # noqa: E501
     """usersitedata_list
 
