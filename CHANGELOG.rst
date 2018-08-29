@@ -1,6 +1,15 @@
 Changelog
 =========
 
+1.1.5
+-----
+- Exception handler status code and message updates.
+
+1.1.4
+-----
+- Added metrics endpoint along with middleware and controller decorators.
+- Process number set to 1, thread number set to 4.
+
 1.1.3
 -----
 - Update Sentry config

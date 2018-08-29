@@ -5,16 +5,24 @@ import connexion
 import six
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 
 from project.app import DB
 from user_data_store import __version__
 from swagger_server.models.admin_note import AdminNote  # noqa: E501
 from swagger_server.models.admin_note_create import AdminNoteCreate  # noqa: E501
 from swagger_server.models.admin_note_update import AdminNoteUpdate  # noqa: E501
+from swagger_server.models.deleted_user import DeletedUser  # noqa: E501
+from swagger_server.models.deleted_user_create import DeletedUserCreate  # noqa: E501
+from swagger_server.models.deleted_user_site import DeletedUserSite  # noqa: E501
+from swagger_server.models.deleted_user_site_create import DeletedUserSiteCreate  # noqa: E501
+from swagger_server.models.deleted_user_site_update import DeletedUserSiteUpdate  # noqa: E501
+from swagger_server.models.deleted_user_update import DeletedUserUpdate  # noqa: E501
 from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.site_data_schema import SiteDataSchema  # noqa: E501
 from swagger_server.models.site_data_schema_create import SiteDataSchemaCreate  # noqa: E501
 from swagger_server.models.site_data_schema_update import SiteDataSchemaUpdate  # noqa: E501
+from swagger_server.models.user_deletion_data import UserDeletionData  # noqa: E501
 from swagger_server.models.user_site_data import UserSiteData  # noqa: E501
 from swagger_server.models.user_site_data_create import UserSiteDataCreate  # noqa: E501
 from swagger_server.models.user_site_data_update import UserSiteDataUpdate  # noqa: E501
@@ -22,6 +30,31 @@ from swagger_server import util
 from ge_core_shared import db_actions, decorators
 
 from user_data_store.models import AdminNote as SQLA_AdminNote
+
+
+SQL_DELETE_USER_DATA = """
+-- Given a user id (:user_id),
+-- delete AdminNote and UserSiteData tied to user id
+
+WITH deleted_admin_notes AS (
+    DELETE FROM adminnote
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_site_data AS (
+    DELETE FROM usersitedata
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_rows AS (
+   SELECT * FROM deleted_admin_notes
+   UNION ALL  -- ALL is required so that duplicates are not dropped
+   SELECT * FROM deleted_site_data
+)
+
+SELECT COUNT(*) AS amount
+  FROM deleted_rows;
+"""
 
 
 def adminnote_create(data=None):
@@ -143,6 +176,261 @@ def adminnote_update(admin_note_id, data=None):  # noqa: E501
         data=data,
         query={"id": admin_note_id},
     )
+
+
+def deleteduser_create(data=None):  # noqa: E501
+    """deleteduser_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: DeletedUser
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="create",
+        data=data,
+    )
+
+
+def deleteduser_delete(user_id):  # noqa: E501
+    """deleteduser_delete
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="delete",
+        query={
+            "id": user_id
+        }
+    )
+
+
+@decorators.list_response
+def deleteduser_list(offset=None, limit=None, deleter_id=None):  # noqa: E501
+    """deleteduser_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+
+    :rtype: List[DeletedUser]
+    """
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "deleter_id": deleter_id
+            },
+            "order_by": ["id"],
+        }
+    )
+
+
+def deleteduser_read(user_id):  # noqa: E501
+    """deleteduser_read
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: DeletedUser
+    """
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="read",
+        query={"id": user_id}
+    )
+
+
+def deleteduser_update(user_id, data=None):  # noqa: E501
+    """deleteduser_update
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: DeletedUser
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUser",
+        api_model=DeletedUser,
+        action="update",
+        data=data,
+        query={"id": user_id},
+    )
+
+
+def deletedusersite_create(data=None):  # noqa: E501
+    """deletedusersite_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: DeletedUserSite
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSite,
+        action="create",
+        data=data,
+    )
+
+
+def deletedusersite_delete(user_id, site_id):  # noqa: E501
+    """deletedusersite_delete
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param site_id: A unique integer value identifying the site.
+    :type site_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSite,
+        action="delete",
+        query={
+            "deleted_user_id": user_id,
+            "site_id": site_id
+        }
+    )
+
+
+@decorators.list_response
+def deletedusersite_list(offset=None, limit=None, user_id=None):  # noqa: E501
+    """deletedusersite_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+
+    :rtype: List[DeletedUserSite]
+    """
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSite,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "deleted_user_id": user_id
+            },
+            "order_by": ["deleted_user_id"],
+        }
+    )
+
+
+def deletedusersite_read(user_id, site_id):  # noqa: E501
+    """deletedusersite_read
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param site_id: A unique integer value identifying the site.
+    :type site_id: int
+
+    :rtype: DeletedUserSite
+    """
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSite,
+        action="read",
+        query={
+            "deleted_user_id": user_id,
+            "site_id": site_id
+        }
+    )
+
+
+def deletedusersite_update(user_id, site_id, data=None):  # noqa: E501
+    """deletedusersite_update
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param site_id: A unique integer value identifying the site.
+    :type site_id: int
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: DeletedUserSite
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletedUserSite",
+        api_model=DeletedUserSite,
+        action="update",
+        data=data,
+        query={
+            "deleted_user_id": user_id,
+            "site_id": site_id
+        },
+    )
+
+
+def delete_user_data(user_id):  # noqa: E501
+    """deleteuserdata
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: None
+    """
+    with DB.session.get_bind().begin() as connection:
+        result = connection.execute(
+            text(SQL_DELETE_USER_DATA),
+            **{"user_id": user_id}
+        )
+
+    amount = result.fetchone()["amount"]
+    return UserDeletionData(amount=amount)
 
 
 def healthcheck():  # noqa: E501
