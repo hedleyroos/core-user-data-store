@@ -1,6 +1,6 @@
 import random
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from werkzeug.test import Client
 
 from swagger_server.models.site_data_schema import SiteDataSchema
@@ -11,7 +11,9 @@ from project.settings import API_KEY_HEADER
 
 class TestAuthMiddleware(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
+        super().setUp()
         self.sitedataschema_data = {
             "site_id": random.randint(2, 2000000),
             "schema": {"test": "data"}

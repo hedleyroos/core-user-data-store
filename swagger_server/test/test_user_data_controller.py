@@ -4,10 +4,9 @@ from __future__ import absolute_import
 
 import random
 import uuid
-from datetime import datetime
 
 from flask import json
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 import werkzeug
 
 from swagger_server.models import AdminNoteCreate
@@ -27,7 +26,9 @@ from project.settings import API_KEY_HEADER
 class TestUserDataController(BaseTestCase):
     """ UserDataController integration test stubs """
 
+    @decorators._db_exception
     def setUp(self):
+        super().setUp()
         self.adminnote_data = {
             "creator_id": "%s" % uuid.uuid1(),
             "note": "This is text",

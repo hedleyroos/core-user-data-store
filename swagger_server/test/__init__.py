@@ -1,6 +1,8 @@
 import connexion
 import os
 
+import project.app
+
 orig_environ = dict(os.environ)
 orig_environ["ALLOWED_API_KEYS"] = "test-api-key"
 os.environ.update(orig_environ)
@@ -8,11 +10,9 @@ os.environ.update(orig_environ)
 from flask_sqlalchemy import SQLAlchemy
 from flask_testing import TestCase
 from sqlalchemy.exc import SQLAlchemyError
-from ge_core_shared import exception_handlers, middleware
+from ge_core_shared import decorators, exception_handlers, middleware
 
 from swagger_server.encoder import JSONEncoder
-
-import project.app
 
 
 DB = SQLAlchemy()
@@ -33,12 +33,8 @@ class BaseTestCase(TestCase):
         self.flask_app = flask_app
         return flask_app
 
+    @decorators._db_exception
     def setUp(self):
-        super().setUp()
-
-        # NOTE: TestUserDataController.test_usersitedata_list will fail once
-        # super is called. Test makes assumption that there is already data in
-        # the db.
         meta = DB.metadata
         meta.reflect(DB.engine)
 
@@ -51,7 +47,6 @@ class BaseTestCase(TestCase):
         DB.session.commit()
 
     def tearDown(self):
-        super().tearDown()
         # Closes all active connections between tests. Prevents session errors
         # bleeding over.
         DB.session.close_all()
