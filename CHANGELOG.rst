@@ -1,8 +1,8 @@
 Changelog
 =========
 
-next
-----
+1.1.5
+-----
 - Exception handler status code and message updates.
 
 1.1.4
