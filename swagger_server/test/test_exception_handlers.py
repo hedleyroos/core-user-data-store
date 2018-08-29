@@ -44,10 +44,10 @@ class TestExceptions(BaseTestCase):
             headers=self.headers
         )
         r_data = json.loads(response.data)
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 409)
         self.assertEqual(
             r_data["error"],
-            "(psycopg2.IntegrityError) duplicate key value violates unique "\
-            "constraint \"sitedataschema_pkey\" DETAIL:  Key (site_id)="\
-            "(%s) already exists. " % self.sitedataschema_model.site_id
+            "ERROR:  duplicate key value violates unique constraint"
+            " \"sitedataschema_pkey\" DETAIL:  Key (site_id)="
+            "(%s) already exists." % self.sitedataschema_model.site_id
         )
