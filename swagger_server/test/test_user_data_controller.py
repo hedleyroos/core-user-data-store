@@ -26,7 +26,7 @@ from project.settings import API_KEY_HEADER
 class TestUserDataController(BaseTestCase):
     """ UserDataController integration test stubs """
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         super().setUp()
         self.adminnote_data = {

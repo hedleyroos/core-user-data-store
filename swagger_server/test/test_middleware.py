@@ -11,7 +11,7 @@ from project.settings import API_KEY_HEADER
 
 class TestAuthMiddleware(BaseTestCase):
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         super().setUp()
         self.sitedataschema_data = {

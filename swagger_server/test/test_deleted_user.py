@@ -32,7 +32,7 @@ from project.settings import API_KEY_HEADER
 class TestUserDataMiscController(BaseTestCase):
 
     @classmethod
-    @decorators._db_exception
+    @decorators.db_exception
     def setUpClass(cls):
         super().setUpClass()
         cls.headers = {API_KEY_HEADER: "test-api-key"}

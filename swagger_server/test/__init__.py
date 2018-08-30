@@ -33,7 +33,7 @@ class BaseTestCase(TestCase):
         self.flask_app = flask_app
         return flask_app
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         meta = DB.metadata
         meta.reflect(DB.engine)
