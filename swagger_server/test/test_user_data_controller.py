@@ -4,10 +4,9 @@ from __future__ import absolute_import
 
 import random
 import uuid
-from datetime import datetime
 
 from flask import json
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 import werkzeug
 
 from swagger_server.models import AdminNoteCreate
@@ -27,7 +26,9 @@ from project.settings import API_KEY_HEADER
 class TestUserDataController(BaseTestCase):
     """ UserDataController integration test stubs """
 
+    @decorators.db_exception
     def setUp(self):
+        super().setUp()
         self.adminnote_data = {
             "creator_id": "%s" % uuid.uuid1(),
             "note": "This is text",
@@ -39,7 +40,6 @@ class TestUserDataController(BaseTestCase):
             data=self.adminnote_data,
             action="create"
         )
-
         self.sitedataschema_data = {
             "site_id": random.randint(2, 2000000),
             "schema": {
@@ -235,7 +235,6 @@ class TestUserDataController(BaseTestCase):
     def test_sitedataschema_create(self):
         """
         Test case for sitedataschema_create
-
         """
         data = SiteDataSchemaCreate(**{
             "site_id": random.randint(2, 2000000),
@@ -288,9 +287,24 @@ class TestUserDataController(BaseTestCase):
     def test_sitedataschema_list(self):
         """
         Test case for sitedataschema_list
-
-
         """
+        sitedataschema_data = {
+            "site_id": random.randint(2, 2000000),
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "item_1": {"type": "number"},
+                    "item_2": {"type": "string"}
+                },
+                "additionalProperties": False
+            }
+        }
+        db_actions.crud(
+            model="SiteDataSchema",
+            api_model=SiteDataSchema,
+            data=sitedataschema_data,
+            action="create"
+        )
         query_string = [
             ("limit", 5)
         ]
@@ -301,7 +315,7 @@ class TestUserDataController(BaseTestCase):
             headers=self.headers)
         response_data = json.loads(response.data)
 
-        self.assertEqual(len(response_data), 5)
+        self.assertEqual(len(response_data), 2)
         self.assertIn("X-Total-Count", response.headers)
 
     def test_sitedataschema_read(self):
@@ -446,9 +460,18 @@ class TestUserDataController(BaseTestCase):
     def test_usersitedata_list(self):
         """
         Test case for usersitedata_list
-
-
         """
+        usersitedata_data = {
+            "site_id": random.randint(2, 2000000),
+            "user_id": "%s" % uuid.uuid1(),
+            "data": {"test": "data"},
+        }
+        db_actions.crud(
+            model="UserSiteData",
+            api_model=UserSiteData,
+            data=usersitedata_data,
+            action="create"
+        )
         query_string = [
             ("limit", 5)
         ]
@@ -459,7 +482,7 @@ class TestUserDataController(BaseTestCase):
             headers=self.headers)
         response_data = json.loads(response.data)
 
-        self.assertEqual(len(response_data), 5)
+        self.assertEqual(len(response_data), 2)
         self.assertIn("X-Total-Count", response.headers)
 
     def test_usersitedata_read(self):

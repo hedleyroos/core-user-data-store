@@ -8,7 +8,7 @@ from datetime import datetime
 from dateutil.tz import tzutc
 
 from flask import json
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from unittest import mock
 import werkzeug
 
@@ -32,6 +32,7 @@ from project.settings import API_KEY_HEADER
 class TestUserDataMiscController(BaseTestCase):
 
     @classmethod
+    @decorators.db_exception
     def setUpClass(cls):
         super().setUpClass()
         cls.headers = {API_KEY_HEADER: "test-api-key"}
