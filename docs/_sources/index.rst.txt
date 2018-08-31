@@ -10,9 +10,6 @@ Welcome to user_data_store's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   user_data_store
-
-
 Indices and tables
 ==================
 

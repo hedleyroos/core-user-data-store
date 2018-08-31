@@ -1,7 +1,7 @@
-user_data_store
-===============
+swagger_server
+==============
 
 .. toctree::
    :maxdepth: 4
 
-   user_data_store
+   swagger_server

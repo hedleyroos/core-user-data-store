@@ -1,0 +1,7 @@
+swagger\_server.controllers.user\_data\_controller module
+=========================================================
+
+.. automodule:: swagger_server.controllers.user_data_controller
+    :members:
+    :undoc-members:
+    :show-inheritance:
