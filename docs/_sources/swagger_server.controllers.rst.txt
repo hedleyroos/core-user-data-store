@@ -1,0 +1,17 @@
+swagger\_server.controllers package
+===================================
+
+Submodules
+----------
+
+.. toctree::
+
+   swagger_server.controllers.user_data_controller
+
+Module contents
+---------------
+
+.. automodule:: swagger_server.controllers
+    :members:
+    :undoc-members:
+    :show-inheritance:
