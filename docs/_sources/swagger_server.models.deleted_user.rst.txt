@@ -1,0 +1,7 @@
+swagger\_server.models.deleted\_user module
+===========================================
+
+.. automodule:: swagger_server.models.deleted_user
+    :members:
+    :undoc-members:
+    :show-inheritance:

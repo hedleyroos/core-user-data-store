@@ -1,0 +1,854 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>swagger_server.test.test_deleted_user &mdash; user_data_store  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> user_data_store
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">user_data_store</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../swagger_server.html">swagger_server</a> &raquo;</li>
+        
+          <li><a href="../test.html">swagger_server.test</a> &raquo;</li>
+        
+      <li>swagger_server.test.test_deleted_user</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for swagger_server.test.test_deleted_user</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">dateutil.tz</span> <span class="k">import</span> <span class="n">tzutc</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">json</span>
+<span class="kn">from</span> <span class="nn">ge_core_shared</span> <span class="k">import</span> <span class="n">db_actions</span><span class="p">,</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">mock</span>
+<span class="kn">import</span> <span class="nn">werkzeug</span>
+
+<span class="kn">from</span> <span class="nn">swagger_server.models</span> <span class="k">import</span> <span class="n">AdminNoteCreate</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_data_schema_create</span> <span class="k">import</span> <span class="n">SiteDataSchemaCreate</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models</span> <span class="k">import</span> <span class="n">UserSiteDataCreate</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.admin_note</span> <span class="k">import</span> <span class="n">AdminNote</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user</span> <span class="k">import</span> <span class="n">DeletedUser</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_create</span> <span class="k">import</span> <span class="n">DeletedUserCreate</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_site</span> <span class="k">import</span> <span class="n">DeletedUserSite</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_site_create</span> <span class="k">import</span> <span class="n">DeletedUserSiteCreate</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_site_update</span> <span class="k">import</span> <span class="n">DeletedUserSiteUpdate</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_update</span> <span class="k">import</span> <span class="n">DeletedUserUpdate</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_data_schema</span> <span class="k">import</span> <span class="n">SiteDataSchema</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_site_data</span> <span class="k">import</span> <span class="n">UserSiteData</span>
+
+<span class="kn">from</span> <span class="nn">swagger_server.test</span> <span class="k">import</span> <span class="n">BaseTestCase</span>
+<span class="kn">from</span> <span class="nn">project.settings</span> <span class="k">import</span> <span class="n">API_KEY_HEADER</span>
+
+
+<div class="viewcode-block" id="TestUserDataMiscController"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataMiscController">[docs]</a><span class="k">class</span> <span class="nc">TestUserDataMiscController</span><span class="p">(</span><span class="n">BaseTestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestUserDataMiscController.setUpClass"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataMiscController.setUpClass">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@decorators</span><span class="o">.</span><span class="n">db_exception</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setUpClass</span><span class="p">()</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">API_KEY_HEADER</span><span class="p">:</span> <span class="s2">&quot;test-api-key&quot;</span><span class="p">}</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">sitedataschema_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="mi">214748364</span><span class="p">,</span>
+            <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;item_1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                    <span class="s2">&quot;item_2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+                <span class="p">},</span>
+                <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">sitedataschema_model</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchema</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">sitedataschema_data</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestUserDataMiscController.test_delete_user_data_adminnote"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataMiscController.test_delete_user_data_adminnote">[docs]</a>    <span class="k">def</span> <span class="nf">test_delete_user_data_adminnote</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">):</span>
+            <span class="n">adminnote_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;creator_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+                <span class="s2">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;This is text </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">,</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNoteCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">adminnote_data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/users/</span><span class="si">{user_id}</span><span class="s1">/delete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+            <span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">werkzeug</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NotFound</span><span class="p">):</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNote</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">],</span> <span class="mi">29</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestUserDataMiscController.test_delete_user_data_site_data"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataMiscController.test_delete_user_data_site_data">[docs]</a>    <span class="k">def</span> <span class="nf">test_delete_user_data_site_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">):</span>
+            <span class="n">sitedataschema_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span>
+                <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;item_1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                        <span class="s2">&quot;item_2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchemaCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">sitedataschema_data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">sitedataschema_data</span><span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;item_1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;item_2&quot;</span><span class="p">:</span> <span class="s2">&quot;a string&quot;</span><span class="p">},</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteDataCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/users/</span><span class="si">{user_id}</span><span class="s1">/delete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+            <span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">werkzeug</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NotFound</span><span class="p">):</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteData</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">],</span> <span class="mi">23</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestUserDataMiscController.test_delete_user_data_site_and_admin_note_data"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataMiscController.test_delete_user_data_site_and_admin_note_data">[docs]</a>    <span class="k">def</span> <span class="nf">test_delete_user_data_site_and_admin_note_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">):</span>
+            <span class="n">adminnote_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;creator_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+                <span class="s2">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;This is text </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">,</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNoteCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">adminnote_data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">):</span>
+            <span class="n">sitedataschema_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span>
+                <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;item_1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                        <span class="s2">&quot;item_2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchemaCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">sitedataschema_data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">sitedataschema_data</span><span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;item_1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;item_2&quot;</span><span class="p">:</span> <span class="s2">&quot;a string&quot;</span><span class="p">},</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteDataCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/users/</span><span class="si">{user_id}</span><span class="s1">/delete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+            <span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">werkzeug</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NotFound</span><span class="p">):</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNote</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">werkzeug</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NotFound</span><span class="p">):</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteData</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">],</span> <span class="mi">52</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestUserDataMiscController.test_sql_atomic_nature"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataMiscController.test_sql_atomic_nature">[docs]</a>    <span class="k">def</span> <span class="nf">test_sql_atomic_nature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">):</span>
+            <span class="n">adminnote_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;creator_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+                <span class="s2">&quot;note&quot;</span><span class="p">:</span> <span class="s2">&quot;This is text </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">,</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNoteCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">adminnote_data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">):</span>
+            <span class="n">sitedataschema_data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span>
+                <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;item_1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+                        <span class="s2">&quot;item_2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">}</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchemaCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">sitedataschema_data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">sitedataschema_data</span><span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;item_1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;item_2&quot;</span><span class="p">:</span> <span class="s2">&quot;a string&quot;</span><span class="p">},</span>
+            <span class="p">}</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteDataCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># SQL being mocked needs to break, to ensure nothing is committed</span>
+        <span class="c1"># unless the entire query is successful</span>
+        <span class="n">mocked_sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        -- Given a user id (:user_id),</span>
+<span class="s2">        -- delete AdminNote and UserSiteData tied to user id</span>
+
+<span class="s2">        WITH deleted_admin_notes AS (</span>
+<span class="s2">            DELETE FROM adminnote</span>
+<span class="s2">                WHERE user_id = :user_id</span>
+<span class="s2">            RETURNING user_id</span>
+<span class="s2">        ),</span>
+<span class="s2">        deleted_site_data AS (</span>
+<span class="s2">            DELETE FROM fooooooo -- This is meant to break</span>
+<span class="s2">                WHERE none_valid = :user_id</span>
+<span class="s2">            RETURNING user_id</span>
+<span class="s2">        ),</span>
+<span class="s2">        deleted_rows AS (</span>
+<span class="s2">           SELECT * FROM deleted_admin_notes</span>
+<span class="s2">           UNION ALL  -- ALL is required so that duplicates are not dropped</span>
+<span class="s2">           SELECT * FROM deleted_site_data</span>
+<span class="s2">        )</span>
+
+<span class="s2">        SELECT COUNT(*) AS amount</span>
+<span class="s2">          FROM deleted_rows</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">mock</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+                <span class="s2">&quot;swagger_server.controllers.user_data_controller.SQL_DELETE_USER_DATA&quot;</span><span class="p">,</span>
+                <span class="n">new_callable</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">mocked_sql</span><span class="p">):</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+                <span class="s1">&#39;/api/v1/users/</span><span class="si">{user_id}</span><span class="s1">/delete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">,</span>
+                <span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+                <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span>
+            <span class="s1">&#39;relation &quot;fooooooo&quot; does not e&#39;</span><span class="p">,</span>
+            <span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">notes</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNote</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+            <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">notes</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">29</span><span class="p">)</span>
+        <span class="n">site_data</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteData</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+            <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">site_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">23</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TestDeletedUser"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestDeletedUser">[docs]</a><span class="k">class</span> <span class="nc">TestDeletedUser</span><span class="p">(</span><span class="n">BaseTestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestDeletedUser.setUp"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestDeletedUser.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setUp</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleteduser_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;SetupUseryName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;asdasd@asd.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;msisdn&quot;</span><span class="p">:</span> <span class="s2">&quot;0865456321&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;setupUserHere&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;deleter_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleteduser_model</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserCreate</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deleteduser_data</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">API_KEY_HEADER</span><span class="p">:</span> <span class="s2">&quot;test-api-key&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TestDeletedUser.test_deleted_user_create"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestDeletedUser.test_deleted_user_create">[docs]</a>    <span class="k">def</span> <span class="nf">test_deleted_user_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;UseryName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;asdasd@asd.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;msisdn&quot;</span><span class="p">:</span> <span class="s2">&quot;0865456321&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;Like I need one&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;deleter_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">DeletedUserCreate</span><span class="p">(</span><span class="o">**</span><span class="n">data_dict</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s2">&quot;/api/v1/deletedusers&quot;</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+            <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestDeletedUser.test_deleted_user_delete"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestDeletedUser.test_deleted_user_delete">[docs]</a>    <span class="k">def</span> <span class="nf">test_deleted_user_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;UseryName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;asdasd@asd.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;msisdn&quot;</span><span class="p">:</span> <span class="s2">&quot;0865456321&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;Like I need one&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;deleter_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserCreate</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusers/</span><span class="si">{user_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">id</span>
+            <span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">werkzeug</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NotFound</span><span class="p">):</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUser</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">id</span>
+                <span class="p">}</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestDeletedUser.test_deleted_user_list"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestDeletedUser.test_deleted_user_list">[docs]</a>    <span class="k">def</span> <span class="nf">test_deleted_user_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">deleter_id</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+                <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;UseryName&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;asdasd@asd.com&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;msisdn&quot;</span><span class="p">:</span> <span class="s2">&quot;0865456321&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;Like I need </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">,</span>
+                <span class="s2">&quot;deleter_id&quot;</span><span class="p">:</span> <span class="n">deleter_id</span>
+            <span class="p">}</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">))</span>
+        <span class="n">query_string</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;deleter_id&quot;</span><span class="p">,</span> <span class="n">deleter_id</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusers&#39;</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">query_string</span><span class="o">=</span><span class="n">query_string</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">response_data</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Total-Count&quot;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">))</span>
+        <span class="n">query_string</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;deleter_id&quot;</span><span class="p">,</span> <span class="n">deleter_id</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;limit&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusers&#39;</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">query_string</span><span class="o">=</span><span class="n">query_string</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">response_data</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Total-Count&quot;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestDeletedUser.test_deleted_user_read"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestDeletedUser.test_deleted_user_read">[docs]</a>    <span class="k">def</span> <span class="nf">test_deleted_user_read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusers/</span><span class="si">{user_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deleteduser_model</span><span class="o">.</span><span class="n">id</span>
+            <span class="p">),</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">deleteduser_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deleteduser_model</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestDeletedUser.test_delete_user_update"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestDeletedUser.test_delete_user_update">[docs]</a>    <span class="k">def</span> <span class="nf">test_delete_user_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">original_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;UseryName&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;asdasd@asd.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;msisdn&quot;</span><span class="p">:</span> <span class="s2">&quot;0865456321&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;Like I need a reason&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;deleter_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserCreate</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">original_data</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;This is updated text&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;supersecretupdatedname</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="n">updated_data</span> <span class="o">=</span> <span class="n">DeletedUserUpdate</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusers/</span><span class="si">{user_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;PUT&#39;</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">updated_data</span><span class="p">),</span>
+            <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">updated_entry</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUser</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+            <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">updated_entry</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="TestUserDataDeletedUserSiteController"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataDeletedUserSiteController">[docs]</a><span class="k">class</span> <span class="nc">TestUserDataDeletedUserSiteController</span><span class="p">(</span><span class="n">BaseTestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TestUserDataDeletedUserSiteController.setUp"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataDeletedUserSiteController.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setUp</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deletedusersite_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="mi">999999</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deletedusersite_model</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSiteCreate</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deletedusersite_data</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="n">API_KEY_HEADER</span><span class="p">:</span> <span class="s2">&quot;test-api-key&quot;</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="TestUserDataDeletedUserSiteController.test_deleted_user_site_create"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataDeletedUserSiteController.test_deleted_user_site_create">[docs]</a>    <span class="k">def</span> <span class="nf">test_deleted_user_site_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">DeletedUserSiteCreate</span><span class="p">(</span><span class="o">**</span><span class="n">data_dict</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s2">&quot;/api/v1/deletedusersites&quot;</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+            <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">data_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestUserDataDeletedUserSiteController.test_deleted_user_site_delete"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataDeletedUserSiteController.test_deleted_user_site_delete">[docs]</a>    <span class="k">def</span> <span class="nf">test_deleted_user_site_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSiteCreate</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusersites/</span><span class="si">{user_id}</span><span class="s1">/</span><span class="si">{site_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">deleted_user_id</span><span class="p">,</span>
+                <span class="n">site_id</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">site_id</span>
+            <span class="p">),</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;DELETE&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">werkzeug</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NotFound</span><span class="p">):</span>
+            <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSite</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">deleted_user_id</span><span class="p">,</span>
+                    <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">site_id</span>
+                <span class="p">}</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestUserDataDeletedUserSiteController.test_deleted_user_site_list"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataDeletedUserSiteController.test_deleted_user_site_list">[docs]</a>    <span class="k">def</span> <span class="nf">test_deleted_user_site_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+                <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSiteCreate</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+            <span class="p">))</span>
+        <span class="n">query_string</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusersites&#39;</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">query_string</span><span class="o">=</span><span class="n">query_string</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">response_data</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Total-Count&quot;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">))</span>
+        <span class="n">query_string</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="n">user_id</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;limit&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusersites&#39;</span><span class="p">,</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">query_string</span><span class="o">=</span><span class="n">query_string</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">response_data</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Total-Count&quot;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestUserDataDeletedUserSiteController.test_deleted_user_site_read"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataDeletedUserSiteController.test_deleted_user_site_read">[docs]</a>    <span class="k">def</span> <span class="nf">test_deleted_user_site_read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusersites/</span><span class="si">{user_id}</span><span class="s1">/</span><span class="si">{site_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deletedusersite_model</span><span class="o">.</span><span class="n">deleted_user_id</span><span class="p">,</span>
+                <span class="n">site_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deletedusersite_model</span><span class="o">.</span><span class="n">site_id</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">deletedusersite_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deletedusersite_model</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestUserDataDeletedUserSiteController.test_delete_user_update"><a class="viewcode-back" href="../../../swagger_server.test.test_deleted_user.html#swagger_server.test.test_deleted_user.TestUserDataDeletedUserSiteController.test_delete_user_update">[docs]</a>    <span class="k">def</span> <span class="nf">test_delete_user_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">original_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">(),</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="mi">56431684</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSiteCreate</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">original_data</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span>
+        <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;deletion_requested_via&quot;</span><span class="p">:</span> <span class="s2">&quot;/shrug&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;deletion_requested_at&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tzutc</span><span class="p">()),</span>
+            <span class="s2">&quot;deletion_confirmed_via&quot;</span><span class="p">:</span> <span class="s2">&quot;who knows&quot;</span>
+        <span class="p">}</span>
+
+        <span class="n">updated_data</span> <span class="o">=</span> <span class="n">DeletedUserSiteUpdate</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="s1">&#39;/api/v1/deletedusersites/</span><span class="si">{user_id}</span><span class="s1">/</span><span class="si">{site_id}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">user_id</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">deleted_user_id</span><span class="p">,</span>
+                <span class="n">site_id</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">site_id</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">method</span><span class="o">=</span><span class="s1">&#39;PUT&#39;</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">updated_data</span><span class="p">),</span>
+            <span class="n">content_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">updated_entry</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+            <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSite</span><span class="p">,</span>
+            <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+            <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">deleted_user_id</span><span class="p">,</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">site_id</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;deletion_requested_via&quot;</span><span class="p">],</span> <span class="n">updated_entry</span><span class="o">.</span><span class="n">deletion_requested_via</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;deletion_requested_at&quot;</span><span class="p">],</span> <span class="n">updated_entry</span><span class="o">.</span><span class="n">deletion_requested_at</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">response_data</span><span class="p">[</span><span class="s2">&quot;deletion_confirmed_via&quot;</span><span class="p">],</span> <span class="n">updated_entry</span><span class="o">.</span><span class="n">deletion_confirmed_via</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">unittest</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Girl Effect.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

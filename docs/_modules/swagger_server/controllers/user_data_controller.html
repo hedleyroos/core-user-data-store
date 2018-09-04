@@ -1,0 +1,907 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>swagger_server.controllers.user_data_controller &mdash; user_data_store  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> user_data_store
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">user_data_store</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../swagger_server.html">swagger_server</a> &raquo;</li>
+        
+      <li>swagger_server.controllers.user_data_controller</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for swagger_server.controllers.user_data_controller</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="kn">import</span> <span class="nn">connexion</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask_sqlalchemy</span> <span class="k">import</span> <span class="n">SQLAlchemy</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">text</span>
+
+<span class="kn">from</span> <span class="nn">project.app</span> <span class="k">import</span> <span class="n">DB</span>
+<span class="kn">from</span> <span class="nn">user_data_store</span> <span class="k">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.admin_note</span> <span class="k">import</span> <span class="n">AdminNote</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.admin_note_create</span> <span class="k">import</span> <span class="n">AdminNoteCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.admin_note_update</span> <span class="k">import</span> <span class="n">AdminNoteUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user</span> <span class="k">import</span> <span class="n">DeletedUser</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_create</span> <span class="k">import</span> <span class="n">DeletedUserCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_site</span> <span class="k">import</span> <span class="n">DeletedUserSite</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_site_create</span> <span class="k">import</span> <span class="n">DeletedUserSiteCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_site_update</span> <span class="k">import</span> <span class="n">DeletedUserSiteUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.deleted_user_update</span> <span class="k">import</span> <span class="n">DeletedUserUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.health_info</span> <span class="k">import</span> <span class="n">HealthInfo</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_data_schema</span> <span class="k">import</span> <span class="n">SiteDataSchema</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_data_schema_create</span> <span class="k">import</span> <span class="n">SiteDataSchemaCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_data_schema_update</span> <span class="k">import</span> <span class="n">SiteDataSchemaUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_deletion_data</span> <span class="k">import</span> <span class="n">UserDeletionData</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_site_data</span> <span class="k">import</span> <span class="n">UserSiteData</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_site_data_create</span> <span class="k">import</span> <span class="n">UserSiteDataCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_site_data_update</span> <span class="k">import</span> <span class="n">UserSiteDataUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server</span> <span class="k">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">ge_core_shared</span> <span class="k">import</span> <span class="n">db_actions</span><span class="p">,</span> <span class="n">decorators</span>
+
+<span class="kn">from</span> <span class="nn">user_data_store.models</span> <span class="k">import</span> <span class="n">AdminNote</span> <span class="k">as</span> <span class="n">SQLA_AdminNote</span>
+
+
+<span class="n">SQL_DELETE_USER_DATA</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a user id (:user_id),</span>
+<span class="s2">-- delete AdminNote and UserSiteData tied to user id</span>
+
+<span class="s2">WITH deleted_admin_notes AS (</span>
+<span class="s2">    DELETE FROM adminnote</span>
+<span class="s2">        WHERE user_id = :user_id</span>
+<span class="s2">    RETURNING user_id</span>
+<span class="s2">),</span>
+<span class="s2">deleted_site_data AS (</span>
+<span class="s2">    DELETE FROM usersitedata</span>
+<span class="s2">        WHERE user_id = :user_id</span>
+<span class="s2">    RETURNING user_id</span>
+<span class="s2">),</span>
+<span class="s2">deleted_rows AS (</span>
+<span class="s2">   SELECT * FROM deleted_admin_notes</span>
+<span class="s2">   UNION ALL  -- ALL is required so that duplicates are not dropped</span>
+<span class="s2">   SELECT * FROM deleted_site_data</span>
+<span class="s2">)</span>
+
+<span class="s2">SELECT COUNT(*) AS amount</span>
+<span class="s2">  FROM deleted_rows;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="adminnote_create"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.adminnote_create">[docs]</a><span class="k">def</span> <span class="nf">adminnote_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;adminnote_create</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: AdminNote</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNote</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="adminnote_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.adminnote_delete">[docs]</a><span class="k">def</span> <span class="nf">adminnote_delete</span><span class="p">(</span><span class="n">admin_note_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;adminnote_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param admin_note_id: A unique integer value identifying the admin note.</span>
+<span class="sd">    :type admin_note_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNote</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">admin_note_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="adminnote_list"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.adminnote_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">adminnote_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">creator_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">admin_note_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;adminnote_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param user_id: An optional query parameter to filter by user_id</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param creator_id: An optional query parameter to filter by creator (a user_id)</span>
+<span class="sd">    :type creator_id: dict | bytes</span>
+<span class="sd">    :param admin_note_ids: An optional list of adminnote ids</span>
+<span class="sd">    :type admin_note_ids: List[int]</span>
+
+<span class="sd">    :rtype: List[AdminNote]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">admin_note_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span><span class="p">[</span><span class="s2">&quot;ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">admin_note_ids</span>
+    <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span><span class="p">[</span><span class="s2">&quot;offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
+    <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit</span>
+    <span class="k">if</span> <span class="n">user_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_id</span>
+    <span class="k">if</span> <span class="n">creator_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span><span class="p">[</span><span class="s2">&quot;creator_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creator_id</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNote</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="n">query</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="adminnote_read"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.adminnote_read">[docs]</a><span class="k">def</span> <span class="nf">adminnote_read</span><span class="p">(</span><span class="n">admin_note_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;adminnote_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param admin_note_id: A unique integer value identifying the admin note.</span>
+<span class="sd">    :type admin_note_id: int</span>
+
+<span class="sd">    :rtype: AdminNote</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNote</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">admin_note_id</span><span class="p">}</span>
+<span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="adminnote_update"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.adminnote_update">[docs]</a><span class="k">def</span> <span class="nf">adminnote_update</span><span class="p">(</span><span class="n">admin_note_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;adminnote_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param admin_note_id: A unique integer value identifying the admin note.</span>
+<span class="sd">    :type admin_note_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: AdminNote</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;AdminNote&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">AdminNote</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">admin_note_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deleteduser_create"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deleteduser_create">[docs]</a><span class="k">def</span> <span class="nf">deleteduser_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deleteduser_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: DeletedUser</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUser</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deleteduser_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deleteduser_delete">[docs]</a><span class="k">def</span> <span class="nf">deleteduser_delete</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deleteduser_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUser</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">user_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deleteduser_list"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deleteduser_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">deleteduser_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deleter_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deleteduser_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+
+<span class="sd">    :rtype: List[DeletedUser]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUser</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;deleter_id&quot;</span><span class="p">:</span> <span class="n">deleter_id</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deleteduser_read"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deleteduser_read">[docs]</a><span class="k">def</span> <span class="nf">deleteduser_read</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deleteduser_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+
+<span class="sd">    :rtype: DeletedUser</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUser</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deleteduser_update"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deleteduser_update">[docs]</a><span class="k">def</span> <span class="nf">deleteduser_update</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deleteduser_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: DeletedUser</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUser&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUser</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deletedusersite_create"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deletedusersite_create">[docs]</a><span class="k">def</span> <span class="nf">deletedusersite_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deletedusersite_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: DeletedUserSite</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSite</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deletedusersite_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deletedusersite_delete">[docs]</a><span class="k">def</span> <span class="nf">deletedusersite_delete</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deletedusersite_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSite</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deletedusersite_list"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deletedusersite_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">deletedusersite_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deletedusersite_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+
+<span class="sd">    :rtype: List[DeletedUserSite]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSite</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;deleted_user_id&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deletedusersite_read"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deletedusersite_read">[docs]</a><span class="k">def</span> <span class="nf">deletedusersite_read</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deletedusersite_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: DeletedUserSite</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSite</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deletedusersite_update"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.deletedusersite_update">[docs]</a><span class="k">def</span> <span class="nf">deletedusersite_update</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deletedusersite_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: DeletedUserSite</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DeletedUserSite&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DeletedUserSite</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;deleted_user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="delete_user_data"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.delete_user_data">[docs]</a><span class="k">def</span> <span class="nf">delete_user_data</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;deleteuserdata</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">text</span><span class="p">(</span><span class="n">SQL_DELETE_USER_DATA</span><span class="p">),</span>
+            <span class="o">**</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="n">amount</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">UserDeletionData</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="healthcheck"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.healthcheck">[docs]</a><span class="k">def</span> <span class="nf">healthcheck</span><span class="p">():</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;healthcheck</span>
+
+<span class="sd">    Get the status of the service. # noqa: E501</span>
+
+
+<span class="sd">    :rtype: HealthInfo</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT LOCALTIMESTAMP&quot;</span><span class="p">)</span>
+    <span class="n">db_timestamp</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">HealthInfo</span><span class="p">(</span>
+        <span class="n">host</span><span class="o">=</span><span class="n">socket</span><span class="o">.</span><span class="n">getfqdn</span><span class="p">(),</span>
+        <span class="n">server_timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">version</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span>
+        <span class="n">db_timestamp</span><span class="o">=</span><span class="n">db_timestamp</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="sitedataschema_create"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.sitedataschema_create">[docs]</a><span class="k">def</span> <span class="nf">sitedataschema_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;sitedataschema_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: SiteDataSchema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchema</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sitedataschema_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.sitedataschema_delete">[docs]</a><span class="k">def</span> <span class="nf">sitedataschema_delete</span><span class="p">(</span><span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;sitedataschema_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchema</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sitedataschema_list"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.sitedataschema_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">sitedataschema_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;sitedataschema_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+
+<span class="sd">    :rtype: List[SiteDataSchema]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">limit</span><span class="p">:</span>
+        <span class="n">query</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit</span>
+    <span class="k">if</span> <span class="n">offset</span><span class="p">:</span>
+        <span class="n">query</span><span class="p">[</span><span class="s2">&quot;offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchema</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="n">query</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sitedataschema_read"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.sitedataschema_read">[docs]</a><span class="k">def</span> <span class="nf">sitedataschema_read</span><span class="p">(</span><span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;sitedataschema_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: SiteDataSchema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchema</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="sitedataschema_update"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.sitedataschema_update">[docs]</a><span class="k">def</span> <span class="nf">sitedataschema_update</span><span class="p">(</span><span class="n">site_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;sitedataschema_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: SiteDataSchema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteDataSchema&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteDataSchema</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="usersitedata_create"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.usersitedata_create">[docs]</a><span class="k">def</span> <span class="nf">usersitedata_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersitedata_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: UserSiteData</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="c1"># Get site data schema</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">sitedataschema_read</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">schema</span>
+
+    <span class="c1"># Check data schema first</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">validate_schema</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">schema</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteData</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="usersitedata_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.usersitedata_delete">[docs]</a><span class="k">def</span> <span class="nf">usersitedata_delete</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersitedata_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteData</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="usersitedata_list"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.usersitedata_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">usersitedata_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">site_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersitedata_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param user_id: An optional query parameter to filter by user_id</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: An optional query parameter to filter by site_id</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: List[UserSiteData]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteData</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span> <span class="s2">&quot;site_id&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="usersitedata_read"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.usersitedata_read">[docs]</a><span class="k">def</span> <span class="nf">usersitedata_read</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersitedata_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: UserSiteData</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteData</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="usersitedata_update"><a class="viewcode-back" href="../../../swagger_server.controllers.user_data_controller.html#swagger_server.controllers.user_data_controller.usersitedata_update">[docs]</a><span class="k">def</span> <span class="nf">usersitedata_update</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersitedata_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: UserSiteData</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="c1"># Get site data schema</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">sitedataschema_read</span><span class="p">(</span><span class="n">site_id</span><span class="p">)</span><span class="o">.</span><span class="n">schema</span>
+
+    <span class="c1"># Check data schema first</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">validate_schema</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span> <span class="n">schema</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteData&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteData</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Girl Effect.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

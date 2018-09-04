@@ -5,7 +5,7 @@ from __future__ import absolute_import
 import random
 
 from flask import json
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 from swagger_server.models import SiteDataSchema
 from swagger_server.models import SiteDataSchemaCreate
@@ -16,7 +16,9 @@ from project.settings import API_KEY_HEADER
 
 class TestExceptions(BaseTestCase):
 
+    @decorators.db_exception
     def setUp(self):
+        super().setUp()
         self.sitedataschema_data = {
             "site_id": random.randint(2, 2000000),
             "schema": {"test": "data"}
