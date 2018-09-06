@@ -1,6 +1,9 @@
 Changelog
 =========
 
+Next:
+- Bumped version of core-shared library
+
 1.1.6
 -----
 - Use newer version of core_shared library and updated tests accordingly.
