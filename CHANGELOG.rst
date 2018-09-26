@@ -1,7 +1,8 @@
 Changelog
 =========
 
-Next:
+1.1.7
+-----
 - Bumped version of core-shared library
 
 1.1.6
