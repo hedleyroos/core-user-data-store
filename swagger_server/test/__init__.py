@@ -29,6 +29,9 @@ class BaseTestCase(TestCase):
         DB.init_app(flask_app)
         app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
         flask_app.wsgi_app = middleware.AuthMiddleware(flask_app.wsgi_app)
+
+        # Register middleware
+        middleware.auth_middleware(app.app, "core_user_data_store")
         app.add_api('swagger.yaml', arguments={'title': 'Test User Data API'})
         self.flask_app = flask_app
         return flask_app
