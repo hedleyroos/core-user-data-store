@@ -1,8 +1,8 @@
 Changelog
 =========
 
-next
-----
+1.1.8
+-----
 - Update authentication middleware implementation.
 
 1.1.7
