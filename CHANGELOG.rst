@@ -1,6 +1,10 @@
 Changelog
 =========
 
+next
+----
+- Update test requirements.
+
 1.1.8
 -----
 - Update authentication middleware implementation.
