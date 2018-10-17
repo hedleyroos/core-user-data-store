@@ -1,6 +1,10 @@
 Changelog
 =========
 
+next
+----
+- Update authentication middleware implementation.
+
 1.1.7
 -----
 - Bumped version of core-shared library
