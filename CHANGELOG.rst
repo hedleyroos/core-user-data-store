@@ -1,8 +1,8 @@
 Changelog
 =========
 
-next
-----
+1.1.9
+-----
 - Update test requirements.
 
 1.1.8
