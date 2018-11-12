@@ -1,8 +1,8 @@
 Changelog
 =========
 
-next
-----
+1.2.0
+-----
 - Make use of core-shared:1.3.1
 - Quality of life updates for unit tests.
 
