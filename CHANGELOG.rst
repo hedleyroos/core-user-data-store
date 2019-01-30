@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.2.1
+-----
+- Use latest version of the core-shared library
+
 1.2.0
 -----
 - Make use of core-shared:1.3.1

@@ -3,9 +3,11 @@
 from __future__ import absolute_import
 
 import random
+from unittest.mock import patch
 
 from flask import json
 from ge_core_shared import db_actions, decorators
+from sqlalchemy.orm.exc import StaleDataError
 
 from swagger_server.models import SiteDataSchema
 from swagger_server.models import SiteDataSchemaCreate
@@ -52,4 +54,24 @@ class TestExceptions(BaseTestCase):
             "ERROR:  duplicate key value violates unique constraint"
             " \"sitedataschema_pkey\" DETAIL:  Key (site_id)="
             "(%s) already exists." % self.sitedataschema_model.site_id
+        )
+
+    @patch("ge_core_shared.db_actions.db.session.commit")
+    def test_staledataerror_response(self, mocked_crud):
+
+        error = StaleDataError("Some reason")
+        mocked_crud.side_effect = error
+        data = SiteDataSchemaCreate(**self.sitedataschema_data)
+        response = self.client.open(
+            "/api/v1/sitedataschemas",
+            method="POST",
+            data=json.dumps(data),
+            content_type="application/json",
+            headers=self.headers
+        )
+        r_data = json.loads(response.data)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            "StaleDataError(Some reason)",
+            r_data["error"]
         )
